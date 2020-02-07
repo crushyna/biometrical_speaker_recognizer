@@ -3,7 +3,7 @@ import struct
 
 class WavFileHelper:
     """
-    simple class that allows for faster and more reliable wave file extraction
+    simple class that allows for faster and more reliable wave file info extraction
     """
     def read_file_properties(self, filename):
         wave_file = open(filename, "rb")

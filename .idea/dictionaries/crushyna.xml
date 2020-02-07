@@ -2,6 +2,9 @@
   <dictionary name="crushyna">
     <words>
       <w>audiodata</w>
+      <w>dataframe</w>
+      <w>librosa</w>
+      <w>scipy</w>
       <w>wavfilehelper</w>
     </words>
   </dictionary>

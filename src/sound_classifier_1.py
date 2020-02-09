@@ -1,7 +1,5 @@
 import pandas as pd
 import os
-import librosa
-import librosa.display
 
 from src.helpers.wav_file_helper import WavFileHelper
 

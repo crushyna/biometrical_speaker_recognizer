@@ -23,12 +23,9 @@ class SoundPreprocessorTest(unittest.TestCase):
     def test_convert_stereo_to_mono(self):
         self.assertIsInstance(self.test_sound_1.convert_stereo_to_mono(), ndarray)
 
-    def test_plot_audio(self):
+    def test_save_audio_image(self):
         # TODO: fails every time, fix it somehow. Maybe split plot and save?
-        asserted_filename = f'src/sound_images/{self.test_instance}.png'
-        self.test_sound_1.plot_audio()
-        sleep(10)
-        self.assertTrue(exists(asserted_filename))
+        self.assertTrue(self.test_sound_1.save_audio_image())
 
     def test_fourier_transform_audio(self):
         self.assertEqual(self.test_sound_1.scipy_audio.shape.__len__(), 1)

@@ -20,3 +20,9 @@ N
 src/helpers/wav_file_helper.py,d\8\d8bd86bfdfeb94acefc391d2f0dc8b346bbaeaff
 K
 src/sound_preprocessor_1.py,e\c\eca38357f4bdaa4bdca66e25af346c9f6c46a85c
+7
+LICENSE,0\3\0398ccd0f49298b10a3d76a47800d2ebecd49859
+P
+ src/test_sound_preprocessor_1.py,9\3\93061dcbd3e7220bee64607b559764b25baf81aa
+K
+src/image_preprocessor_1.py,5\c\5c388e93176aa5131a8a42bf64eb495ff5f9955b

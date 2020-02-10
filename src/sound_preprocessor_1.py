@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import minmax_scale, maxabs_scale
 from sklearn import metrics
+from os.path import exists
 
 '''
 filename = '../UrbanSound Dataset sample/audio/100852-0-0-0.wav'
@@ -47,8 +48,17 @@ class SoundPreprocessor:
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')
         plt.plot(self.scipy_audio)
-        plt.savefig(f'src/sound_images/{self.name}.png', facecolor='white',
-                    transparent=False, bbox_inches='tight', pad_inches=0)
+
+    def save_audio_image(self):
+        # save current plot:
+        plt.figure(figsize=(5, 2), frameon=False)
+        plt.axis('off')
+        plt.plot(self.scipy_audio)
+        plt.savefig(f'src/sound_images/{self.name}.png', facecolor='white', transparent=False, bbox_inches='tight',
+                    pad_inches=0)
+        plt.close()
+
+        return exists(f'src/sound_images/{self.name}.png')
 
     def fourier_transform_audio(self):
         # self.scipy_audio = rfft(self.scipy_audio)

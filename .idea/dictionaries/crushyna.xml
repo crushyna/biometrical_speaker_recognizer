@@ -2,10 +2,14 @@
   <dictionary name="crushyna">
     <words>
       <w>audiodata</w>
+      <w>crushyna</w>
       <w>dataframe</w>
+      <w>dhash</w>
       <w>librosa</w>
+      <w>owsiak</w>
       <w>scipy</w>
       <w>wavfilehelper</w>
+      <w>whash</w>
     </words>
   </dictionary>
 </component>

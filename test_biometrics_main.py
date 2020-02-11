@@ -1,8 +1,8 @@
 import unittest
 from biometrics_main import main
 
-test_login = 'test_login_1'
-test_voice_sample = 'src/test_sounds/clint_eastwood_1.wav'
+test_login = 'crushyna'
+test_sound = 'src/test_sounds/owsiak_1a.wav'
 
 
 class BiometricsMainTest(unittest.TestCase):
@@ -10,7 +10,7 @@ class BiometricsMainTest(unittest.TestCase):
     simple test for module entry point
     """
     def test_result(self):
-        self.assertIsInstance(main(test_login, test_voice_sample), bool)
+        self.assertIsInstance(main(test_login, test_sound), int)
 
 
 if __name__ == '__main__':

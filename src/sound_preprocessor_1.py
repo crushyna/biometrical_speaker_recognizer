@@ -68,7 +68,7 @@ class SoundPreprocessor:
 
     def minmax_array_numpy(self):
         self.scipy_audio = np.real(self.scipy_audio)
-        self.scipy_audio = minmax_scale(self.scipy_audio, feature_range=(0, 2))
+        self.scipy_audio = minmax_scale(self.scipy_audio, feature_range=(0, 1))
         return self.scipy_audio
 
     def maxabs_array_numpy(self):
@@ -87,3 +87,12 @@ class SoundPreprocessor:
         root_mean_squared = np.sqrt(metrics.mean_squared_error(sound_array_1, sound_array_2))
         correlation = np.mean(correlate(sound_array_1, sound_array_2))
         return mean_absolute, mean_squared, root_mean_squared, correlation
+
+    @staticmethod
+    def create_voice_image_array(*args):
+        recordings_list = []
+        for each_voice in args:
+            SoundPreprocessor.convert_stereo_to_mono(each_voice)
+            SoundPreprocessor.fourier_transform_audio(each_voice)
+            SoundPreprocessor.minmax_array_numpy(each_voice)
+            recordings_list.append(each_voice)

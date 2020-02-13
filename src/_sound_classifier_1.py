@@ -30,5 +30,3 @@ print(audio_df.sample_rate.value_counts(normalize=True))
 # bit depth
 print("Bit depth:")
 print(audio_df.bit_depth.value_counts(normalize=True))
-
-# TODO: volume normalisation?

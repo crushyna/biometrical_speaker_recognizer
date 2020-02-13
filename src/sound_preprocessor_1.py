@@ -16,6 +16,14 @@ test_filename_1 = 'src/test_sounds/owsiak_1a.wav'
 test_filename_2 = 'src/test_sounds/owsiak_1b.wav'
 test_filename_3 = 'src/test_sounds/owsiak_2a.wav'
 test_filename_4 = 'src/test_sounds/owsiak_2b.wav'
+test_filename_5 = 'src/test_sounds/Inez_1a.wav'
+test_filename_6 = 'src/test_sounds/Inez_1b.wav'
+test_filename_7 = 'src/test_sounds/Krzysztof_1a.wav'
+test_filename_8 = 'src/test_sounds/Krzysztof_1b.wav'
+test_filename_9 = 'src/test_sounds/Maciej_1a.wav'
+test_filename_10 = 'src/test_sounds/Maciej_1b.wav'
+test_filename_11 = 'src/test_sounds/Wojtek_1a.wav'
+test_filename_12 = 'src/test_sounds/Wojtek_1b.wav'
 
 
 class SoundPreprocessor:
@@ -55,15 +63,16 @@ class SoundPreprocessor:
         plt.axis('off')
         plt.plot(self.scipy_audio)
         plt.savefig(f'src/sound_images/{self.name}.png', facecolor='white', transparent=False, bbox_inches='tight',
-                    pad_inches=0)
+                    pad_inches=0, dpi=300)
         plt.close()
 
         return exists(f'src/sound_images/{self.name}.png')
 
     def fourier_transform_audio(self):
+        # TODO: volume normalisation?
         # self.scipy_audio = rfft(self.scipy_audio)
         self.scipy_audio = rfft(self.scipy_audio)
-        self.scipy_audio = self.scipy_audio[250:22250]
+        self.scipy_audio = self.scipy_audio[250:32050]
         return self.scipy_audio
 
     def minmax_array_numpy(self):

@@ -72,7 +72,7 @@ class SoundPreprocessor:
         # TODO: volume normalisation?
         # self.scipy_audio = rfft(self.scipy_audio)
         self.scipy_audio = rfft(self.scipy_audio)
-        self.scipy_audio = self.scipy_audio[250:32050]
+        self.scipy_audio = self.scipy_audio[250:22050]
         return self.scipy_audio
 
     def minmax_array_numpy(self):
@@ -105,3 +105,34 @@ class SoundPreprocessor:
             SoundPreprocessor.fourier_transform_audio(each_voice)
             SoundPreprocessor.minmax_array_numpy(each_voice)
             recordings_list.append(each_voice)
+
+    @staticmethod
+    def create_voice_image_mean_array(*args):
+        """
+        pass any number or ndarrays, and return image of their average value
+        :param args: ndarray
+        :return: bool
+        """
+        # TODO: this might need some code separation into smaller piecies
+
+        v_arrays_list = []
+        for each_input_array in args:
+            v_arrays_list.append(each_input_array)
+
+        v_arrays_list_avg = v_arrays_list[0]
+        for each_array in v_arrays_list:
+            v_arrays_list_avg = v_arrays_list_avg + each_array
+
+        print(len(v_arrays_list))
+        v_arrays_list_avg = np.divide(v_arrays_list_avg, v_arrays_list.__len__())
+        v_arrays_list_avg = np.real(v_arrays_list_avg)
+        v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
+
+        plt.figure(figsize=(5, 2), frameon=False)
+        plt.axis('off')
+        plt.plot(v_arrays_list_avg)
+        plt.savefig(f'src/sound_images/image.png', facecolor='white', transparent=False, bbox_inches='tight',
+                    pad_inches=0, dpi=300)
+        plt.close()
+
+        return exists(f'src/sound_images/image.png')

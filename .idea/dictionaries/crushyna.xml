@@ -6,6 +6,8 @@
       <w>dataframe</w>
       <w>dhash</w>
       <w>librosa</w>
+      <w>ndarray</w>
+      <w>ndarrays</w>
       <w>owsiak</w>
       <w>scipy</w>
       <w>wavfilehelper</w>

@@ -18,14 +18,14 @@ class ImagePreprocessor:
         pass
 
     def compare_dhash(self):
-        hash1 = imagehash.dhash(Image.open(self.input_image), hash_size=16)
-        hash2 = imagehash.dhash(Image.open(self.stored_image), hash_size=16)
+        hash1 = imagehash.dhash(Image.open(self.input_image), hash_size=64)
+        hash2 = imagehash.dhash(Image.open(self.stored_image), hash_size=64)
 
         return hash1 - hash2
 
     def compare_whash(self):
-        hash1 = imagehash.whash(Image.open(self.input_image), hash_size=16)
-        hash2 = imagehash.whash(Image.open(self.stored_image), hash_size=16)
+        hash1 = imagehash.whash(Image.open(self.input_image), hash_size=64)
+        hash2 = imagehash.whash(Image.open(self.stored_image), hash_size=64)
 
         return hash1 - hash2
 

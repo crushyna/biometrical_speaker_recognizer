@@ -85,19 +85,6 @@ class SoundPreprocessor:
         return self.scipy_audio
 
     @staticmethod
-    def error_rate(sound_array_1, sound_array_2):
-        # TODO: a lot of work to do here, unless there's image analysis option
-        '''
-        err = np.sum((self.scipy_audio - self.scipy_audio) ** 2)
-        err /= float(self.scipy_audio[0] * self.scipy_audio[1])
-        '''
-        mean_absolute = metrics.mean_absolute_error(sound_array_1, sound_array_2)
-        mean_squared = metrics.mean_squared_error(sound_array_1, sound_array_2)
-        root_mean_squared = np.sqrt(metrics.mean_squared_error(sound_array_1, sound_array_2))
-        correlation = np.mean(correlate(sound_array_1, sound_array_2))
-        return mean_absolute, mean_squared, root_mean_squared, correlation
-
-    @staticmethod
     def create_voice_image_array(*args):
         recordings_list = []
         for each_voice in args:

@@ -1,11 +1,7 @@
+from numpy.core.multiarray import ndarray
 from src.sound_preprocessor_1 import SoundPreprocessor
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.controllers.azure_sql_controller import SQLController
-
-# test_login = 'crushyna'
-# test_sound = 'src/test_sounds/owsiak_1a.wav'
-
-test_voice_image = 'src/sound_images/inez_image.png'
 
 
 def main(user_login: str, sound_sample: object):
@@ -26,20 +22,20 @@ def main(user_login: str, sound_sample: object):
     input_sound.minmax_array_numpy()
     input_sound.save_audio_image()
 
-    input_image = ImagePreprocessor(f'src/sound_images/{user_login}', test_voice_image)
+    input_image = ImagePreprocessor(f'src/sound_images/{user_login}', sql_database.download_voice_image(voice_image_id))
     result = input_image.compare_dhash()
     print(result)
     return result
 
 
 def upload_voice_array(user_id: int, sound_sample_location: str):
-    # TODO: uploads as 71 len string. Try with nvarchar(MAX) and varbinary(MAX)
     sql_database = SQLController()
     input_sound = SoundPreprocessor(user_id, sound_sample_location)
     input_sound.convert_stereo_to_mono()
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
-    sql_database.upload_voice_array(user_id, input_sound.scipy_audio)
+    input_sound_as_list = ndarray.tolist(input_sound.scipy_audio)
+    sql_database.upload_voice_array(user_id, input_sound_as_list)
 
 
 def create_voice_image(user_name: str, *args: str):

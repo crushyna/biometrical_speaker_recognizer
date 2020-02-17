@@ -1,4 +1,5 @@
 import pyodbc
+from numpy import asarray, array, asfarray
 
 
 class SQLController:
@@ -77,6 +78,7 @@ class SQLController:
             raise IndexError('Error! User does not exist in database!')
 
     @staticmethod
+    # TODO: add TRY EXCEPT here as in 'check_if_user_exist'
     def check_if_voice_image_exists(users_voice_image_id: int):
         query = f"""SELECT voice_array FROM [dbo].[Voice_Images]
                             WHERE id = {users_voice_image_id};"""
@@ -86,7 +88,7 @@ class SQLController:
         return voice_image_array
 
     @staticmethod
-    def upload_voice_array(user_id, voice_ndarray):
+    def upload_voice_array(user_id: int, voice_ndarray: object):
         query = f"""INSERT INTO [dbo].[Voice_Arrays_List] (user_id, sample_array)
                     VALUES ({user_id}, '{voice_ndarray}');"""
         try:
@@ -98,15 +100,37 @@ class SQLController:
                                           "data types?")
 
     @staticmethod
-    def download_voice_array(user_id):
+    def download_voice_array(user_id: int):
+        """
+        test purposes only
+        :param user_id:
+        :return: ndarray
+        """
         query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
                         WHERE user_id = {user_id}
                         ORDER BY create_timestamp DESC;"""
-        result = sql_database.execute_select(query)
+        query_result = sql_database.execute_select(query)
+        result = query_result[0].strip('[]\",').split()
 
-        print(*result)
-        print(type(result))
-        return result
+        result_array = []
+        for each_element in result:
+            result_array.append(float(each_element.strip(',')))
+
+        return asarray(result_array)
+
+    @staticmethod
+    def download_voice_image(user_id: int):
+        query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
+                            WHERE user_id = {user_id}
+                            ORDER BY create_timestamp DESC;"""
+        query_result = sql_database.execute_select(query)
+        result = query_result[0].strip('[]\",').split()
+
+        result_array = []
+        for each_element in result:
+            result_array.append(float(each_element.strip(',')))
+
+        return asarray(result_array)
 
 
 sql_database = SQLController()

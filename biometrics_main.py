@@ -38,7 +38,7 @@ def upload_voice_array(user_id: int, sound_sample_location: str):
     sql_database.upload_voice_array(user_id, input_sound_as_list)
 
 
-def create_voice_image(user_name: str, *args: str):
+def __old__create_voice_image(user_name: str, *args: str):
     """
     joins voices (.wav files) from *args into one .wav file
     :param user_name: str
@@ -60,3 +60,18 @@ def create_voice_image(user_name: str, *args: str):
                 if not wav_out.getnframes():
                     wav_out.setparams(wav_in.getparams())
                 wav_out.writeframes(wav_in.readframes(wav_in.getnframes()))
+
+
+def generate_voice_image(user_id: int):
+    """
+    generates image from average values of voice arrays
+    :param user_id: int
+    :return: bool
+    """
+
+    # TODO: create image from here and upload it up to database
+
+    sql_database = SQLController()
+
+    sql_database.download_user_voice_arrays(user_id)
+

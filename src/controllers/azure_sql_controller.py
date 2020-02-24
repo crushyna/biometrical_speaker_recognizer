@@ -78,7 +78,7 @@ class SQLController:
             raise IndexError('Error! User does not exist in database!')
 
     @staticmethod
-    # TODO: add TRY EXCEPT here as in 'check_if_user_exist'
+    # TODO: add TRY / EXCEPT here as in 'check_if_user_exist'
     def check_if_voice_image_exists(users_voice_image_id: int):
         query = f"""SELECT voice_array FROM [dbo].[Voice_Images]
                             WHERE id = {users_voice_image_id};"""
@@ -100,7 +100,7 @@ class SQLController:
                                           "data types?")
 
     @staticmethod
-    def download_voice_array(user_id: int):
+    def _download_one_voice_array(user_id: int):
         """
         test purposes only
         :param user_id:
@@ -117,6 +117,30 @@ class SQLController:
             result_array.append(float(each_element.strip(',')))
 
         return asarray(result_array)
+
+    @staticmethod
+    def download_user_voice_arrays(user_id: int):
+        """
+        input specific user id, and returns and array of ndarrays for further analysis
+        :param user_id:
+        :return: list
+        """
+        query = f"""SELECT sample_array FROM [dbo].[Voice_Arrays_List]
+                                    WHERE user_id = {user_id};"""
+        query_result = sql_database.execute_select(query)
+
+        result_arrays = []
+        for each_str in query_result:
+            result_arrays.append(each_str.strip('[]\",').split())
+
+        result_list = []
+        for each_list in result_arrays:
+            new_list = []
+            for each_element in each_list:
+                new_list.append(float(each_element.strip(',')))
+            result_list.append(asarray(new_list))
+
+        return result_list
 
     @staticmethod
     def download_voice_image(user_id: int):

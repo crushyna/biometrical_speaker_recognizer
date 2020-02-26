@@ -1,3 +1,5 @@
+import os
+
 from numpy.core.multiarray import ndarray
 from src.sound_preprocessor_1 import SoundPreprocessor
 from src.image_preprocessor_1 import ImagePreprocessor
@@ -6,12 +8,12 @@ from src.controllers.azure_sql_controller import SQLController
 
 def main(user_login: str, sound_sample: object):
     """
-    entry point for module
+    entry point for module, that is simple voice hash comparison
     :return: int
     """
     sql_database = SQLController()
 
-    user_id, voice_image_id = sql_database.check_if_user_exist(user_login)
+    user_id, voice_image_id = sql_database.get_user_id_and_voice_image_id(user_login)
     voice_image_array = sql_database.check_if_voice_image_exists(voice_image_id)
 
     print(type(voice_image_array))
@@ -29,13 +31,21 @@ def main(user_login: str, sound_sample: object):
 
 
 def upload_voice_array(user_id: int, sound_sample_location: str):
+    """
+    create an ndarray out of .wav file sample
+    :param user_id: int
+    :param sound_sample_location: str
+    :return:  bool
+    """
     sql_database = SQLController()
     input_sound = SoundPreprocessor(user_id, sound_sample_location)
     input_sound.convert_stereo_to_mono()
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
     input_sound_as_list = ndarray.tolist(input_sound.scipy_audio)
-    sql_database.upload_voice_array(user_id, input_sound_as_list)
+    result = sql_database.upload_voice_array(user_id, input_sound_as_list)
+
+    return result
 
 
 def __old__create_voice_image(user_name: str, *args: str):
@@ -68,10 +78,16 @@ def generate_voice_image(user_id: int):
     :param user_id: int
     :return: bool
     """
-
     # TODO: create image from here and upload it up to database
 
-    sql_database = SQLController()
+    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-    sql_database.download_user_voice_arrays(user_id)
+    sql_database = SQLController()
+    user_login, voice_image_id = sql_database.get_user_login_and_voice_image_id(user_id)
+
+    arrays_list = sql_database.download_user_voice_arrays(user_id)
+    result, filepath = SoundPreprocessor.create_voice_image_mean_array(user_login, arrays_list)
+    # TODO: something wrong with filepath(1)
+    total_filepath = f'{ROOT_DIR}{filepath}'
+    sql_database.upload_voice_image(user_id, total_filepath)
 

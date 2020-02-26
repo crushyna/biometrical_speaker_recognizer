@@ -7,7 +7,6 @@ from sklearn.preprocessing import minmax_scale, maxabs_scale
 from sklearn import metrics
 from os.path import exists
 
-
 # for test purposes only
 test_filename_1 = 'src/test_sounds/owsiak_1a.wav'
 test_filename_2 = 'src/test_sounds/owsiak_1b.wav'
@@ -81,7 +80,7 @@ class SoundPreprocessor:
         return self.scipy_audio
 
     @staticmethod
-    def create_voice_image_array(*args):
+    def _create_voice_image_array(*args):
         recordings_list = []
         for each_voice in args:
             SoundPreprocessor.convert_stereo_to_mono(each_voice)
@@ -92,10 +91,10 @@ class SoundPreprocessor:
     @staticmethod
     def create_voice_image_mean_array(user_login: str, list_of_arrays: list):
         """
-        pass any number of ndarrays, and return image of their average value
+        pass any number of ndarrays (as list), and return image of their average value
         :param user_login: str
         :param list_of_arrays: list
-        :return: bool
+        :return: bool, image_filepath
         """
 
         v_arrays_list_avg = list_of_arrays[0]
@@ -114,6 +113,6 @@ class SoundPreprocessor:
                     pad_inches=0, dpi=300)
         plt.close()
 
-        # TODO: result should be uploaded to database!
+        image_filepath = f'src/sound_images/{user_login}.png'
 
-        return exists(f'src/sound_images/{user_login}.png')
+        return exists(image_filepath), image_filepath

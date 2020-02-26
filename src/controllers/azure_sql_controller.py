@@ -59,7 +59,26 @@ class SQLController:
         return result
 
     @staticmethod
-    def check_if_user_exist(user_login: str):
+    def get_user_login_and_voice_image_id(user_id: int) -> object:
+        """
+        simple function to return users login
+        :param user_id: int
+        :return: str, int
+        """
+        query = f"""SELECT [login], [voice_image_id]
+                            FROM [dbo].[Users]
+                            WHERE [id] = {user_id};"""
+        try:
+            result = sql_database.execute_query_multiple_rows(query)
+            if type(result[0]) is str and type(result[1]) is int:
+                return result[0], result[1]
+        except IndexError:
+            raise IndexError('Error! User does not exist in database!')
+        except pyodbc.ProgrammingError:
+            raise pyodbc.ProgrammingError('Wrong input data type!')
+
+    @staticmethod
+    def get_user_id_and_voice_image_id(user_login: str):
         """
         checks if user exists in database, returns its user ID and voice image ID (int)
         :param user_login:
@@ -68,17 +87,17 @@ class SQLController:
         query = f"""SELECT id, voice_image_id FROM [dbo].[Users]
                             WHERE login = '{user_login}';"""
         result = sql_database.execute_query_multiple_rows(query)
-        print(f"User ID: {result[0]}")
-        print(f"Voice ID: {result[1]}")
 
         try:
             if type(result[0]) and type(result[1]) is int:
                 return result[0], result[1]
         except IndexError:
             raise IndexError('Error! User does not exist in database!')
+        except pyodbc.ProgrammingError:
+            raise pyodbc.ProgrammingError('Wrong input data type!')
 
     @staticmethod
-    # TODO: add TRY / EXCEPT here as in 'check_if_user_exist'
+    # TODO: add TRY / EXCEPT here as in 'get_user_id_and_voice_image_id'
     def check_if_voice_image_exists(users_voice_image_id: int):
         query = f"""SELECT voice_array FROM [dbo].[Voice_Images]
                             WHERE id = {users_voice_image_id};"""
@@ -155,6 +174,20 @@ class SQLController:
             result_array.append(float(each_element.strip(',')))
 
         return asarray(result_array)
+
+    @staticmethod
+    def upload_voice_image(user_id: int, image_filepath: str):
+        # TODO: something wrong with filepath(2)
+        query = f"""INSERT INTO [dbo].[Voice_Images] (id, voice_array)
+                            SELECT {user_id}, *
+                            FROM OPENROWSET(BULK '{image_filepath}', SINGLE_BLOB) IMG_DATA;"""
+        try:
+            sql_database.execute_update_or_insert(query)
+            print(f'Added voice image for user ID: {user_id}')
+            return 1
+        except pyodbc.ProgrammingError:
+            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
+                                          "data types?")
 
 
 sql_database = SQLController()

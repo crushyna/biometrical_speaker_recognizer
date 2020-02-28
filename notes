@@ -79,3 +79,15 @@ test3 = ImagePreprocessor('src/sound_images/maciej_1a', 'src/sound_images/maciej
 test4 = ImagePreprocessor('src/sound_images/maciej_1a', 'src/sound_images/wojtek_1a.png')
 test5 = ImagePreprocessor('src/sound_images/wojtek_1a', 'src/sound_images/wojtek_1b.png')
 test6 = ImagePreprocessor('src/sound_images/wojtek_1a', 'src/sound_images/radek_1b.png')
+
+@staticmethod
+    def upload_voice_image(user_id: int, image_filepath: str):
+        # TODO: something wrong with filepath(2)
+        query = f"""INSERT INTO [dbo].[Voice_Images] (id, voice_array)
+                            SELECT {user_id}, *
+                            FROM OPENROWSET(BULK '{image_filepath}', SINGLE_BLOB) IMG_DATA
+                            WITH
+                              (
+                                 FIELDTERMINATOR =',',
+                                 ROWTERMINATOR ='\n'
+                              );"""

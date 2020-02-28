@@ -1,5 +1,4 @@
 import os
-
 from numpy.core.multiarray import ndarray
 from src.sound_preprocessor_1 import SoundPreprocessor
 from src.image_preprocessor_1 import ImagePreprocessor
@@ -87,7 +86,5 @@ def generate_voice_image(user_id: int):
 
     arrays_list = sql_database.download_user_voice_arrays(user_id)
     result, filepath = SoundPreprocessor.create_voice_image_mean_array(user_login, arrays_list)
-    # TODO: something wrong with filepath(1)
-    total_filepath = f'{ROOT_DIR}{filepath}'
+    total_filepath = f'{ROOT_DIR}\\{filepath}'
     sql_database.upload_voice_image(user_id, total_filepath)
-

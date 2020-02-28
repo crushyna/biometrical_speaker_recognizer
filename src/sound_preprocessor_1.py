@@ -109,10 +109,10 @@ class SoundPreprocessor:
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')
         plt.plot(v_arrays_list_avg)
-        plt.savefig(f'src/sound_images/{user_login}.png', facecolor='white', transparent=False, bbox_inches='tight',
+        plt.savefig(f'src\\sound_images\\{user_login}.png', facecolor='white', transparent=False, bbox_inches='tight',
                     pad_inches=0, dpi=300)
         plt.close()
 
-        image_filepath = f'src/sound_images/{user_login}.png'
+        image_filepath = f'src\\sound_images\\{user_login}.png'
 
         return exists(image_filepath), image_filepath

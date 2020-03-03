@@ -9,7 +9,7 @@ class SQLController:
 
     def __init__(self):
         self.server = 'neptun04.database.windows.net'
-        self.database = 'v_biometrics_database '
+        self.database = 'v_biometrics_database'
         self.username = 'crushyna'
         self.password = 'AllsoP1234administrator'
         # self.driver = '{FreeTDS}'
@@ -169,7 +169,7 @@ class SQLController:
         return result_list
 
     @staticmethod
-    def download_voice_image(user_id: int):
+    def download_voice_array_list(user_id: int):
         query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
                             WHERE user_id = {user_id}
                             ORDER BY create_timestamp DESC;"""
@@ -183,40 +183,41 @@ class SQLController:
         return asarray(result_array)
 
     @staticmethod
-    def upload_voice_image(user_id: int, image_filepath):
-        with open(image_filepath, 'rb') as image_file:
-            image_bytes = image_file.read()
-
+    def upload_voice_image(voice_image_id: int, image_filepath):
+        """
+        upload into database a binary representation of Voice Image
+        :param voice_image_id: int
+        :param image_filepath:
+        :return:
+        """
         query = "INSERT INTO [dbo].[Voice_Images] (id, voice_array) VALUES (?, ?)"
-        values = (user_id, image_bytes)
+        values = (voice_image_id, pyodbc.Binary(image_filepath))
 
         try:
             sql_database.execute_update_or_insert_with_values(query, values)
-            print(f'Added voice image for user ID: {user_id}')
-            print(f'{len(image_bytes)}-byte file written.')
+            print(f'Added voice image, ID: {voice_image_id}')
+            print(f'{len(pyodbc.Binary(image_filepath))}-byte file written.')
             return 1
         except pyodbc.ProgrammingError:
             raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
                                           "data types?")
 
     @staticmethod
-    def test_upload_voice_image(user_id: int, image_filepath: str):
-        with open(image_filepath, 'rb') as photo_file:
-            photo_bytes = photo_file.read()
-
-        sql_database.cursor.execute("INSERT INTO [dbo].[Voice_Images] (id, voice_array) VALUES (?, ?)", user_id,
-                                    photo_bytes)
-        sql_database.cnxn.commit()
-        print(f'{len(photo_bytes)}-byte file written for {user_id}')
-
-    # TODO: this thing below!
-    # retrieve binary data and save as new file
-    """
-    retrieved_bytes = cursor.execute("SELECT photo FROM #validation WHERE email = ?", email).fetchval()
-    with open(photo_path + 'new.jpg', 'wb') as new_jpg:
-        new_jpg.write(retrieved_bytes)
-    print(f'{len(retrieved_bytes)} bytes retrieved and written to new file')
-    """
+    def download_voice_image(voice_id: int):
+        """
+        retrieve binary data and return its byte representation
+        :param voice_id: int
+        :return: bytes
+        """
+        try:
+            query = f"SELECT voice_array FROM [dbo].[Voice_Images] WHERE id = {voice_id}"
+            retrieved_bytes = sql_database.execute_select(query)
+            print(f'{len(retrieved_bytes)} bytes retrieved and written to memory.')
+            return retrieved_bytes[0]
+        except IndexError:
+            raise IndexError('Error! Specified image does not exist in database!')
+        except pyodbc.ProgrammingError:
+            raise pyodbc.ProgrammingError('Wrong input data type!')
 
 
 sql_database = SQLController()

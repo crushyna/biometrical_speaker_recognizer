@@ -23,7 +23,8 @@ def main(user_login: str, sound_sample: object):
     input_sound.minmax_array_numpy()
     input_sound.save_audio_image()
 
-    input_image = ImagePreprocessor(f'src/sound_images/{user_login}', sql_database.download_voice_image(voice_image_id))
+    input_image = ImagePreprocessor(f'src/sound_images/{user_login}',
+                                    sql_database.download_voice_array_list(voice_image_id))
     result = input_image.compare_dhash()
     print(result)
     return result
@@ -54,9 +55,6 @@ def __old__create_voice_image(user_name: str, *args: str):
     :param args: str
     :return: .wav file
     """
-
-    # TODO: strange things happen when you create image from joined .wav files, need to investigate
-
     dir_voice_images = 'src/voice_images/'
     import wave
     voice_list = []
@@ -73,18 +71,18 @@ def __old__create_voice_image(user_name: str, *args: str):
 
 def generate_voice_image(user_id: int):
     """
-    generates image from average values of voice arrays
+    generates image from average values of voice arrays and upload it up to database as binary Voice Image
+    returns 1 if it's done correctly
     :param user_id: int
     :return: bool
     """
-    # TODO: create image from here and upload it up to database
-
-    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-
     sql_database = SQLController()
     user_login, voice_image_id = sql_database.get_user_login_and_voice_image_id(user_id)
-
     arrays_list = sql_database.download_user_voice_arrays(user_id)
     result, filepath = SoundPreprocessor.create_voice_image_mean_array(user_login, arrays_list)
-    total_filepath = f'{ROOT_DIR}\\{filepath}'
-    sql_database.upload_voice_image(user_id, total_filepath)
+    total_filepath = filepath
+    result = sql_database.upload_voice_image(voice_image_id, total_filepath.getvalue())
+
+    total_filepath.close()
+
+    return result

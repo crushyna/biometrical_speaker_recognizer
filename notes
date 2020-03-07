@@ -80,14 +80,74 @@ test4 = ImagePreprocessor('src/sound_images/maciej_1a', 'src/sound_images/wojtek
 test5 = ImagePreprocessor('src/sound_images/wojtek_1a', 'src/sound_images/wojtek_1b.png')
 test6 = ImagePreprocessor('src/sound_images/wojtek_1a', 'src/sound_images/radek_1b.png')
 
+upload_voice_array(1, 'src/test_sounds/owsiak_1a.wav')
+upload_voice_array(1, 'src/test_sounds/owsiak_1b.wav')
+upload_voice_array(2, 'src/test_sounds/owsiak_2a.wav')
+upload_voice_array(2, 'src/test_sounds/owsiak_2b.wav')
+upload_voice_array(3, 'src/test_sounds/Inez_1a.wav')
+upload_voice_array(3, 'src/test_sounds/Inez_1b.wav')
+upload_voice_array(4, 'src/test_sounds/Maciej_1a.wav')
+upload_voice_array(4, 'src/test_sounds/Maciej_1b.wav')
+upload_voice_array(5, 'src/test_sounds/Wojtek_1a.wav')
+upload_voice_array(5, 'src/test_sounds/Wojtek_1b.wav')
+
+/****** Object:  Table [dbo].[Voice_Arrays_List]    Script Date: 07.03.2020 09:14:35 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Voice_Arrays_List](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[user_id] [int] NOT NULL,
+	[sample_array] [nvarchar](max) NOT NULL,
+	[create_timestamp] [timestamp] NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
 @staticmethod
-    def upload_voice_image(user_id: int, image_filepath: str):
-        # TODO: something wrong with filepath(2)
-        query = f"""INSERT INTO [dbo].[Voice_Images] (id, voice_array)
-                            SELECT {user_id}, *
-                            FROM OPENROWSET(BULK '{image_filepath}', SINGLE_BLOB) IMG_DATA
-                            WITH
-                              (
-                                 FIELDTERMINATOR =',',
-                                 ROWTERMINATOR ='\n'
-                              );"""
+    def upload_voice_array(user_id: int, voice_ndarray: object):
+        query = f"""INSERT INTO [dbo].[Voice_Arrays_List] (user_id, sample_array)
+                    VALUES ({user_id}, '{voice_ndarray}');"""
+        try:
+            sql_database.execute_update_or_insert(query)
+            print(f'Added voice array for user ID: {user_id}')
+            return 1
+        except pyodbc.ProgrammingError:
+            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
+                                          "data types?")
+
+@staticmethod
+    def download_user_voice_arrays(user_id: int):
+        """
+        input specific user id, and returns and array of ndarrays for further analysis
+        :param user_id:
+        :return: list
+        """
+        query = f"""SELECT sample_array FROM [dbo].[Voice_Arrays_List]
+                                    WHERE user_id = {user_id};"""
+        query_result = sql_database.execute_select(query)
+
+        result_arrays = []
+        for each_str in query_result:
+            result_arrays.append(each_str.strip('[]\",').split())
+
+        result_list = []
+        for each_list in result_arrays:
+            new_list = []
+            for each_element in each_list:
+                new_list.append(float(each_element.strip(',')))
+            result_list.append(asarray(new_list))
+
+        return result_list
+		
+		
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP (1000) [id]
+      ,[user_id]
+      ,[sample_array]
+      ,[create_timestamp]
+  FROM [dbo].[Voice_Arrays_List];
+
+DELETE FROM [dbo].[Voice_Arrays_List];

@@ -1,4 +1,0 @@
-
-Lpython:S1481R"-Remove the unused local variable "imgBuffer".(™ç³÷8ÙˆÈ¾‰.
-xpython:S117R"ZRename this local variable "imgBuffer" to match the regular expression ^[_a-z][a-z0-9_]*$.(™ç³÷8ÙˆÈ¾‰.
-Kpython:S1481T",Remove the unused local variable "ROOT_DIR".(Œä8É¸Ğ¾‰.

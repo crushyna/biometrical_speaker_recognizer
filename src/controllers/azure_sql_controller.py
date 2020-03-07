@@ -1,10 +1,8 @@
-import base64
-import binascii
-
 import pyodbc
-from numpy import asarray, array, asfarray
+from pickle import dumps, loads
+from numpy import asarray, ndarray
 
-
+# TODO: this class needs unit tests!
 class SQLController:
 
     def __init__(self):
@@ -45,28 +43,28 @@ class SQLController:
         return result
 
     def execute_query_multiple_rows(self, query_string: str):
-        query_list = []
+        result_list = []
         self.cursor.execute(query_string)
         row = self.cursor.fetchone()
         while row:
             for each_row in row:
-                query_list.append(each_row)
+                result_list.append(each_row)
                 # print(each_row)
 
             row = self.cursor.fetchone()
 
-        return query_list
+        return result_list
 
     @staticmethod
-    def test_query():
-        query = f"""SELECT id FROM [dbo].[Users]"""
+    def test_connection_query():
+        query = f"""SELECT TOP 1 id FROM [dbo].[Users]"""
         result = sql_database.execute_select(query)
         print(f"Result: {result}")
 
         return result
 
     @staticmethod
-    def get_user_login_and_voice_image_id(user_id: int) -> object:
+    def get_user_login_and_voice_image_id(user_id: int):
         """
         simple function to return users login
         :param user_id: int
@@ -104,21 +102,12 @@ class SQLController:
             raise pyodbc.ProgrammingError('Wrong input data type!')
 
     @staticmethod
-    # TODO: add TRY / EXCEPT here as in 'get_user_id_and_voice_image_id'
-    def check_if_voice_image_exists(users_voice_image_id: int):
-        query = f"""SELECT voice_array FROM [dbo].[Voice_Images]
-                            WHERE id = {users_voice_image_id};"""
-        voice_image_array = sql_database.execute_select(query)
-        # print(voice_image_array)
-        # print(type(voice_image_array))
-        return voice_image_array
-
-    @staticmethod
-    def upload_voice_array(user_id: int, voice_ndarray: object):
+    def upload_voice_array(user_id: int, voice_ndarray: ndarray):
         query = f"""INSERT INTO [dbo].[Voice_Arrays_List] (user_id, sample_array)
-                    VALUES ({user_id}, '{voice_ndarray}');"""
+                    VALUES (?, ?);"""
+        values = (user_id, dumps(voice_ndarray))
         try:
-            sql_database.execute_update_or_insert(query)
+            sql_database.execute_update_or_insert_with_values(query, values)
             print(f'Added voice array for user ID: {user_id}')
             return 1
         except pyodbc.ProgrammingError:
@@ -126,7 +115,88 @@ class SQLController:
                                           "data types?")
 
     @staticmethod
-    def _download_one_voice_array(user_id: int):
+    def download_user_voice_arrays(user_id: int):
+        """
+        input specific user id, and returns and array of ndarrays for further analysis
+        :param user_id:
+        :return: list
+        """
+        query = f"""SELECT sample_array FROM [dbo].[Voice_Arrays_List]
+                                    WHERE user_id = {user_id};"""
+        query_result = sql_database.execute_select(query)
+
+        result_arrays = []
+        for each_value in query_result:
+            result_arrays.append(loads(each_value))
+
+        return result_arrays
+
+    @staticmethod
+    def upload_voice_image(voice_image_id: int, image_filepath):
+        """
+        upload into database a binary representation of Voice Image
+        :param voice_image_id: int
+        :param image_filepath:
+        :return:
+        """
+        query = "INSERT INTO [dbo].[Voice_Images] (id, voice_array) VALUES (?, ?)"
+        values = (voice_image_id, dumps(image_filepath))
+
+        try:
+            sql_database.execute_update_or_insert_with_values(query, values)
+            print(f'Added voice image, ID: {voice_image_id}')
+            print(f'{len(bytearray(image_filepath))}-byte file written.')
+            return 1
+        except pyodbc.ProgrammingError:
+            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
+                                          "data types?")
+
+    @staticmethod
+    def download_voice_image(voice_id: int):
+        """
+        retrieve binary voice image by it's own ID
+        :param voice_id: int
+        :return: bytes
+        """
+        try:
+            query = f"SELECT voice_array FROM [dbo].[Voice_Images] WHERE id = {voice_id}"
+            retrieved_bytes = sql_database.execute_select(query)
+            print(f'{len(retrieved_bytes)} bytes retrieved and written to memory.')
+            return retrieved_bytes[0]
+        except IndexError:
+            raise IndexError('Error! Specified image does not exist in database!')
+        except pyodbc.ProgrammingError:
+            raise pyodbc.ProgrammingError('Wrong input data type!')
+
+    @staticmethod
+    def __old__check_if_voice_image_exists(users_voice_image_id: int):
+        """
+        check if voice image already exists in database
+        :param users_voice_image_id:
+        :return:
+        """
+        query = f"""SELECT voice_array FROM [dbo].[Voice_Images]
+                            WHERE id = {users_voice_image_id};"""
+
+        voice_image_array = sql_database.execute_select(query)
+        return voice_image_array
+
+    @staticmethod
+    def __old__download_voice_array_list(user_id: int):
+        query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
+                            WHERE user_id = {user_id}
+                            ORDER BY create_timestamp DESC;"""
+        query_result = sql_database.execute_select(query)
+        result = query_result[0].strip('[]\",').split()
+
+        result_array = []
+        for each_element in result:
+            result_array.append(float(each_element.strip(',')))
+
+        return asarray(result_array)
+
+    @staticmethod
+    def __old__download_one_voice_array(user_id: int):
         """
         test purposes only
         :param user_id:
@@ -143,81 +213,6 @@ class SQLController:
             result_array.append(float(each_element.strip(',')))
 
         return asarray(result_array)
-
-    @staticmethod
-    def download_user_voice_arrays(user_id: int):
-        """
-        input specific user id, and returns and array of ndarrays for further analysis
-        :param user_id:
-        :return: list
-        """
-        query = f"""SELECT sample_array FROM [dbo].[Voice_Arrays_List]
-                                    WHERE user_id = {user_id};"""
-        query_result = sql_database.execute_select(query)
-
-        result_arrays = []
-        for each_str in query_result:
-            result_arrays.append(each_str.strip('[]\",').split())
-
-        result_list = []
-        for each_list in result_arrays:
-            new_list = []
-            for each_element in each_list:
-                new_list.append(float(each_element.strip(',')))
-            result_list.append(asarray(new_list))
-
-        return result_list
-
-    @staticmethod
-    def download_voice_array_list(user_id: int):
-        query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
-                            WHERE user_id = {user_id}
-                            ORDER BY create_timestamp DESC;"""
-        query_result = sql_database.execute_select(query)
-        result = query_result[0].strip('[]\",').split()
-
-        result_array = []
-        for each_element in result:
-            result_array.append(float(each_element.strip(',')))
-
-        return asarray(result_array)
-
-    @staticmethod
-    def upload_voice_image(voice_image_id: int, image_filepath):
-        """
-        upload into database a binary representation of Voice Image
-        :param voice_image_id: int
-        :param image_filepath:
-        :return:
-        """
-        query = "INSERT INTO [dbo].[Voice_Images] (id, voice_array) VALUES (?, ?)"
-        values = (voice_image_id, pyodbc.Binary(image_filepath))
-
-        try:
-            sql_database.execute_update_or_insert_with_values(query, values)
-            print(f'Added voice image, ID: {voice_image_id}')
-            print(f'{len(pyodbc.Binary(image_filepath))}-byte file written.')
-            return 1
-        except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
-                                          "data types?")
-
-    @staticmethod
-    def download_voice_image(voice_id: int):
-        """
-        retrieve binary data and return its byte representation
-        :param voice_id: int
-        :return: bytes
-        """
-        try:
-            query = f"SELECT voice_array FROM [dbo].[Voice_Images] WHERE id = {voice_id}"
-            retrieved_bytes = sql_database.execute_select(query)
-            print(f'{len(retrieved_bytes)} bytes retrieved and written to memory.')
-            return retrieved_bytes[0]
-        except IndexError:
-            raise IndexError('Error! Specified image does not exist in database!')
-        except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError('Wrong input data type!')
 
 
 sql_database = SQLController()

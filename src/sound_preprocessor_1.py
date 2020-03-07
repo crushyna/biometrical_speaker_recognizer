@@ -97,13 +97,13 @@ class SoundPreprocessor:
         :return: bool, image_filepath
         """
         from io import BytesIO
-        imgBuffer = BytesIO()
+        img_buffer = BytesIO()
 
         v_arrays_list_avg = list_of_arrays[0]
         for each_array in list_of_arrays:
             v_arrays_list_avg = v_arrays_list_avg + each_array
 
-        print(len(list_of_arrays))
+        # print(len(list_of_arrays))
         v_arrays_list_avg = np.divide(v_arrays_list_avg, len(list_of_arrays))
         v_arrays_list_avg = np.real(v_arrays_list_avg)
         v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
@@ -111,16 +111,15 @@ class SoundPreprocessor:
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')
         plt.plot(v_arrays_list_avg)
+
         # plt.savefig(f'src\\sound_images\\{user_login}.png', facecolor='white', transparent=False, bbox_inches='tight',
         #            pad_inches=0, dpi=300)
-        plt.savefig(imgBuffer, format='png', facecolor='white', transparent=False, bbox_inches='tight',
+
+        plt.savefig(img_buffer, format='png', facecolor='white', transparent=False, bbox_inches='tight',
                     pad_inches=0, dpi=300)
         plt.close()
 
-        # image_filepath = f'src\\sound_images\\{user_login}.png'
-        image_filepath = imgBuffer
-        print(f"image_filepath: {image_filepath}")
-        print(f"image_filepath.getvalue(): {image_filepath.getvalue()}")
+        print(f"image_filepath: {img_buffer}")
+        print(f"image_filepath.getvalue(): {img_buffer.getvalue()}")
 
-        # return exists(image_filepath), image_filepath
-        return isinstance(image_filepath.getvalue(), str), image_filepath
+        return isinstance(img_buffer.getvalue(), str), img_buffer

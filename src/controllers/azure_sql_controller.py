@@ -2,6 +2,7 @@ import pyodbc
 from pickle import dumps, loads
 from numpy import asarray, ndarray
 
+
 # TODO: this class needs unit tests!
 class SQLController:
 
@@ -161,8 +162,12 @@ class SQLController:
         try:
             query = f"SELECT voice_array FROM [dbo].[Voice_Images] WHERE id = {voice_id}"
             retrieved_bytes = sql_database.execute_select(query)
-            print(f'{len(retrieved_bytes)} bytes retrieved and written to memory.')
-            return retrieved_bytes[0]
+
+            print(f'{len(retrieved_bytes[0])} bytes retrieved from database, ID = {voice_id}.')
+            print(f'Retrieved data: {loads(retrieved_bytes[0])}')
+
+            return loads(retrieved_bytes[0])
+
         except IndexError:
             raise IndexError('Error! Specified image does not exist in database!')
         except pyodbc.ProgrammingError:

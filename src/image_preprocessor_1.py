@@ -8,7 +8,7 @@ import imagehash
 class ImagePreprocessor:
 
     def __init__(self, input_image, stored_image):
-        self.input_image = f'{input_image}.png'
+        self.input_image = input_image
         self.stored_image = stored_image
 
     def get_input_image(self):
@@ -18,6 +18,11 @@ class ImagePreprocessor:
         pass
 
     def compare_dhash(self):
+        print(f'Input image: {self.input_image}')
+        print(type(self.input_image))
+        print(f'Stored image: {self.stored_image}')
+        print(type(self.stored_image))
+
         hash1 = imagehash.dhash(Image.open(self.input_image), hash_size=64)
         hash2 = imagehash.dhash(Image.open(self.stored_image), hash_size=64)
 

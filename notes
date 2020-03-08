@@ -151,3 +151,5 @@ SELECT TOP (1000) [id]
   FROM [dbo].[Voice_Arrays_List];
 
 DELETE FROM [dbo].[Voice_Arrays_List];
+
+result1, result2 = main('crushyna', 'src/test_sounds/owsiak_1b.wav')

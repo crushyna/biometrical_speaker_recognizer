@@ -12,27 +12,30 @@ def main(user_login: str, sound_sample: object):
 
     user_id, voice_image_id = sql_database.get_user_id_and_voice_image_id(user_login)
     voice_image_bytes = sql_database.download_voice_image(voice_image_id)
-
-    print(type(voice_image_bytes))
+    _, img_buffer_2 = SoundPreprocessor.generate_voice_image_from_bytes(voice_image_bytes)
 
     input_sound = SoundPreprocessor(user_login, sound_sample)
     input_sound.convert_stereo_to_mono()
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
+
     # TODO: save image to memory buffer, if OK then upload to Voice Array List
-    input_sound.save_audio_image()
+    _, img_buffer_1 = input_sound.save_audio_image()
 
-    input_image = ImagePreprocessor(f'src/sound_images/{user_login}',
-                                    sql_database.__old__download_voice_array_list(voice_image_id))
+    image_preprocessor = ImagePreprocessor(img_buffer_1, img_buffer_2)
 
-    result = input_image.compare_dhash()
-    print(result)
-    return result
+    result1 = image_preprocessor.compare_dhash()
+    result2 = image_preprocessor.compare_whash()
+
+    print(result1)
+    print(result2)
+
+    return result1, result2
 
 
 def upload_voice_array(user_id: int, sound_sample_location: str):
     """
-    create an ndarray out of .wav file sample
+    create an ndarray out of .wav file sample and upload it to database
     :param user_id: int
     :param sound_sample_location: str
     :return: bool

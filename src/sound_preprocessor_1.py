@@ -3,7 +3,6 @@ from scipy.fft import rfft
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import minmax_scale, maxabs_scale
-from os.path import exists
 
 # for test purposes only
 test_filename_1 = 'src/test_sounds/owsiak_1a.wav'
@@ -51,7 +50,8 @@ class SoundPreprocessor:
         plt.axis('off')
         plt.plot(self.scipy_audio)
 
-    def save_audio_image(self):
+    def __old__save_audio_image(self):
+        # TODO: move this to image_preprocessor_1
         # save current plot:
         from io import BytesIO
         img_buffer_1 = BytesIO()
@@ -111,6 +111,8 @@ class SoundPreprocessor:
         v_arrays_list_avg = np.real(v_arrays_list_avg)
         v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
 
+        # TODO: move this to image_preprocessor_1
+
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')
         plt.plot(v_arrays_list_avg)
@@ -134,6 +136,8 @@ class SoundPreprocessor:
         print("\nCreating voice image from bytes")
         from io import BytesIO
         img_buffer_voice_image = BytesIO()
+
+        # TODO: move this to image_preprocessor_1
 
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')

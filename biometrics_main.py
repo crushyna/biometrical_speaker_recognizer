@@ -12,7 +12,7 @@ def main(user_login: str, sound_sample: object):
 
     user_id, voice_image_id = sql_database.get_user_id_and_voice_image_id(user_login)
     voice_image_bytes = sql_database.download_voice_image(voice_image_id)
-    _, img_buffer_2 = SoundPreprocessor.generate_voice_image_from_bytes(voice_image_bytes)
+    _, stored_image_buffer = ImagePreprocessor.generate_audio_image(voice_image_bytes, 'stored_image')
 
     input_sound = SoundPreprocessor(user_login, sound_sample)
     input_sound.convert_stereo_to_mono()
@@ -20,9 +20,9 @@ def main(user_login: str, sound_sample: object):
     input_sound.minmax_array_numpy()
 
     # TODO: save image to memory buffer, if OK then upload to Voice Array List
-    _, img_buffer_1 = input_sound.save_audio_image()
+    _, input_image_buffer = ImagePreprocessor.generate_audio_image(input_sound.scipy_audio)
 
-    image_preprocessor = ImagePreprocessor(img_buffer_1, img_buffer_2)
+    image_preprocessor = ImagePreprocessor(input_image_buffer, stored_image_buffer)
 
     result1 = image_preprocessor.compare_dhash()
     result2 = image_preprocessor.compare_whash()

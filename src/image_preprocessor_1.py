@@ -2,7 +2,6 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import imagehash
 
-# so its WHASH or DHASH - only those make sens
 # TODO: decide whether to go with WHASH or DHASH
 from numpy.core.multiarray import ndarray
 
@@ -22,7 +21,6 @@ class ImagePreprocessor:
     def compare_dhash(self):
         print(f'Input image: {self.input_image}')
         print(type(self.input_image))
-        print(f'Length: {len(self.input_image.getvalue())}')
         print(f'Stored image: {self.stored_image}')
         print(type(self.stored_image))
         print(f'Length: {len(self.stored_image.getvalue())}')
@@ -46,8 +44,6 @@ class ImagePreprocessor:
         :param array: ndarray
         :return: book, bytesIO
         """
-        # save current plot:
-
         from io import BytesIO
         buffer_name = BytesIO()
 

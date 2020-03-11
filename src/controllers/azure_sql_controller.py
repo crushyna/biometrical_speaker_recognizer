@@ -133,20 +133,20 @@ class SQLController:
         return result_arrays
 
     @staticmethod
-    def upload_voice_image(voice_image_id: int, image_filepath):
+    def upload_voice_image(voice_image_id: int, image_array: ndarray):
         """
         upload into database a binary representation of Voice Image
+        :param image_array:
         :param voice_image_id: int
-        :param image_filepath:
         :return:
         """
         query = "INSERT INTO [dbo].[Voice_Images] (id, voice_array) VALUES (?, ?)"
-        values = (voice_image_id, dumps(image_filepath))
+        values = (voice_image_id, dumps(image_array))
 
         try:
             sql_database.execute_update_or_insert_with_values(query, values)
             print(f'Added voice image, ID: {voice_image_id}')
-            print(f'{len(bytearray(image_filepath))}-byte file written.')
+            print(f'{len(bytearray(image_array))}-byte file written.')
             return 1
         except pyodbc.ProgrammingError:
             raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "

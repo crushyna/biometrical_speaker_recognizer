@@ -91,6 +91,12 @@ upload_voice_array(4, 'src/test_sounds/Maciej_1b.wav')
 upload_voice_array(5, 'src/test_sounds/Wojtek_1a.wav')
 upload_voice_array(5, 'src/test_sounds/Wojtek_1b.wav')
 
+generate_binary_voice_image(1)
+generate_binary_voice_image(2)
+generate_binary_voice_image(3)
+generate_binary_voice_image(4)
+generate_binary_voice_image(5)
+
 /****** Object:  Table [dbo].[Voice_Arrays_List]    Script Date: 07.03.2020 09:14:35 ******/
 SET ANSI_NULLS ON
 GO
@@ -152,4 +158,4 @@ SELECT TOP (1000) [id]
 
 DELETE FROM [dbo].[Voice_Arrays_List];
 
-result1, result2 = main('crushyna', 'src/test_sounds/owsiak_1b.wav')
+result1, result2 = verify_voice('crushyna', 'src/test_sounds/owsiak_1b.wav')

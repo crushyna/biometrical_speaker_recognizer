@@ -50,8 +50,45 @@ class SoundPreprocessor:
         plt.axis('off')
         plt.plot(self.scipy_audio)
 
+    def fourier_transform_audio(self):
+        # TODO: volume normalisation?
+        self.scipy_audio = rfft(self.scipy_audio)
+        self.scipy_audio = self.scipy_audio[250:22050]
+        return self.scipy_audio
+
+    def minmax_array_numpy(self):
+        self.scipy_audio = np.real(self.scipy_audio)
+        self.scipy_audio = minmax_scale(self.scipy_audio, feature_range=(0, 10))
+        return self.scipy_audio
+
+    def maxabs_array_numpy(self):
+        # not used!
+        self.scipy_audio = maxabs_scale(self.scipy_audio)
+        return self.scipy_audio
+
+    @staticmethod
+    def create_voice_image_mean_array(user_login: str, list_of_arrays: list):
+        """
+        pass any number of ndarrays (as list), and return binary image of their average value
+        :param user_login: str
+        :param list_of_arrays: list
+        :return: bool, image_filepath
+        """
+        print("\nCreating voice image from mean values of arrays")
+        '''
+        v_arrays_list_avg = list_of_arrays[0]
+        for each_array in list_of_arrays:
+            v_arrays_list_avg = v_arrays_list_avg + each_array
+        '''
+        v_arrays_list_avg = sum(list_of_arrays)
+
+        v_arrays_list_avg = np.divide(v_arrays_list_avg, len(list_of_arrays))
+        v_arrays_list_avg = np.real(v_arrays_list_avg)
+        v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
+
+        return v_arrays_list_avg
+
     def __old__save_audio_image(self):
-        # TODO: move this to image_preprocessor_1
         # save current plot:
         from io import BytesIO
         img_buffer_1 = BytesIO()
@@ -67,67 +104,8 @@ class SoundPreprocessor:
 
         return isinstance(img_buffer_1.getvalue(), str), img_buffer_1
 
-    def fourier_transform_audio(self):
-        # TODO: volume normalisation?
-        self.scipy_audio = rfft(self.scipy_audio)
-        self.scipy_audio = self.scipy_audio[250:22050]
-        return self.scipy_audio
-
-    def minmax_array_numpy(self):
-        self.scipy_audio = np.real(self.scipy_audio)
-        self.scipy_audio = minmax_scale(self.scipy_audio, feature_range=(0, 10))
-        return self.scipy_audio
-
-    def maxabs_array_numpy(self):
-        self.scipy_audio = maxabs_scale(self.scipy_audio)
-        return self.scipy_audio
-
     @staticmethod
-    def __old__create_voice_image_array(*args):
-        recordings_list = []
-        for each_voice in args:
-            SoundPreprocessor.convert_stereo_to_mono(each_voice)
-            SoundPreprocessor.fourier_transform_audio(each_voice)
-            SoundPreprocessor.minmax_array_numpy(each_voice)
-            recordings_list.append(each_voice)
-
-    @staticmethod
-    def create_voice_image_mean_array(user_login: str, list_of_arrays: list):
-        """
-        pass any number of ndarrays (as list), and return image of their average value
-        :param user_login: str
-        :param list_of_arrays: list
-        :return: bool, image_filepath
-        """
-        print("\nCreating voice image from mean values of arrays")
-        from io import BytesIO
-        img_buffer = BytesIO()
-
-        v_arrays_list_avg = list_of_arrays[0]
-        for each_array in list_of_arrays:
-            v_arrays_list_avg = v_arrays_list_avg + each_array
-
-        v_arrays_list_avg = np.divide(v_arrays_list_avg, len(list_of_arrays))
-        v_arrays_list_avg = np.real(v_arrays_list_avg)
-        v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
-
-        # TODO: move this to image_preprocessor_1
-
-        plt.figure(figsize=(5, 2), frameon=False)
-        plt.axis('off')
-        plt.plot(v_arrays_list_avg)
-
-        plt.savefig(img_buffer, format='png', facecolor='white', transparent=False, bbox_inches='tight',
-                    pad_inches=0, dpi=300)
-        plt.close()
-
-        print(f"img_buffer: {img_buffer}")
-        print(f"img_buffer.getvalue(): {img_buffer.getvalue()}")
-
-        return isinstance(img_buffer.getvalue(), str), img_buffer
-
-    @staticmethod
-    def generate_voice_image_from_bytes(input_data: bytes):
+    def __old__generate_voice_image_from_bytes(input_data: bytes):
         """
         generate voice image from bytes input data
         :param input_data: bytes
@@ -136,8 +114,6 @@ class SoundPreprocessor:
         print("\nCreating voice image from bytes")
         from io import BytesIO
         img_buffer_voice_image = BytesIO()
-
-        # TODO: move this to image_preprocessor_1
 
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')
@@ -151,3 +127,12 @@ class SoundPreprocessor:
         print(f"img_buffer.getvalue(): {img_buffer_voice_image.getvalue()}")
 
         return isinstance(img_buffer_voice_image.getvalue(), str), img_buffer_voice_image
+
+    @staticmethod
+    def __old__create_voice_image_array(*args):
+        recordings_list = []
+        for each_voice in args:
+            SoundPreprocessor.convert_stereo_to_mono(each_voice)
+            SoundPreprocessor.fourier_transform_audio(each_voice)
+            SoundPreprocessor.minmax_array_numpy(each_voice)
+            recordings_list.append(each_voice)

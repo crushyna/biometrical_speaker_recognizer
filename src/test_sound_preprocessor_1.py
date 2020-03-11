@@ -21,12 +21,16 @@ class SoundPreprocessorTest(unittest.TestCase):
     def test_convert_stereo_to_mono(self):
         self.assertIsInstance(self.test_sound_1.convert_stereo_to_mono(), ndarray)
 
-    def test_save_audio_image(self):
-        # TODO: fails every time, fix it somehow. Maybe split plot and save?
-        self.assertTrue(self.test_sound_1.save_audio_image())
-
     def test_fourier_transform_audio(self):
         self.assertEqual(self.test_sound_1.scipy_audio.shape.__len__(), 1)
+
+    def test_minmax_array_numpy(self):
+        self.assertIsInstance(self.test_sound_1.minmax_array_numpy(), ndarray)
+        self.assertEqual(self.test_sound_1.scipy_audio.min(), 0.0)
+        self.assertEqual(self.test_sound_1.scipy_audio.max(), 10.0)
+
+    def test_maxabs_array_numpy(self):
+        self.assertIsInstance(self.test_sound_1.maxabs_array_numpy(), ndarray)
 
 
 if __name__ == '__main__':

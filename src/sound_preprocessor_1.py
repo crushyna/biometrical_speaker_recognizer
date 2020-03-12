@@ -1,7 +1,7 @@
-from scipy.io import wavfile as wav
-from scipy.fft import rfft
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.fft import rfft
+from scipy.io import wavfile as wav
 from sklearn.preprocessing import minmax_scale, maxabs_scale
 
 # for test purposes only

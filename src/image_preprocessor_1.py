@@ -1,7 +1,6 @@
-from PIL import Image
-import matplotlib.pyplot as plt
 import imagehash
-
+import matplotlib.pyplot as plt
+from PIL import Image
 # TODO: decide whether to go with WHASH or DHASH
 from numpy.core.multiarray import ndarray
 

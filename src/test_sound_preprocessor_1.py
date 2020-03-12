@@ -1,6 +1,8 @@
 import unittest
-from src.sound_preprocessor_1 import SoundPreprocessor
+
 from numpy import ndarray
+
+from src.sound_preprocessor_1 import SoundPreprocessor
 
 
 class SoundPreprocessorTest(unittest.TestCase):

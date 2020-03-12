@@ -1,6 +1,6 @@
-from src.sound_preprocessor_1 import SoundPreprocessor
-from src.image_preprocessor_1 import ImagePreprocessor
 from src.controllers.azure_sql_controller import SQLController
+from src.image_preprocessor_1 import ImagePreprocessor
+from src.sound_preprocessor_1 import SoundPreprocessor
 
 
 def verify_voice(user_login: str, sound_sample: object):

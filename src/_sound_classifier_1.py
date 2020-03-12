@@ -1,5 +1,6 @@
-import pandas as pd
 import os
+
+import pandas as pd
 
 from src.helpers.wav_file_helper import WavFileHelper
 

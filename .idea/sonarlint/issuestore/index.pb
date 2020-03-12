@@ -10,8 +10,6 @@ O
 .idea/dictionaries/crushyna.xml,b\7\b7ee41be8e011a321b0f395ad568c8d14a2fa978
 ^
 ..idea/inspectionProfiles/profiles_settings.xml,1\e\1e9075f5bf079c01ef2c910709e91a497d262080
-S
-#.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
 G
 test_biometrics_main.py,8\9\890da06f5ada7d5e37be0b1000547db3808377df
 N
@@ -30,3 +28,5 @@ J
 notes,3\a\3add7b9612102f2a7dbe4ed4fe886e07e847c24d
 W
 'src/controllers/azure_sql_controller.py,c\9\c9c214c42853d2dfce281ffd9de7f007f1dc5f47
+P
+ src/test_image_preprocessor_1.py,6\a\6a3b17a2ba8738f48eedb4a8c5e71c7738e932a0

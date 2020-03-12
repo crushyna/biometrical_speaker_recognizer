@@ -1,5 +1,6 @@
-import pyodbc
 from pickle import dumps, loads
+
+import pyodbc
 from numpy import asarray, ndarray
 
 
@@ -62,7 +63,7 @@ class SQLController:
         result = sql_database.execute_select(query)
         print(f"Result: {result}")
 
-        return result
+        return result[0]
 
     @staticmethod
     def get_user_login_and_voice_image_id(user_id: int):

@@ -28,5 +28,17 @@ J
 notes,3\a\3add7b9612102f2a7dbe4ed4fe886e07e847c24d
 W
 'src/controllers/azure_sql_controller.py,c\9\c9c214c42853d2dfce281ffd9de7f007f1dc5f47
-P
- src/test_image_preprocessor_1.py,6\a\6a3b17a2ba8738f48eedb4a8c5e71c7738e932a0
+\
+,src/controllers/test_azure_sql_controller.py,6\c\6cd68cbefbccb93be722d0bced547a15b1800763
+C
+local.settings.json,0\8\08aca8528fab4f9538b873db5e1725ed3e2842b1
+9
+	host.json,b\f\bf656b3deb884b177acbf4f7082a3fdae01e7038
+@
+requirements.txt,1\9\19359a61ae2446b51b549167b014da2fcf265768
+>
+test_func_1.py,e\4\e4806061d6ae13630817c3cda7530243fa329f9e
+;
+__init__.py,6\0\60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e
+=
+function.json,b\6\b6a8583b9e1ef5837ac61b933a17278401fbd731

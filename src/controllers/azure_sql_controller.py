@@ -1,5 +1,4 @@
 from pickle import dumps, loads
-
 import pyodbc
 from numpy import asarray, ndarray
 

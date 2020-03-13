@@ -3,6 +3,13 @@ from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 
 
+def test_function():
+    string = "biometrics main test 1!"
+    print(string)
+
+    return string
+
+
 def verify_voice(user_login: str, sound_sample: object):
     """
     entry point for module, that is simple voice hash comparison

@@ -5,7 +5,7 @@ from src.controllers.azure_sql_controller import SQLController
 
 class SQLControllerTest(unittest.TestCase):
 
-    def test_something(self):
+    def test_connection(self):
         self.assertIsInstance(SQLController.test_connection_query(), int)
         self.assertEqual(SQLController.test_connection_query(), 1)
 

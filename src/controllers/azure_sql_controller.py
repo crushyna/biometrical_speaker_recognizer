@@ -111,6 +111,9 @@ class SQLController:
             sql_database.execute_update_or_insert_with_values(query, values)
             print(f'Added voice array for user ID: {user_id}')
             return 1
+        except IndexError:
+            raise IndexError('Error! User does not exist in database!')
+
         except pyodbc.ProgrammingError:
             raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
                                           "data types?")
@@ -148,9 +151,12 @@ class SQLController:
             print(f'Added voice image, ID: {voice_image_id}')
             print(f'{len(bytearray(image_array))}-byte file written.')
             return 1
+
         except pyodbc.ProgrammingError:
             raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
                                           "data types?")
+        except pyodbc.IntegrityError:
+            raise pyodbc.IntegrityError("Voice image for this user already exists!")
 
     @staticmethod
     def download_voice_image(voice_id: int):

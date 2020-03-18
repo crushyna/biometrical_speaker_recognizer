@@ -127,3 +127,21 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+!/src/test_sounds/Krzysztof_1a.wav
+!/src/test_sounds/Maciej_1a.wav
+!/src/test_sounds/Krzysztof_1b.wav
+!/src/test_sounds/Inez_1a.wav
+!/src/test_sounds/Maciej_1b.wav
+!/src/test_sounds/Inez_1b.wav
+!/src/test_sounds/owsiak_2a.wav
+!/src/test_sounds/Krzysztof_1a.wav
+!/src/test_sounds/Maciej_1a.wav
+!/src/test_sounds/Krzysztof_1b.wav
+!/src/test_sounds/owsiak_2b.wav
+!/src/test_sounds/owsiak_1a.wav
+!/src/test_sounds/Inez_1a.wav
+!/src/test_sounds/Maciej_1b.wav
+!/src/test_sounds/owsiak_1b.wav
+!/src/test_sounds/Wojtek_1a.wav
+!/src/test_sounds/Inez_1b.wav
+!/src/test_sounds/Wojtek_1b.wav

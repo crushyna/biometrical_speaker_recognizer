@@ -1,21 +1,37 @@
 from ..src.controllers.azure_sql_controller import SQLController
 from ..src.sound_preprocessor_1 import SoundPreprocessor
+from ..src.controllers.azure_blob_controller import AzureBlobController
 
 
-def upload_voice_array(user_id: int, sound_sample_location: str):
+def upload_voice_array(user_id: int, sound_sample_filename: str):
     """
     create an ndarray out of .wav file sample and upload it to database
+    :param sound_sample_filename: str
     :param user_id: int
-    :param sound_sample_location: str
     :return: bool
     """
-    sql_database = SQLController()
+    connection_string = """DefaultEndpointsProtocol=https;AccountName=storageaccountvbioma487;AccountKey=kQjOecdi/KtMStu4iQkxmsAbe4HupAiByUqoumRVmCn+IfcYqNuEhPJGdbpBzta5rPqk8A0JxGrMxzwUJKAJDw==;EndpointSuffix=core.windows.net"""
+    blob_container = "default"
+    blob_folder = "voices/"
+    local_download_folder = "src/temp_voices/"
+
+    # make connections
+    upload_array_sql_database = SQLController()
+    upload_array_blob_service = AzureBlobController(connection_string, blob_container)
+
     # first: check, if user even exists
-    _, __ = sql_database.get_user_login_and_voice_image_id(user_id)
-    input_sound = SoundPreprocessor(user_id, sound_sample_location)
+    login, __ = upload_array_sql_database.get_user_login_and_voice_image_id(user_id)
+    voices_list = upload_array_blob_service.ls_files(blob_folder)
+    if sound_sample_filename not in voices_list:
+        raise FileNotFoundError('File not found in blob container!')
+
+    upload_array_blob_service.download(blob_folder + sound_sample_filename, local_download_folder)
+    downloaded_file = f"{local_download_folder}{sound_sample_filename}"
+
+    input_sound = SoundPreprocessor(login, downloaded_file)
     input_sound.convert_stereo_to_mono()
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
-    result = sql_database.upload_voice_array(user_id, input_sound.scipy_audio)
+    result = upload_array_sql_database.upload_voice_array(user_id, input_sound.scipy_audio)
 
     return result

@@ -1,5 +1,10 @@
 IMPORTANT:
 1. Upon release, test user, arrays and image must be uploaded!
+2. After voice verification, temp voices must be deleted!
+3. Fix error handling!
+
+client.download('voices/clint_eastwood_1.wav', 'src/temp_voices/')
+Downloading voices/clint_eastwood_1.wav to src/temp_voices/clint_eastwood_1.wav
 
 
 /****** Object:  Table [dbo].[Voice_Images]    Script Date: 18.03.2020 12:00:42 ******/

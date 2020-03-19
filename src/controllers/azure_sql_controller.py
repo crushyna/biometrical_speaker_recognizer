@@ -2,6 +2,11 @@ from pickle import dumps, loads
 import pyodbc
 from numpy import asarray, ndarray
 
+# errors:
+err_no_user = "Error! User does not exist in database!"
+err_wrong_input = "Wrong input data type!"
+err_wrong_input_insert = "Something went wrong while executing INSERT statement. Maybe inappropriate data types?"
+
 
 # TODO: this class needs unit tests!
 class SQLController:
@@ -11,9 +16,7 @@ class SQLController:
         self.database = 'v_biometrics_database'
         self.username = 'crushyna'
         self.password = 'AllsoP1234administrator'
-        # self.driver = '{FreeTDS}'
         self.driver = '{ODBC Driver 17 for SQL Server}'
-        # self.driver_version = '7.4'
         '''self.cnxn = pyodbc.connect( 'DRIVER={0};SERVER={1};PORT=1433;DATABASE={2};UID={3};PWD={4};TDS_Version={
         5};'Trusted_Connection=YES';'.format(self.driver, self.server,self.database, self.username,self.password, 
         self.driver_version)) '''
@@ -59,7 +62,7 @@ class SQLController:
     @staticmethod
     def test_connection_query():
         query = f"""SELECT TOP 1 id FROM [dbo].[Users]"""
-        result = sql_database.execute_select(query)
+        result = default_sql_database.execute_select(query)
         print(f"Result: {result}")
 
         return result[0]
@@ -75,13 +78,14 @@ class SQLController:
                             FROM [dbo].[Users]
                             WHERE [id] = {user_id};"""
         try:
-            result = sql_database.execute_query_multiple_rows(query)
+            result = default_sql_database.execute_query_multiple_rows(query)
             if type(result[0]) is str and type(result[1]) is int:
                 return result[0], result[1]
+
         except IndexError:
-            raise IndexError('Error! User does not exist in database!')
+            raise IndexError(err_no_user)
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError('Wrong input data type!')
+            raise ValueError(err_wrong_input)
 
     @staticmethod
     def get_user_id_and_voice_image_id(user_login: str):
@@ -92,15 +96,15 @@ class SQLController:
         """
         query = f"""SELECT id, voice_image_id FROM [dbo].[Users]
                             WHERE login = '{user_login}';"""
-        result = sql_database.execute_query_multiple_rows(query)
+        result = default_sql_database.execute_query_multiple_rows(query)
 
         try:
             if type(result[0]) and type(result[1]) is int:
                 return result[0], result[1]
         except IndexError:
-            raise IndexError('Error! User does not exist in database!')
+            raise IndexError(err_no_user)
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError('Wrong input data type!')
+            raise ValueError(err_wrong_input)
 
     @staticmethod
     def upload_voice_array(user_id: int, voice_ndarray: ndarray):
@@ -108,15 +112,14 @@ class SQLController:
                     VALUES (?, ?);"""
         values = (user_id, dumps(voice_ndarray))
         try:
-            sql_database.execute_update_or_insert_with_values(query, values)
+            default_sql_database.execute_update_or_insert_with_values(query, values)
             print(f'Added voice array for user ID: {user_id}')
             return 1
-        except IndexError:
-            raise IndexError('Error! User does not exist in database!')
 
+        except IndexError:
+            raise IndexError(err_no_user)
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
-                                          "data types?")
+            raise ValueError(err_wrong_input_insert)
 
     @staticmethod
     def download_user_voice_arrays(user_id: int):
@@ -127,7 +130,7 @@ class SQLController:
         """
         query = f"""SELECT sample_array FROM [dbo].[Voice_Arrays_List]
                                     WHERE user_id = {user_id};"""
-        query_result = sql_database.execute_select(query)
+        query_result = default_sql_database.execute_select(query)
 
         result_arrays = []
         for each_value in query_result:
@@ -147,16 +150,15 @@ class SQLController:
         values = (voice_image_id, dumps(image_array))
 
         try:
-            sql_database.execute_update_or_insert_with_values(query, values)
+            default_sql_database.execute_update_or_insert_with_values(query, values)
             print(f'Added voice image, ID: {voice_image_id}')
             print(f'{len(bytearray(image_array))}-byte file written.')
             return 1
 
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
-                                          "data types?")
+            raise ValueError(err_wrong_input_insert)
         except pyodbc.IntegrityError:
-            raise pyodbc.IntegrityError("Voice image for this user already exists!")
+            raise LookupError("Voice image for this user already exists!")
 
     @staticmethod
     def download_voice_image(voice_id: int):
@@ -167,7 +169,7 @@ class SQLController:
         """
         try:
             query = f"SELECT voice_array FROM [dbo].[Voice_Images] WHERE id = {voice_id}"
-            retrieved_bytes = sql_database.execute_select(query)
+            retrieved_bytes = default_sql_database.execute_select(query)
 
             print(f'{len(retrieved_bytes[0])} bytes retrieved from database, ID = {voice_id}.')
             print(f'Retrieved data: {loads(retrieved_bytes[0])}')
@@ -175,9 +177,9 @@ class SQLController:
             return loads(retrieved_bytes[0])
 
         except IndexError:
-            raise IndexError('Error! Specified image does not exist in database!')
+            raise IndexError("Error! Specified image does not exist in database!")
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError('Wrong input data type!')
+            raise ValueError(err_wrong_input)
 
     @staticmethod
     def __old__check_if_voice_image_exists(users_voice_image_id: int):
@@ -189,7 +191,7 @@ class SQLController:
         query = f"""SELECT voice_array FROM [dbo].[Voice_Images]
                             WHERE id = {users_voice_image_id};"""
 
-        voice_image_array = sql_database.execute_select(query)
+        voice_image_array = default_sql_database.execute_select(query)
         return voice_image_array
 
     @staticmethod
@@ -197,7 +199,7 @@ class SQLController:
         query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
                             WHERE user_id = {user_id}
                             ORDER BY create_timestamp DESC;"""
-        query_result = sql_database.execute_select(query)
+        query_result = default_sql_database.execute_select(query)
         result = query_result[0].strip('[]\",').split()
 
         result_array = []
@@ -216,7 +218,7 @@ class SQLController:
         query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
                         WHERE user_id = {user_id}
                         ORDER BY create_timestamp DESC;"""
-        query_result = sql_database.execute_select(query)
+        query_result = default_sql_database.execute_select(query)
         result = query_result[0].strip('[]\",').split()
 
         result_array = []
@@ -226,4 +228,4 @@ class SQLController:
         return asarray(result_array)
 
 
-sql_database = SQLController()
+default_sql_database = SQLController()

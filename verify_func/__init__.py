@@ -5,24 +5,21 @@ from . import verify_main
 
 def main(req: func.HttpRequest):
     logging.info('Python HTTP trigger function processed a request.')
+    login = req.route_params.get('login')
+    sample_name = req.route_params.get('sample_name')
+    message = f"Login: {login}, Sample name: {sample_name}"
+    logging.info(message)
 
-    login = req.params.get('login')
-    if not login:
+    if type(login) == str:
+        print(f"Starting function for {message}")
         try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            login = req_body.get('name')
-
-    if login:
-        print(f"Starting function for login: {login}!")
-        try:
-            # test voice sample only for now!
-            result1, result2 = verify_main.verify_voice(login, 'src/test_sounds/clint_eastwood_1.wav')
-            return func.HttpResponse(f'Result1: {result1}, result2: {result2}', status_code=200)
-        except IndexError:
-            return func.HttpResponse(f'User {login} not found!', status_code=204)
-
+            result1 = verify_main.verify_voice(login, sample_name)
+            if result1:
+                return func.HttpResponse(status_code=200)
+            else:
+                return func.HttpResponse(status_code=403)
+        except Exception as ex:
+            logging.info(ex)
+            return func.HttpResponse(str(ex), status_code=400)
     else:
         return func.HttpResponse("Please pass a user login on the query string or in the request body", status_code=400)

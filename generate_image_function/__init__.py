@@ -21,12 +21,8 @@ def main(req: func.HttpRequest):
         try:
             result1 = generate_image_main.generate_binary_voice_image(int(user_id))
             return func.HttpResponse(f'Result1: {result1}', status_code=200)
-        except IndexError:
-            return func.HttpResponse('Error! User does not exist in database!', status_code=404)
-        except pyodbc.IntegrityError:
-            raise func.HttpResponse("Voice image for this user already exists!", status_code=404)
-        except pyodbc.ProgrammingError:
-            return func.HttpResponse(f'Inproper input data!', status_code=400)
+        except Exception as ex:
+            return func.HttpResponse(str(ex), status_code=400)
 
     else:
         return func.HttpResponse(

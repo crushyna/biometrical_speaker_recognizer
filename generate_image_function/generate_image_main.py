@@ -9,13 +9,14 @@ def generate_binary_voice_image(user_id: int):
     :param user_id: int
     :return: bool
     """
-    sql_database = SQLController()
+    generate_image_sql_database = SQLController()
+
     # first: check, if user even exists
-    _, __ = sql_database.get_user_login_and_voice_image_id(user_id)
-    sql_database = SQLController()
-    user_login, voice_image_id = sql_database.get_user_login_and_voice_image_id(user_id)
-    arrays_list = sql_database.download_user_voice_arrays(user_id)
+    _, __ = generate_image_sql_database.get_user_login_and_voice_image_id(user_id)
+
+    user_login, voice_image_id = generate_image_sql_database.get_user_login_and_voice_image_id(user_id)
+    arrays_list = generate_image_sql_database.download_user_voice_arrays(user_id)
     image_ndarray = SoundPreprocessor.create_voice_image_mean_array(user_login, arrays_list)
-    result = sql_database.upload_voice_image(voice_image_id, image_ndarray)
+    result = generate_image_sql_database.upload_voice_image(voice_image_id, image_ndarray)
 
     return result

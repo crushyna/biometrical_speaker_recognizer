@@ -24,7 +24,7 @@ class SoundPreprocessor:
     sound preprocessor for Scipy audio analysis and processing
     """
 
-    def __init__(self, object_name, file_name):
+    def __init__(self, object_name: str, file_name: str):
         self.name = object_name
         self.filename = file_name
         self.scipy_sample_rate, self.scipy_audio = wav.read(file_name)
@@ -44,7 +44,7 @@ class SoundPreprocessor:
         self.scipy_audio = self.scipy_audio.sum(axis=1) / 2
         return self.scipy_audio
 
-    def plot_audio(self):
+    def __old__plot_audio(self):
         # current audio plot:
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')
@@ -61,7 +61,7 @@ class SoundPreprocessor:
         self.scipy_audio = minmax_scale(self.scipy_audio, feature_range=(0, 10))
         return self.scipy_audio
 
-    def maxabs_array_numpy(self):
+    def __old__maxabs_array_numpy(self):
         # not used!
         self.scipy_audio = maxabs_scale(self.scipy_audio)
         return self.scipy_audio
@@ -75,13 +75,8 @@ class SoundPreprocessor:
         :return: bool, image_filepath
         """
         print("\nCreating voice image from mean values of arrays")
-        '''
-        v_arrays_list_avg = list_of_arrays[0]
-        for each_array in list_of_arrays:
-            v_arrays_list_avg = v_arrays_list_avg + each_array
-        '''
-        v_arrays_list_avg = sum(list_of_arrays)
 
+        v_arrays_list_avg = sum(list_of_arrays)
         v_arrays_list_avg = np.divide(v_arrays_list_avg, len(list_of_arrays))
         v_arrays_list_avg = np.real(v_arrays_list_avg)
         v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
@@ -98,8 +93,8 @@ class SoundPreprocessor:
         plt.savefig(img_buffer_1, format='png', facecolor='white', transparent=False, bbox_inches='tight',
                     pad_inches=0, dpi=300)
 
-        print(f"img_buffer_1: {img_buffer_1}")
-        print(f"img_buffer_1.getvalue(): {img_buffer_1.getvalue()}")
+        # print(f"img_buffer_1: {img_buffer_1}")
+        # print(f"img_buffer_1.getvalue(): {img_buffer_1.getvalue()}")
         plt.close()
 
         return isinstance(img_buffer_1.getvalue(), str), img_buffer_1
@@ -111,7 +106,7 @@ class SoundPreprocessor:
         :param input_data: bytes
         :return: IO.Bytes
         """
-        print("\nCreating voice image from bytes")
+        # print("\nCreating voice image from bytes")
         from io import BytesIO
         img_buffer_voice_image = BytesIO()
 
@@ -123,8 +118,8 @@ class SoundPreprocessor:
                     pad_inches=0, dpi=300)
         plt.close()
 
-        print(f"img_buffer: {img_buffer_voice_image}")
-        print(f"img_buffer.getvalue(): {img_buffer_voice_image.getvalue()}")
+        # print(f"img_buffer: {img_buffer_voice_image}")
+        # print(f"img_buffer.getvalue(): {img_buffer_voice_image.getvalue()}")
 
         return isinstance(img_buffer_voice_image.getvalue(), str), img_buffer_voice_image
 

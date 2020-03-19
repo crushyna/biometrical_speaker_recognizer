@@ -44,7 +44,7 @@ class SoundPreprocessor:
         self.scipy_audio = self.scipy_audio.sum(axis=1) / 2
         return self.scipy_audio
 
-    def plot_audio(self):
+    def __old__plot_audio(self):
         # current audio plot:
         plt.figure(figsize=(5, 2), frameon=False)
         plt.axis('off')
@@ -61,7 +61,7 @@ class SoundPreprocessor:
         self.scipy_audio = minmax_scale(self.scipy_audio, feature_range=(0, 10))
         return self.scipy_audio
 
-    def maxabs_array_numpy(self):
+    def __old__maxabs_array_numpy(self):
         # not used!
         self.scipy_audio = maxabs_scale(self.scipy_audio)
         return self.scipy_audio

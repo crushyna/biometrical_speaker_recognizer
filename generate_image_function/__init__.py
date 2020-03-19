@@ -23,9 +23,9 @@ def main(req: func.HttpRequest):
             return func.HttpResponse(f'Result1: {result1}', status_code=200)
         except IndexError:
             return func.HttpResponse('Error! User does not exist in database!', status_code=404)
-        except pyodbc.IntegrityError:
+        except LookupError:
             raise func.HttpResponse("Voice image for this user already exists!", status_code=404)
-        except pyodbc.ProgrammingError:
+        except ValueError:
             return func.HttpResponse(f'Inproper input data!', status_code=400)
 
     else:

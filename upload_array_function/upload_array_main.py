@@ -9,13 +9,13 @@ def upload_voice_array(user_id: int, sound_sample_location: str):
     :param sound_sample_location: str
     :return: bool
     """
-    sql_database = SQLController()
+    upload_voice_sql_database = SQLController()
     # first: check, if user even exists
-    _, __ = sql_database.get_user_login_and_voice_image_id(user_id)
+    _, __ = upload_voice_sql_database.get_user_login_and_voice_image_id(user_id)
     input_sound = SoundPreprocessor(user_id, sound_sample_location)
     input_sound.convert_stereo_to_mono()
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
-    result = sql_database.upload_voice_array(user_id, input_sound.scipy_audio)
+    result = upload_voice_sql_database.upload_voice_array(user_id, input_sound.scipy_audio)
 
     return result

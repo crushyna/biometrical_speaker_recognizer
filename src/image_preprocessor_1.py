@@ -57,34 +57,3 @@ class ImagePreprocessor:
         plt.close()
 
         return isinstance(buffer_name.getvalue(), str), buffer_name
-
-    @staticmethod
-    def test_comparison():
-        """
-        for test purposes only!
-        """
-        test1 = ImagePreprocessor('src/sound_images/inez_1a', 'src/sound_images/inez_1b.png')
-        test2 = ImagePreprocessor('src/sound_images/inez_1a', 'src/sound_images/paulina_1a.png')
-        test3 = ImagePreprocessor('src/sound_images/maciej_1a', 'src/sound_images/maciej_1b.png')
-        test4 = ImagePreprocessor('src/sound_images/maciej_1a', 'src/sound_images/wojtek_1a.png')
-        test5 = ImagePreprocessor('src/sound_images/wojtek_1a', 'src/sound_images/wojtek_1b.png')
-        test6 = ImagePreprocessor('src/sound_images/wojtek_1a', 'src/sound_images/radek_1b.png')
-        test7 = ImagePreprocessor('src/sound_images/radek_1a', 'src/sound_images/radek_1b.png')
-        test8 = ImagePreprocessor('src/sound_images/radek_1a', 'src/sound_images/maciej_1b.png')
-
-        print(f'Inez A vs Inez B DHASH: {test1.compare_dhash()}')
-        print(f'Inez A vs Inez B WHASH: {test1.compare_whash()}')
-        print(f'Inez A vs Paulina B DHASH: {test2.compare_dhash()}')
-        print(f'Inez A vs Paulina B WHASH: {test2.compare_whash()}')
-        print(f'Maciej A vs Maciej B DHASH: {test3.compare_dhash()}')
-        print(f'Maciej A vs Maciej B WHASH: {test3.compare_whash()}')
-        print(f'Maciej A vs Wojtek A DHASH: {test4.compare_dhash()}')
-        print(f'Maciej A vs Wojtek A WHASH: {test4.compare_whash()}')
-        print(f'Wojtek A vs Wojtek B DHASH: {test5.compare_dhash()}')
-        print(f'Wojtek A vs Wojtek B WHASH: {test5.compare_whash()}')
-        print(f'Wojtek A vs Radek B DHASH: {test6.compare_dhash()}')
-        print(f'Wojtek A vs Radek B WHASH: {test6.compare_whash()}')
-        print(f'Radek A vs Radek B DHASH: {test7.compare_dhash()}')
-        print(f'Radek A vs Radek B WHASH: {test7.compare_whash()}')
-        print(f'Radek A vs Maciej B DHASH: {test8.compare_dhash()}')
-        print(f'Radek A vs Maciej B WHASH: {test8.compare_whash()}')

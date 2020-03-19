@@ -78,10 +78,11 @@ class SQLController:
             result = sql_database.execute_query_multiple_rows(query)
             if type(result[0]) is str and type(result[1]) is int:
                 return result[0], result[1]
+
         except IndexError:
             raise IndexError('Error! User does not exist in database!')
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError('Wrong input data type!')
+            raise ValueError('Wrong input data type!')
 
     @staticmethod
     def get_user_id_and_voice_image_id(user_login: str):
@@ -100,7 +101,7 @@ class SQLController:
         except IndexError:
             raise IndexError('Error! User does not exist in database!')
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError('Wrong input data type!')
+            raise ValueError('Wrong input data type!')
 
     @staticmethod
     def upload_voice_array(user_id: int, voice_ndarray: ndarray):
@@ -111,11 +112,11 @@ class SQLController:
             sql_database.execute_update_or_insert_with_values(query, values)
             print(f'Added voice array for user ID: {user_id}')
             return 1
+
         except IndexError:
             raise IndexError('Error! User does not exist in database!')
-
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
+            raise ValueError("Something went wrong while executing INSERT statement. Maybe inappropriate "
                                           "data types?")
 
     @staticmethod
@@ -153,10 +154,9 @@ class SQLController:
             return 1
 
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError("Something went wrong while executing INSERT statement. Maybe inappropriate "
-                                          "data types?")
+            raise ValueError("Something went wrong while executing INSERT statement. Maybe inappropriate data types?")
         except pyodbc.IntegrityError:
-            raise pyodbc.IntegrityError("Voice image for this user already exists!")
+            raise LookupError("Voice image for this user already exists!")
 
     @staticmethod
     def download_voice_image(voice_id: int):
@@ -177,7 +177,7 @@ class SQLController:
         except IndexError:
             raise IndexError('Error! Specified image does not exist in database!')
         except pyodbc.ProgrammingError:
-            raise pyodbc.ProgrammingError('Wrong input data type!')
+            raise ValueError('Wrong input data type!')
 
     @staticmethod
     def __old__check_if_voice_image_exists(users_voice_image_id: int):

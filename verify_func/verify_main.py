@@ -8,12 +8,12 @@ def verify_voice(user_login: str, sound_sample: object):
     entry point for module, that is simple voice hash comparison
     :return: int
     """
-    sql_database = SQLController()
+    verify_main_sql_database = SQLController()
 
     # get stored image
-    user_id, voice_image_id = sql_database.get_user_id_and_voice_image_id(user_login)
+    user_id, voice_image_id = verify_main_sql_database.get_user_id_and_voice_image_id(user_login)
 
-    voice_image_bytes = sql_database.download_voice_image(voice_image_id)
+    voice_image_bytes = verify_main_sql_database.download_voice_image(voice_image_id)
     _, stored_image_buffer = ImagePreprocessor.generate_audio_image(voice_image_bytes, 'stored_image')
 
     # process input image

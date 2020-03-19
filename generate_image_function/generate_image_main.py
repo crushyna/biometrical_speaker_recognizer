@@ -9,9 +9,9 @@ def generate_binary_voice_image(user_id: int):
     :param user_id: int
     :return: bool
     """
-    sql_database = SQLController()
+    generate_image_sql_database = SQLController()
     # first: check, if user even exists
-    _, __ = sql_database.get_user_login_and_voice_image_id(user_id)
+    _, __ = generate_image_sql_database.get_user_login_and_voice_image_id(user_id)
     sql_database = SQLController()
     user_login, voice_image_id = sql_database.get_user_login_and_voice_image_id(user_id)
     arrays_list = sql_database.download_user_voice_arrays(user_id)

@@ -90,6 +90,18 @@ class AzureBlobController:
             data = bc.download_blob()
             file.write(data.readall())
 
+    def download_file_to_bytesbuffer(self, source):
+        """
+        Download a single file to a local and reliable file buffer
+        """
+        from io import BytesIO
+        print(f'Downloading {source} to memory_buffer')
+        bc = self.service_client.get_blob_client(container=self.container_name, blob=source)
+        data = bc.download_blob()
+        buffer = BytesIO(data.readall())
+
+        return buffer
+
     def ls_files(self, path, recursive=False):
         """
         List files under a path, optionally recursively

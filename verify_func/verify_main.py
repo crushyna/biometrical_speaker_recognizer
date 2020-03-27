@@ -2,11 +2,14 @@ from ..src.controllers.azure_sql_controller import SQLController
 from ..src.controllers.azure_blob_controller import AzureBlobController
 from ..src.image_preprocessor_1 import ImagePreprocessor
 from ..src.sound_preprocessor_1 import SoundPreprocessor
+from os import remove
 
 
 def verify_voice(user_login: str, sound_sample_filename: str):
     """
     entry point for module, that is simple voice hash comparison
+    :type user_login: object
+    :param sound_sample_filename:
     :return: bool
     """
     connection_string = """DefaultEndpointsProtocol=https;AccountName=storageaccountvbioma487;AccountKey=kQjOecdi/KtMStu4iQkxmsAbe4HupAiByUqoumRVmCn+IfcYqNuEhPJGdbpBzta5rPqk8A0JxGrMxzwUJKAJDw==;EndpointSuffix=core.windows.net"""
@@ -29,11 +32,13 @@ def verify_voice(user_login: str, sound_sample_filename: str):
     _, stored_image_buffer = ImagePreprocessor.generate_audio_image(voice_image_bytes, "stored_image")
 
     # get input file from blob
-    verify_main_blob_service.download(blob_folder + sound_sample_filename, local_download_folder)
+    verify_main_blob_service.download_file_to_bytesbuffer(blob_folder + sound_sample_filename)
     downloaded_file = f"{local_download_folder}{sound_sample_filename}"
+    # os.chmod(downloaded_file, stat.S_IRWXO | stat.S_IRWXU)
 
     # process input image
     input_sound = SoundPreprocessor(user_login, downloaded_file)
+    # input_sound = SoundPreprocessor(user_login, input_image_buffer)
     input_sound.convert_stereo_to_mono()
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
@@ -47,8 +52,8 @@ def verify_voice(user_login: str, sound_sample_filename: str):
     result_dhash = image_preprocessor.compare_dhash()
     result_whash = image_preprocessor.compare_whash()
 
-    # print(f"DHASH Difference: {result_dhash}")
-    # print(f"WHASH Difference: {result_whash}")
+    print(f"DHASH Difference: {result_dhash}")
+    print(f"WHASH Difference: {result_whash}")
 
     if result_dhash > 1000 or result_whash > 1000:
         return False
@@ -60,6 +65,8 @@ def verify_voice(user_login: str, sound_sample_filename: str):
                 return False
         else:
             return False
+
+    remove(downloaded_file)
 
     # TODO: upload result if OK
     # if result (some operation) then:

@@ -51,9 +51,6 @@ class ImagePreprocessor:
         plt.plot(array)
         plt.savefig(buffer_name, format='png', facecolor='white', transparent=False, bbox_inches='tight',
                     pad_inches=0, dpi=300)
-
-        # print(f"img_buffer_1: {buffer_name}")
-        # print(f"img_buffer_1.getvalue(): {buffer_name.getvalue()}")
         plt.close()
 
         return isinstance(buffer_name.getvalue(), str), buffer_name

@@ -1,3 +1,4 @@
+from os import remove
 from ..src.controllers.azure_sql_controller import SQLController
 from ..src.sound_preprocessor_1 import SoundPreprocessor
 from ..src.controllers.azure_blob_controller import AzureBlobController
@@ -25,6 +26,7 @@ def upload_voice_array(user_id: int, sound_sample_filename: str):
     if sound_sample_filename not in voices_list:
         raise FileNotFoundError('File not found in blob container!')
 
+    # get new file from blob
     upload_array_blob_service.download(blob_folder + sound_sample_filename, local_download_folder)
     downloaded_file = f"{local_download_folder}{sound_sample_filename}"
 
@@ -33,5 +35,7 @@ def upload_voice_array(user_id: int, sound_sample_filename: str):
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
     result = upload_array_sql_database.upload_voice_array(user_id, input_sound.scipy_audio)
+
+    remove(downloaded_file)
 
     return result

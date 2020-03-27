@@ -4,20 +4,6 @@ from scipy.fft import rfft
 from scipy.io import wavfile as wav
 from sklearn.preprocessing import minmax_scale, maxabs_scale
 
-# for test purposes only
-test_filename_1 = 'src/test_sounds/owsiak_1a.wav'
-test_filename_2 = 'src/test_sounds/owsiak_1b.wav'
-test_filename_3 = 'src/test_sounds/owsiak_2a.wav'
-test_filename_4 = 'src/test_sounds/owsiak_2b.wav'
-test_filename_5 = 'src/test_sounds/Inez_1a.wav'
-test_filename_6 = 'src/test_sounds/Inez_1b.wav'
-test_filename_7 = 'src/test_sounds/Krzysztof_1a.wav'
-test_filename_8 = 'src/test_sounds/Krzysztof_1b.wav'
-test_filename_9 = 'src/test_sounds/Maciej_1a.wav'
-test_filename_10 = 'src/test_sounds/Maciej_1b.wav'
-test_filename_11 = 'src/test_sounds/Wojtek_1a.wav'
-test_filename_12 = 'src/test_sounds/Wojtek_1b.wav'
-
 
 class SoundPreprocessor:
     """

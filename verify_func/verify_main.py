@@ -1,8 +1,8 @@
+from io import BytesIO
 from ..src.controllers.azure_sql_controller import SQLController
 from ..src.controllers.azure_blob_controller import AzureBlobController
 from ..src.image_preprocessor_1 import ImagePreprocessor
 from ..src.sound_preprocessor_1 import SoundPreprocessor
-from os import remove
 
 
 def verify_voice(user_login: str, sound_sample_filename: str):
@@ -15,7 +15,6 @@ def verify_voice(user_login: str, sound_sample_filename: str):
     connection_string = """DefaultEndpointsProtocol=https;AccountName=storageaccountvbioma487;AccountKey=kQjOecdi/KtMStu4iQkxmsAbe4HupAiByUqoumRVmCn+IfcYqNuEhPJGdbpBzta5rPqk8A0JxGrMxzwUJKAJDw==;EndpointSuffix=core.windows.net"""
     blob_container = "default"
     blob_folder = "voices/"
-    local_download_folder = "src/temp_voices/"
 
     # make connections
     verify_main_sql_database = SQLController()
@@ -27,24 +26,24 @@ def verify_voice(user_login: str, sound_sample_filename: str):
     if sound_sample_filename not in voices_list:
         raise FileNotFoundError('File not found in blob container!')
 
-    # get stored image into buffer
+    # get database-stored image into buffer
     voice_image_bytes = verify_main_sql_database.download_voice_image(voice_image_id)
-    _, stored_image_buffer = ImagePreprocessor.generate_audio_image(voice_image_bytes, "stored_image")
+    stored_image_buffer: BytesIO
+    _, stored_image_buffer = ImagePreprocessor.generate_audio_image(voice_image_bytes)
 
     # get input file from blob
-    verify_main_blob_service.download_file_to_bytesbuffer(blob_folder + sound_sample_filename)
-    downloaded_file = f"{local_download_folder}{sound_sample_filename}"
-    # os.chmod(downloaded_file, stat.S_IRWXO | stat.S_IRWXU)
+    input_blob_buffer: BytesIO
+    _, input_blob_buffer = verify_main_blob_service.download_file_to_bytesbuffer(blob_folder + sound_sample_filename)
 
-    # process input image
-    input_sound = SoundPreprocessor(user_login, downloaded_file)
-    # input_sound = SoundPreprocessor(user_login, input_image_buffer)
+    # process input sound
+    input_sound = SoundPreprocessor(user_login, input_blob_buffer)
     input_sound.convert_stereo_to_mono()
     input_sound.fourier_transform_audio()
     input_sound.minmax_array_numpy()
 
-    # get input image into buffer
-    _, input_image_buffer = ImagePreprocessor.generate_audio_image(input_sound.scipy_audio, "input_image")
+    # generate image from processed audio and put it into buffer
+    input_image_buffer: BytesIO
+    _, input_image_buffer = ImagePreprocessor.generate_audio_image(input_sound.scipy_audio)
 
     # compare images
     image_preprocessor = ImagePreprocessor(input_image_buffer, stored_image_buffer)
@@ -54,6 +53,11 @@ def verify_voice(user_login: str, sound_sample_filename: str):
 
     print(f"DHASH Difference: {result_dhash}")
     print(f"WHASH Difference: {result_whash}")
+
+    # close BytesIO buffers
+    stored_image_buffer.close()
+    input_image_buffer.close()
+    input_blob_buffer.close()
 
     if result_dhash > 1000 or result_whash > 1000:
         return False
@@ -65,8 +69,6 @@ def verify_voice(user_login: str, sound_sample_filename: str):
                 return False
         else:
             return False
-
-    remove(downloaded_file)
 
     # TODO: upload result if OK
     # if result (some operation) then:

@@ -3,6 +3,9 @@ IMPORTANT:
 2. After voice verification, temp voices must be deleted!
 3. Fix error handling!
 
+client = AzureBlobController("""DefaultEndpointsProtocol=https;AccountName=storageaccountvbioma487;AccountKey=kQjOecdi/KtMStu4iQkxmsAbe4HupAiByUqoumRVmCn+IfcYqNuEhPJGdbpBzta5rPqk8A0JxGrMxzwUJKAJDw==;EndpointSuffix=core.windows.net""", "default")
+result = client.download_file_to_bytesbuffer("voices/clint_eastwood_1.wav")
+
 client.download('voices/clint_eastwood_1.wav', 'src/temp_voices/')
 Downloading voices/clint_eastwood_1.wav to src/temp_voices/clint_eastwood_1.wav
 

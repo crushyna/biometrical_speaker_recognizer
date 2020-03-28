@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 from azure.storage.blob import BlobServiceClient
+from io import BytesIO
 
 
 # TODO: needs some test cases!
@@ -90,17 +91,16 @@ class AzureBlobController:
             data = bc.download_blob()
             file.write(data.readall())
 
-    def download_file_to_bytesbuffer(self, source):
+    def download_file_to_bytesbuffer(self, source: object):
         """
         Download a single file to a local and reliable file buffer
         """
-        from io import BytesIO
         print(f'Downloading {source} to memory_buffer')
         bc = self.service_client.get_blob_client(container=self.container_name, blob=source)
         data = bc.download_blob()
         buffer = BytesIO(data.readall())
 
-        return buffer
+        return isinstance(buffer.getvalue(), str), buffer
 
     def ls_files(self, path, recursive=False):
         """

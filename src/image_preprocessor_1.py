@@ -36,21 +36,20 @@ class ImagePreprocessor:
         return hash1 - hash2
 
     @staticmethod
-    def generate_audio_image(array: ndarray, buffer_name: str):
+    def generate_audio_image(array: ndarray):
         """
         plot image of ndarray and save it into memory buffer
-        :param buffer_name: str
         :param array: ndarray
         :return: book, bytesIO
         """
         from io import BytesIO
-        buffer_name = BytesIO()
+        image_buffer = BytesIO()
 
         plt.figure(figsize=(5, 2), frameon=False)
         # plt.axis('off')
         plt.plot(array)
-        plt.savefig(buffer_name, format='png', facecolor='white', transparent=False, bbox_inches='tight',
+        plt.savefig(image_buffer, format='png', facecolor='white', transparent=False, bbox_inches='tight',
                     pad_inches=0, dpi=300)
         plt.close()
 
-        return isinstance(buffer_name.getvalue(), str), buffer_name
+        return isinstance(image_buffer.getvalue(), str), image_buffer

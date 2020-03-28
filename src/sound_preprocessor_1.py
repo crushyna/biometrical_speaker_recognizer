@@ -10,10 +10,9 @@ class SoundPreprocessor:
     sound preprocessor for Scipy audio analysis and processing
     """
 
-    def __init__(self, object_name: str, file_name: str):
+    def __init__(self, object_name: str, sound_file):
         self.name = object_name
-        self.filename = file_name
-        self.scipy_sample_rate, self.scipy_audio = wav.read(file_name)
+        self.scipy_sample_rate, self.scipy_audio = wav.read(sound_file)
 
     def return_bit_depth(self):
         # quick look at bit depth

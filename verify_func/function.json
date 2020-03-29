@@ -7,7 +7,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "verify/{login:minlength(4)}/{sample_name:minlength(4)}"
+      "route": "verify/{login:minlength(4)}/{sample_name:minlength(4)}/{text_id:int}"
     },
     {
       "type": "http",

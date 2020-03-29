@@ -1,19 +1,21 @@
 import logging
 import azure.functions as func
-from . import verify_main
+from .verify_main import VoiceVerification
 
 
 def main(req: func.HttpRequest):
     logging.info('Python HTTP trigger function processed a request.')
     login = req.route_params.get('login')
     sample_name = req.route_params.get('sample_name')
+    text_id = req.route_params.get('text_id')
     message = f"Login: {login}, Sample name: {sample_name}"
     logging.info(message)
 
     if type(login) == str:
         print(f"Starting function for {message}")
         try:
-            result1 = verify_main.verify_voice(login, sample_name)
+            function_client = VoiceVerification(login, sample_name, int(text_id))
+            result1 = function_client.verify_voice()
             if result1:
                 return func.HttpResponse(status_code=200)
             else:

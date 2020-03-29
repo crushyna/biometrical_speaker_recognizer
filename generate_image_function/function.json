@@ -6,10 +6,8 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "methods": [
-        "get",
-        "post"
-      ]
+      "methods": ["post"],
+      "route": "generate_image/{user_id:int}/{text_id:int}"
     },
     {
       "type": "http",

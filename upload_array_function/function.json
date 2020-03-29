@@ -7,7 +7,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["post"],
-      "route": "upload_array/{user_id:int}/{sample_name:minlength(4)}"
+      "route": "upload_array/{user_id:int}/{sample_name:minlength(4)}/{text_id:int}"
     },
     {
       "type": "http",

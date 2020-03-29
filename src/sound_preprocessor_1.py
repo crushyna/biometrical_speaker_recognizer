@@ -52,19 +52,21 @@ class SoundPreprocessor:
         return self.scipy_audio
 
     @staticmethod
-    def create_voice_image_mean_array(user_login: str, list_of_arrays: list):
+    def create_voice_image_mean_array(list_of_arrays: list):
         """
         pass any number of ndarrays (as list), and return binary image of their average value
-        :param user_login: str
         :param list_of_arrays: list
         :return: bool, image_filepath
         """
         print("\nCreating voice image from mean values of arrays")
+        try:
+            v_arrays_list_avg = sum(list_of_arrays)
+            v_arrays_list_avg = np.divide(v_arrays_list_avg, len(list_of_arrays))
+            v_arrays_list_avg = np.real(v_arrays_list_avg)
+            v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
 
-        v_arrays_list_avg = sum(list_of_arrays)
-        v_arrays_list_avg = np.divide(v_arrays_list_avg, len(list_of_arrays))
-        v_arrays_list_avg = np.real(v_arrays_list_avg)
-        v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
+        except Exception as er:
+            raise Exception(f'{er} - or array for specified text does not exist!')
 
         return v_arrays_list_avg
 

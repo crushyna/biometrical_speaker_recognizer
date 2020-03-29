@@ -2,21 +2,32 @@ from ..src.controllers.azure_sql_controller import SQLController
 from ..src.sound_preprocessor_1 import SoundPreprocessor
 
 
-def generate_binary_voice_image(user_id: int):
-    """
-    generates binary image from average values of voice arrays and upload it up to database
-    returns 1 if it's done correctly
-    :param user_id: int
-    :return: bool
-    """
-    generate_image_sql_database = SQLController()
+class VoiceImageGenerator:
 
-    # first: check, if user even exists
-    _, __ = generate_image_sql_database.get_user_login_and_voice_image_id(user_id)
+    def __init__(self, user_id: int, text_id: int):
+        self.name = str(user_id)
+        self.user_id = user_id
+        self.text_id = text_id
+        self.generate_image_sql_database = SQLController()
 
-    user_login, voice_image_id = generate_image_sql_database.get_user_login_and_voice_image_id(user_id)
-    arrays_list = generate_image_sql_database.download_user_voice_arrays(user_id)
-    image_ndarray = SoundPreprocessor.create_voice_image_mean_array(user_login, arrays_list)
-    result = generate_image_sql_database.upload_voice_image(voice_image_id, image_ndarray)
+    def generate_binary_voice_image(self):
+        """
+        generates binary image from average values of voice arrays (per specific text) and upload it up to database
+        returns 1 if it's done correctly
+        :return: bool
+        """
 
-    return result
+        # first: check, if user even exists
+        user_login, voice_id = self.generate_image_sql_database.get_user_login_and_voice_id(self.user_id)
+
+        # create ndarray from selected arrays
+        arrays_list = self.generate_image_sql_database.download_user_voice_arrays(self.user_id, self.text_id)
+        image_ndarray = SoundPreprocessor.create_voice_image_mean_array(arrays_list)
+
+        # update Voice Image Link table first, get new Voice Image ID in return
+        voice_image_id = self.generate_image_sql_database.update_voice_image_link(voice_id, self.text_id)
+
+        # upload voice image
+        result1 = self.generate_image_sql_database.upload_voice_image(int(voice_image_id), image_ndarray)
+
+        return result1

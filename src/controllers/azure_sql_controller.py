@@ -32,7 +32,7 @@ class SQLController:
         print("Affected rows = {}".format(self.cursor.rowcount))
 
     def execute_update_or_insert_with_values(self, query_string: str, values: tuple):
-        self.cursor.execute(query_string, values[0], values[1])
+        self.cursor.execute(query_string, [i for i in values])
         self.cnxn.commit()
 
         print("Affected rows = {}".format(self.cursor.rowcount))
@@ -67,13 +67,13 @@ class SQLController:
         return result[0]
 
     @staticmethod
-    def get_user_login_and_voice_image_id(user_id: int):
+    def get_user_login_and_voice_id(user_id: int):
         """
         simple function to return users login
         :param user_id: int
         :return: str, int
         """
-        query = f"""SELECT [login], [voice_image_id]
+        query = f"""SELECT [login], [voice_id]
                             FROM [dbo].[Users]
                             WHERE [id] = {user_id};"""
         try:
@@ -87,13 +87,13 @@ class SQLController:
             raise ValueError(err_wrong_input)
 
     @staticmethod
-    def get_user_id_and_voice_image_id(user_login: str):
+    def get_user_id_and_voice_id(user_login: str):
         """
         checks if user exists in database, returns its user ID and voice image ID (int)
         :param user_login:
         :return: object
         """
-        query = f"""SELECT id, voice_image_id FROM [dbo].[Users]
+        query = f"""SELECT id, voice_id FROM [dbo].[Users]
                             WHERE login = '{user_login}';"""
         result = default_sql_database.execute_query_multiple_rows(query)
 
@@ -106,13 +106,13 @@ class SQLController:
             raise ValueError(err_wrong_input)
 
     @staticmethod
-    def upload_voice_array(user_id: int, voice_ndarray: ndarray):
-        query = f"""INSERT INTO [dbo].[Voice_Arrays_List] (user_id, sample_array)
-                    VALUES (?, ?);"""
-        values = (user_id, dumps(voice_ndarray))
+    def upload_voice_array(user_id: int, voice_ndarray: ndarray, text_id: int):
+        query = f"""INSERT INTO [dbo].[Voice_Arrays_List] (user_id, sample_array, text_id)
+                    VALUES (?, ?, ?);"""
+        values = (user_id, dumps(voice_ndarray), text_id)
         try:
             default_sql_database.execute_update_or_insert_with_values(query, values)
-            print(f'Added voice array for user ID: {user_id}')
+            print(f'Added voice array for user ID: {user_id}, text ID: {text_id}')
             return 1
 
         except IndexError:
@@ -121,14 +121,15 @@ class SQLController:
             raise ValueError(err_wrong_input_insert)
 
     @staticmethod
-    def download_user_voice_arrays(user_id: int):
+    def download_user_voice_arrays(user_id: int, text_id: int):
         """
         input specific user id, and returns and array of ndarrays for further analysis
+        :param text_id:
         :param user_id:
         :return: list
         """
         query = f"""SELECT sample_array FROM [dbo].[Voice_Arrays_List]
-                                    WHERE user_id = {user_id};"""
+                                    WHERE user_id = {user_id} AND text_id = {text_id};"""
         query_result = default_sql_database.execute_select(query)
 
         result_arrays = []
@@ -136,6 +137,30 @@ class SQLController:
             result_arrays.append(loads(each_value))
 
         return result_arrays
+
+    @staticmethod
+    def update_voice_image_link(voice_id: int, text_id: int):
+        """
+        update Voice Image Link
+        :param voice_id: int
+        :param text_id: int
+        :return: voice_image_id int
+        """
+        query1 = "INSERT INTO [dbo].[Voice_Image_Link] (voice_id, text_id) VALUES (?, ?)"
+        values1 = (voice_id, text_id)
+        try:
+            default_sql_database.execute_update_or_insert_with_values(query1, values1)
+            print(f'Updated Voice Image Link, for Voice ID: {voice_id}, Text ID: {text_id}')
+        except pyodbc.ProgrammingError as er:
+            raise pyodbc.ProgrammingError(er)
+
+        query2 = f"SELECT [image_id] FROM [dbo].[Voice_Image_Link] WHERE [voice_id] = {voice_id} AND [text_id] = {text_id}"
+        try:
+            voice_image_id = default_sql_database.execute_select(query2)
+        except pyodbc.ProgrammingError as er:
+            raise pyodbc.ProgrammingError(er)
+
+        return voice_image_id[0]
 
     @staticmethod
     def upload_voice_image(voice_image_id: int, image_array: ndarray):
@@ -158,6 +183,16 @@ class SQLController:
             raise ValueError(err_wrong_input_insert)
         except pyodbc.IntegrityError:
             raise LookupError("Voice image for this user already exists!")
+
+    @staticmethod
+    def get_image_voice_id(voice_id: int, text_id: int):
+        query = f"SELECT [image_id] FROM [dbo].[Voice_Image_Link] WHERE [voice_id] = {voice_id} AND [text_id] = {text_id}"
+        try:
+            voice_image_id = default_sql_database.execute_select(query)
+        except pyodbc.ProgrammingError as er:
+            raise pyodbc.ProgrammingError(er)
+
+        return voice_image_id[0]
 
     @staticmethod
     def download_voice_image(voice_id: int):

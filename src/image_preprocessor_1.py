@@ -1,7 +1,6 @@
 import imagehash
 import matplotlib.pyplot as plt
 from PIL import Image
-# TODO: decide whether to go with WHASH or DHASH
 from numpy.core.multiarray import ndarray
 
 
@@ -46,7 +45,6 @@ class ImagePreprocessor:
         image_buffer = BytesIO()
 
         plt.figure(figsize=(5, 2), frameon=False)
-        # plt.axis('off')
         plt.plot(array)
         plt.savefig(image_buffer, format='png', facecolor='white', transparent=False, bbox_inches='tight',
                     pad_inches=0, dpi=300)

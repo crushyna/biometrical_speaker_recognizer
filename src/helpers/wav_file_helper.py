@@ -5,7 +5,8 @@ class WavFileHelper:
     """
     simple class that allows for faster and more reliable wave file info extraction
     """
-    def read_file_properties(self, filename):
+    @staticmethod
+    def read_file_properties(filename):
         wave_file = open(filename, "rb")
 
         riff = wave_file.read(12)

@@ -53,7 +53,6 @@ class SQLController:
         while row:
             for each_row in row:
                 result_list.append(each_row)
-                # print(each_row)
 
             row = self.cursor.fetchone()
 
@@ -180,52 +179,6 @@ class SQLController:
             raise IndexError("Error! Specified image does not exist in database!")
         except pyodbc.ProgrammingError:
             raise ValueError(err_wrong_input)
-
-    @staticmethod
-    def __old__check_if_voice_image_exists(users_voice_image_id: int):
-        """
-        check if voice image already exists in database
-        :param users_voice_image_id:
-        :return:
-        """
-        query = f"""SELECT voice_array FROM [dbo].[Voice_Images]
-                            WHERE id = {users_voice_image_id};"""
-
-        voice_image_array = default_sql_database.execute_select(query)
-        return voice_image_array
-
-    @staticmethod
-    def __old__download_voice_array_list(user_id: int):
-        query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
-                            WHERE user_id = {user_id}
-                            ORDER BY create_timestamp DESC;"""
-        query_result = default_sql_database.execute_select(query)
-        result = query_result[0].strip('[]\",').split()
-
-        result_array = []
-        for each_element in result:
-            result_array.append(float(each_element.strip(',')))
-
-        return asarray(result_array)
-
-    @staticmethod
-    def __old__download_one_voice_array(user_id: int):
-        """
-        test purposes only
-        :param user_id:
-        :return: ndarray
-        """
-        query = f"""SELECT TOP 1 sample_array FROM [dbo].[Voice_Arrays_List]
-                        WHERE user_id = {user_id}
-                        ORDER BY create_timestamp DESC;"""
-        query_result = default_sql_database.execute_select(query)
-        result = query_result[0].strip('[]\",').split()
-
-        result_array = []
-        for each_element in result:
-            result_array.append(float(each_element.strip(',')))
-
-        return asarray(result_array)
 
 
 default_sql_database = SQLController()

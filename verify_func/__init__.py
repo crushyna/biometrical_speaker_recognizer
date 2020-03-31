@@ -8,7 +8,7 @@ def main(req: func.HttpRequest):
     login = req.route_params.get('login')
     sample_name = req.route_params.get('sample_name')
     text_id = req.route_params.get('text_id')
-    message = f"Login: {login}, Sample name: {sample_name}"
+    message = f"Login: {login}, Sample name: {sample_name}, Text ID: {text_id}"
     logging.info(message)
 
     if type(login) == str:

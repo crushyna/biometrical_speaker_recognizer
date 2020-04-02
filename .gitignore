@@ -186,3 +186,4 @@ venv/Scripts/pythonw.exe
 venv/Scripts/symilar.exe
 venv/pyvenv.cfg
 !/venv/
+.idea/sonarlint/issuestore/d/a/daccbc0365efa19b23277308248942c10ade0a3e

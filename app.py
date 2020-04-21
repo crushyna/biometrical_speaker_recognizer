@@ -1,8 +1,8 @@
 from flask_restful import Resource, Api, reqparse
 from flask import Flask
-from .verify_func.verify_main import VoiceVerification
-from .upload_array_function.upload_array_main import VoiceArrayUploader
-from .generate_image_function.generate_image_function import VoiceImageGenerator
+from verify_func.verify_main import VoiceVerification
+from upload_array_function.upload_array_main import VoiceArrayUploader
+from generate_image_function.generate_image_function import VoiceImageGenerator
 
 app_main = Flask(__name__)
 api = Api(app_main)

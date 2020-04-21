@@ -1,12 +1,30 @@
 from io import BytesIO
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from src.controllers.azure_sql_controller import SQLController
 from src.controllers.azure_blob_controller import AzureBlobController
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 
 
+class VoiceVerificationTest(Resource):
+
+    def get(self):
+        return {'message': "GET function called. Working correctly."}
+
+    def put(self):
+        return {'message': "PUT function called. Working correctly."}
+
+    def post(self):
+        return {'message': "POST function called. Working correctly."}
+
+
 class VoiceVerification(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('user_id',
+                        type=int,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
 
     def __init__(self, user_login: str, sound_sample_filename: str, text_id: int):
         self.name = user_login

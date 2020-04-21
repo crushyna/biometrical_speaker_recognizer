@@ -1,11 +1,12 @@
 from io import BytesIO
+from flask_restful import Resource
 from ..src.controllers.azure_sql_controller import SQLController
 from ..src.controllers.azure_blob_controller import AzureBlobController
 from ..src.image_preprocessor_1 import ImagePreprocessor
 from ..src.sound_preprocessor_1 import SoundPreprocessor
 
 
-class VoiceVerification:
+class VoiceVerification(Resource):
 
     def __init__(self, user_login: str, sound_sample_filename: str, text_id: int):
         self.name = user_login

@@ -1,8 +1,8 @@
 from io import BytesIO
 from flask_restful import Resource
-from src.controllers.azure_sql_controller import SQLController
+#from src.controllers.azure_sql_controller import SQLController
 from src.sound_preprocessor_1 import SoundPreprocessor
-from src.controllers.azure_blob_controller import AzureBlobController
+#from src.controllers.azure_blob_controller import AzureBlobController
 
 
 class VoiceArrayUploader(Resource):
@@ -17,8 +17,8 @@ class VoiceArrayUploader(Resource):
         self.blob_folder = "voices/"
 
         # make connections
-        self.upload_array_sql_database = SQLController()
-        self.upload_array_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
+        #self.upload_array_sql_database = SQLController()
+        #self.upload_array_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
 
     def upload_voice_array(self):
         """

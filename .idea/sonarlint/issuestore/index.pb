@@ -38,3 +38,7 @@ Z
 app.py,1\3\13cce7fd076299c81b4986166f3d822791c9490e
 ;
 __init__.py,6\0\60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e
+?
+venv/pyvenv.cfg,b\0\b0e04816a9971064291cd324e57037faa4a05306
+b
+2venv/Lib/site-packages/azure/batch/custom/patch.py,d\5\d5ef0b83474bdc79949303aa328eb17fc93db200

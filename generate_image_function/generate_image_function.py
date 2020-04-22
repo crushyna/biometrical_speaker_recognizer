@@ -1,4 +1,4 @@
-from src.controllers.azure_sql_controller import SQLController
+#from src.controllers.azure_sql_controller import SQLController
 from src.sound_preprocessor_1 import SoundPreprocessor
 from flask_restful import Resource
 
@@ -9,7 +9,7 @@ class VoiceImageGenerator(Resource):
         self.name = str(user_id)
         self.user_id = user_id
         self.text_id = text_id
-        self.generate_image_sql_database = SQLController()
+        #self.generate_image_sql_database = SQLController()
 
     def generate_binary_voice_image(self):
         """

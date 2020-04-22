@@ -1,7 +1,8 @@
 from io import BytesIO
+import requests
 from flask_restful import Resource, reqparse
-from src.controllers.azure_sql_controller import SQLController
-from src.controllers.azure_blob_controller import AzureBlobController
+# from src.controllers.azure_sql_controller import SQLController
+# from src.controllers.azure_blob_controller import AzureBlobController
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 
@@ -16,6 +17,21 @@ class VoiceVerificationTest(Resource):
 
     def post(self):
         return {'message': "POST function called. Working correctly."}
+
+
+class GetTextPhrase(Resource):
+
+    def get(self, user_email):
+        import random
+        text_list = []
+        url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
+        response = requests.request("GET", url)
+
+        for each_item in response.json():
+            # print(each_item['phrase'])
+            text_list.append(each_item['phrase'])
+
+        return {'text_phrase': f'{random.choice(text_list)}'}, 200
 
 
 class VoiceVerification(Resource):
@@ -36,8 +52,8 @@ class VoiceVerification(Resource):
         self.blob_folder = "voices/"
 
         # make connections
-        self.verify_main_sql_database = SQLController()
-        self.verify_main_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
+        #self.verify_main_sql_database = SQLController()
+        #self.verify_main_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
 
     def verify_voice(self):
         """

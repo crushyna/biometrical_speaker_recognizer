@@ -1,10 +1,13 @@
 from io import BytesIO
 import requests
+from flask import jsonify
+from flask.json import loads
 from flask_restful import Resource, reqparse
 # from src.controllers.azure_sql_controller import SQLController
 # from src.controllers.azure_blob_controller import AzureBlobController
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
+# from code.models.user_model import InitialUserModel
 
 
 class VoiceVerificationTest(Resource):
@@ -23,15 +26,21 @@ class GetTextPhrase(Resource):
 
     def get(self, user_email):
         import random
-        text_list = []
+        text_id_list = []
+        text_phrase_dict = {}
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
-        response = requests.request("GET", url)
+        try:
+            response = requests.request("GET", url)
+            for each_item in response.json():
+                text_id_list.append(each_item['textId'])
+                next_dict = {each_item['textId']: each_item['phrase']}
+                text_phrase_dict.update(next_dict)
+        except:
+            return {'message': 'Cannot establish database connection or user does not exist!'}, 404
 
-        for each_item in response.json():
-            # print(each_item['phrase'])
-            text_list.append(each_item['phrase'])
+        selected_text_id = random.choice(text_id_list)
 
-        return {'text_phrase': f'{random.choice(text_list)}'}, 200
+        return {'text_phrase': text_phrase_dict[selected_text_id]}, 200
 
 
 class VoiceVerification(Resource):
@@ -42,18 +51,13 @@ class VoiceVerification(Resource):
                         help="This field cannot be left blank!"
                         )
 
-    def __init__(self, user_login: str, sound_sample_filename: str, text_id: int):
-        self.name = user_login
-        self.user_login = user_login
-        self.sound_sample_filename = sound_sample_filename
-        self.text_id = text_id
-        self.azure_blob_connection_string = """DefaultEndpointsProtocol=https;AccountName=storageaccountvbioma487;AccountKey=kQjOecdi/KtMStu4iQkxmsAbe4HupAiByUqoumRVmCn+IfcYqNuEhPJGdbpBzta5rPqk8A0JxGrMxzwUJKAJDw==;EndpointSuffix=core.windows.net"""
-        self.blob_container = "default"
-        self.blob_folder = "voices/"
+    def get(self, user_email, us_image_file, us_text_id):
+
+        initial_user_data = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
 
         # make connections
-        #self.verify_main_sql_database = SQLController()
-        #self.verify_main_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
+        # self.verify_main_sql_database = SQLController()
+        # self.verify_main_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
 
     def verify_voice(self):
         """

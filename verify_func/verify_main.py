@@ -27,20 +27,28 @@ class GetTextPhrase(Resource):
     def get(self, user_email):
         import random
         text_id_list = []
-        text_phrase_dict = {}
+        full_dict = {}
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
         try:
             response = requests.request("GET", url)
             for each_item in response.json():
                 text_id_list.append(each_item['textId'])
-                next_dict = {each_item['textId']: each_item['phrase']}
-                text_phrase_dict.update(next_dict)
+                next_full_dict = {each_item['textId']: {
+                    'image_file': each_item['imageFile'],
+                    'image_id': each_item['imageId'],
+                    'text_phrase': each_item['phrase'],
+                    'text_id': each_item['phrase'],
+                    'user_id': each_item['userId']
+                }}
+                full_dict.update(next_full_dict)
         except:
             return {'message': 'Cannot establish database connection or user does not exist!'}, 404
 
+        # ongoing_user = InitialUserModel()
+
         selected_text_id = random.choice(text_id_list)
 
-        return {'text_phrase': text_phrase_dict[selected_text_id]}, 200
+        return {'text_phrase': full_dict[selected_text_id]['text_phrase']}, 200
 
 
 class VoiceVerification(Resource):

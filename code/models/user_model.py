@@ -1,7 +1,6 @@
 class InitialUserModel:
 
-    def __init__(self, image_file: str, image_id: int, text_phrase: str, text_id: int, user_id: int, us_email: str):
-        self.us_email = us_email
+    def __init__(self, image_file: str, image_id: int, text_phrase: str, text_id: int, user_id: int):
         self.user_id = user_id
         self.image_file = image_file
         self.image_id = image_id

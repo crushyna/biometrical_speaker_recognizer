@@ -161,4 +161,4 @@ SELECT TOP (1000) [id]
 
 DELETE FROM [dbo].[Voice_Arrays_List];
 
-result1, result2 = verify_voice('crushyna', 'src/test_sounds/owsiak_1b.wav')
+result1, result2 = _old_verify_voice('crushyna', 'src/test_sounds/owsiak_1b.wav')

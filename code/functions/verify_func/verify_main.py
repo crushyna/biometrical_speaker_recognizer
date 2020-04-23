@@ -1,13 +1,11 @@
 from io import BytesIO
 import requests
-from flask import jsonify
-from flask.json import loads
 from flask_restful import Resource, reqparse
 # from src.controllers.azure_sql_controller import SQLController
 # from src.controllers.azure_blob_controller import AzureBlobController
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
-# from code.models.user_model import InitialUserModel
+from models.user_model import UserModel
 
 
 class VoiceVerificationTest(Resource):
@@ -27,7 +25,7 @@ class GetTextPhrase(Resource):
     def get(self, user_email):
         import random
         text_id_list = []
-        full_dict = {}
+        user_data_dict = {}
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
         try:
             response = requests.request("GET", url)
@@ -37,18 +35,22 @@ class GetTextPhrase(Resource):
                     'image_file': each_item['imageFile'],
                     'image_id': each_item['imageId'],
                     'text_phrase': each_item['phrase'],
-                    'text_id': each_item['phrase'],
+                    'text_id': each_item['textId'],
                     'user_id': each_item['userId']
                 }}
-                full_dict.update(next_full_dict)
+                user_data_dict.update(next_full_dict)
         except:
             return {'message': 'Cannot establish database connection or user does not exist!'}, 404
 
-        # ongoing_user = InitialUserModel()
-
         selected_text_id = random.choice(text_id_list)
 
-        return {'text_phrase': full_dict[selected_text_id]['text_phrase']}, 200
+        new_user = UserModel(**user_data_dict[selected_text_id])
+        UserModel.create_table_for_users()
+        new_user.save_user_to_database()
+
+        # return {'text_phrase': user_data_dict[selected_text_id]['text_phrase']}, 200
+        # return {'ongoing user': f'{new_user.return_all_attributes()}'}
+        return user_data_dict[selected_text_id]
 
 
 class VoiceVerification(Resource):
@@ -56,18 +58,31 @@ class VoiceVerification(Resource):
     parser.add_argument('user_id',
                         type=int,
                         required=True,
-                        help="This field cannot be left blank!"
+                        help="Missing user_id in request!"
+                        )
+    parser.add_argument('filename',
+                        type=str,
+                        required=True,
+                        help="Missing filename in request!"
+                        )
+    parser.add_argument('text_id',
+                        type=int,
+                        required=True,
+                        help="Missing text_id in request!!"
                         )
 
-    def get(self, user_email, us_image_file, us_text_id):
+    # def get(self, user_email, us_image_file, us_text_id):
+    def get(self, user_id, text_id):
+        # request_data = VoiceVerification.parser.parse_args()
+        user_data = UserModel.retrieve_user_data(user_id, text_id)
 
-        initial_user_data = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
-
-        # make connections
-        # self.verify_main_sql_database = SQLController()
-        # self.verify_main_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
+        return {'user_data': user_data}
 
     def verify_voice(self):
+        # get database-stored image into buffer
+        pass
+
+    def _old_verify_voice(self):
         """
         entry point for module, that is simple voice hash comparison
         :return: bool

@@ -1,7 +1,7 @@
 from io import BytesIO
 from flask_restful import Resource
 #from src.controllers.azure_sql_controller import SQLController
-from src.sound_preprocessor_1 import SoundPreprocessor
+from code.src.sound_preprocessor_1 import SoundPreprocessor
 #from src.controllers.azure_blob_controller import AzureBlobController
 
 

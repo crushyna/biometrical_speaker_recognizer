@@ -30,6 +30,7 @@ class UserModel:
         create_table = "CREATE TABLE IF NOT EXISTS temp_users (user_id int, image_file text, image_id int, text_id int, text_phrase text, hash_int int)"
         cursor.execute(create_table)
         connection.commit()
+        connection.close()
 
     @staticmethod
     def retrieve_user_data(user_id, text_id):
@@ -42,6 +43,7 @@ class UserModel:
         result = [dict(row) for row in cursor.fetchall()]
 
         connection.commit()
+        connection.close()
 
         return result
 
@@ -58,21 +60,8 @@ class UserModel:
                            (self.user_id, self.image_file, self.image_id, self.text_id, self.text_phrase,
                             self.user_hash))
             connection.commit()
+            connection.close()
         else:
             connection.commit()
+            connection.close()
             return {'message': 'User already exists in temporary database!'}
-
-
-"""
-class FullUserModel(UserModel):
-
-    def __init__(self, us_custom_login: str, us_email: str, us_id: int, us_image_file: str, us_image_id: int,
-                 us_text_id: int, image_file: str, image_id: int, text_phrase: str, text_id: int, user_id: int):
-        super().__init__(image_file, image_id, text_phrase, text_id, user_id, us_email)
-        self.us_custom_login = us_custom_login
-        self.us_email = us_email
-        self.us_id = us_id
-        self.us_image_file = us_image_file
-        self.us_image_id = us_image_id
-        self.us_text_id = us_text_id
-"""

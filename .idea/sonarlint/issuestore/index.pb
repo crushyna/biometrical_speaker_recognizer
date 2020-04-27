@@ -11,14 +11,6 @@ V
 &code/functions/verify_func/__init__.py,4\0\4030ff88a288cef36774ff473a8c032444b16382
 J
 code/functions/__init__.py,5\9\595c1f47b42e23e482a4acbbf770fa23a6bd8604
-P
- code/src/controllers/__init__.py,2\1\21110da4f819108de6a536312a44c41d96a65230
-^
-.code/src/controllers/_azure_blob_controller.py,4\f\4fa4bf28bb6e648963dd50c50b847c1e0fbfc2d9
-]
--code/src/controllers/_azure_sql_controller.py,8\2\82a04d948666567457513b98d2cacfe64b8a7bd9
-a
-1code/src/controllers/test_azure_sql_controller.py,0\7\07ccf5d2afa0df3a88c0649eb528fb8415b55442
 D
 code/src/__init__.py,f\6\f6a9ccdc0de0e49a261d1656ba3a8bcbeb4407f7
 P

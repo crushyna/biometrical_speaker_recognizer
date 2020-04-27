@@ -25,4 +25,4 @@ api.add_resource(VoiceVerification, '/verify_voice/<int:user_id>/<int:text_id>/<
 
 if __name__ == '__main__':
     # UserModel.create_table_for_users()
-    app_main.run(port=5500, debug=True)
+    app_main.run(host='0.0.0.0', port=5500, debug=True)

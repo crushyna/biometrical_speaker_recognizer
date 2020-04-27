@@ -31,8 +31,6 @@ U
 code/__init__.py,a\2\a24373fe804f6c1531d732981ecab6252c049977
 5
 notes,3\a\3add7b9612102f2a7dbe4ed4fe886e07e847c24d
-=
-users_data.db,c\f\cf8a486aaa6ca84391131eb5a6430327424146ff
 I
 code/models/user_model.py,9\3\9319f915e3f2dc2a18c3b1162d160a5ca714dd4f
 Y
@@ -43,3 +41,12 @@ G
 code/helpers/helpers.py,e\f\efc038f5851aa652ab8360c213836b7ee0658a0f
 `
 0venv/Lib/site-packages/flask_restful/reqparse.py,c\b\cb1f3316fbbd96fc29ee3bc627c3d8cc79f7f5c3
+^
+..idea/inspectionProfiles/profiles_settings.xml,1\e\1e9075f5bf079c01ef2c910709e91a497d262080
+H
+code/helpers/__init__.py,b\0\b042a667c9b71832e57cb438b86f3486fa822efd
+@
+requirements.txt,1\9\19359a61ae2446b51b549167b014da2fcf265768
+:
+
+Dockerfile,6\6\6651ddff6eb82c840ced7c1dddee15c6e1913dd4

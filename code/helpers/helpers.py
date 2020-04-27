@@ -19,30 +19,22 @@ class GetTextPhrase(Resource):
 
     def get(self, user_email):
         import random
-        text_id_list = []
-        user_data_dict = {}
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
-        try:
-            response = requests.request("GET", url)
-            for each_item in response.json():
-                text_id_list.append(each_item['textId'])
-                next_full_dict = {each_item['textId']: {
-                    'image_file': each_item['imageFile'],
-                    'image_id': each_item['imageId'],
-                    'text_phrase': each_item['phrase'],
-                    'text_id': each_item['textId'],
-                    'user_id': each_item['userId']
-                }}
-                user_data_dict.update(next_full_dict)
-        except:
-            return {'message': 'Cannot establish database connection or user does not exist!'}, 404
+        response = requests.request("GET", url).json()
+        number_of_text: int = len(response['data']['texts'])
+        text_choice = random.choice(range(number_of_text))
+        user_id = response['data']['userId']
+        user_data_dict = {'user_id': user_id,
+                          'image_file': response['data']['texts'][text_choice]['imageFile'],
+                          'image_id': response['data']['texts'][text_choice]['imageId'],
+                          'text_id': response['data']['texts'][text_choice]['textId'],
+                          'text_phrase': response['data']['texts'][text_choice]['phrase'],
+                          }
 
-        selected_text_id = random.choice(text_id_list)
-
-        new_user = UserModel(**user_data_dict[selected_text_id])
-        UserModel.create_table_for_users()
-        new_user.save_user_to_database()
+        # new_user = UserModel(**user_data_dict)
+        # UserModel.create_table_for_users()
+        # new_user.save_user_to_database()
 
         # return {'text_phrase': user_data_dict[selected_text_id]['text_phrase']}, 200
         # return {'ongoing user': f'{new_user.return_all_attributes()}'}
-        return user_data_dict[selected_text_id]
+        return {'message': user_data_dict['text_phrase']}, 200

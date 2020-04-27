@@ -9,42 +9,44 @@ from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
 
-UPLOAD_DIRECTORY = 'code/functions/verify_func/temp_voicefiles'
-if not os.path.exists(UPLOAD_DIRECTORY):
-    os.makedirs(UPLOAD_DIRECTORY)
+
+UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+parse = reqparse.RequestParser()
+parse.add_argument('file', type=FileStorage, location='files')
 
 
 class VoiceFileUpload(Resource):
-    parse = reqparse.RequestParser()
-    parse.add_argument('file', type=FileStorage, location='files', help='File must be supplied!')
 
-    def post(self):
+    UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
+    def post(self, filename):
         """
         Upload a new voicefile from front-end.
         :return: message
         """
-        data = VoiceFileUpload.parse.parse_args()
+        data = parse.parse_args()
         if data['file'] == "":
             return {
                 'message': 'No file found',
                 'status': 'error'
             }
         wave_file = data['file']
-        '''
-        if "/" in filename:
-            return {'message': 'No subdirectories or directories allowed!'}, 400
-        '''
+
         if wave_file:
-            filename = 'your_image.png'
-            photo.save(os.path.join(UPLOAD_FOLDER, filename))
+            wave_file.save(os.path.join(UPLOAD_FOLDER, filename))
             return {
-                'message': 'photo uploaded',
+                'message': 'File uploaded',
                 'status': 'success'
             }
         return {
             'message': 'Something when wrong',
             'status': 'error'
-        }
+            }
 
 
 class VoiceVerification(Resource):
@@ -54,23 +56,28 @@ class VoiceVerification(Resource):
                         required=True,
                         help="Missing user_id in request!"
                         )
-    parser.add_argument('filename',
-                        type=str,
-                        required=True,
-                        help="Missing filename in request!"
-                        )
     parser.add_argument('text_id',
                         type=int,
                         required=True,
                         help="Missing text_id in request!!"
                         )
+    parser.add_argument('filename',
+                        type=str,
+                        required=True,
+                        help="Missing filename in request!"
+                        )
 
     # def get(self, user_email, us_image_file, us_text_id):
-    def get(self, user_id, text_id):
+    def get(self, user_id, text_id, filename):
         # request_data = VoiceVerification.parser.parse_args()
-        user_data = UserModel.retrieve_user_data(user_id, text_id)
+        user_data = UserModel.retrieve_user_data_2(user_id)
+        ongoing_user = UserModel(**user_data)
 
-        return {'user_data': user_data}
+        file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, filename))
+
+        return {'ongoing_user': ongoing_user.return_all_attributes(),
+                'working_file_exists': file_exist,
+                'working_filename': filename}
 
     def verify_voice(self):
         # get database-stored image into buffer

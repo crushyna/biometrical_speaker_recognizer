@@ -3,8 +3,6 @@ import os
 import requests
 from werkzeug.datastructures import FileStorage
 from flask_restful import Resource, reqparse
-# from src.controllers.azure_sql_controller import SQLController
-# from src.controllers.azure_blob_controller import AzureBlobController
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
@@ -15,6 +13,9 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 
 class VoiceFileUpload(Resource):
+    """
+    endpoint for uploading new wavefile from front-end
+    """
     UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
@@ -29,24 +30,27 @@ class VoiceFileUpload(Resource):
         data = parse.parse_args()
         if data['file'] == "":
             return {
-                'message': 'No file found',
-                'status': 'error'
-            }, 400
+                       'message': 'No file found',
+                       'status': 'error'
+                   }, 400
         wave_file = data['file']
 
         if wave_file:
             wave_file.save(os.path.join(UPLOAD_FOLDER, filename))
             return {
-                'message': 'File uploaded',
-                'status': 'success'
-            }, 200
+                       'message': 'File uploaded',
+                       'status': 'success'
+                   }, 200
         return {
-            'message': 'Something when wrong',
-            'status': 'error'
-        }, 400
+                   'message': 'Something when wrong',
+                   'status': 'error'
+               }, 400
 
 
 class VoiceVerification(Resource):
+    """
+    Entry point for actual function of this application.
+    """
     parser = reqparse.RequestParser()
     parser.add_argument('user_id',
                         type=int,
@@ -64,17 +68,31 @@ class VoiceVerification(Resource):
                         help="Missing filename in request!"
                         )
 
-    # def get(self, user_email, us_image_file, us_text_id):
     def get(self, user_email, text_id, filename):
-        # request_data = VoiceVerification.parser.parse_args()
         user_data = UserModel.retrieve_user_data_3(user_email, text_id, filename)
         ongoing_user = UserModel(**user_data)
+        local_file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, filename))
 
-        file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, filename))
+        url = f"https://dbapi.pl/file/download/{ongoing_user.image_file}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            with open(os.path.join(UPLOAD_FOLDER, ongoing_user.image_file, 'wb')) as f:
+                f.write(response.content)
+
+        else:
+            return {
+                       'message': 'Something when wrong or file does NOT exist on remote server!',
+                       'status': 'error'
+                   }, 400
+
+        remote_file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, ongoing_user.image_file))
 
         return {'ongoing_user': ongoing_user.return_all_attributes(),
-                'working_file_exists': file_exist,
-                'working_filename': filename}
+                'local_filename': filename,
+                'local_file_exists': local_file_exist,
+                'remote_image_filename': ongoing_user.image_file,
+                'remote_image_filename_exists': remote_file_exist
+                }, 200
 
     def verify_voice(self):
         # get database-stored image into buffer

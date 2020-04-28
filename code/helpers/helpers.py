@@ -6,21 +6,26 @@ from models.user_model import UserModel
 class VoiceVerificationTest(Resource):
 
     def get(self):
-        return {'message': "GET function called. Working correctly."}
+        return {'message': "GET function called. Working correctly."}, 200
 
     def put(self):
-        return {'message': "PUT function called. Working correctly."}
+        return {'message': "PUT function called. Working correctly."}, 200
 
     def post(self):
-        return {'message': "POST function called. Working correctly."}
+        return {'message': "POST function called. Working correctly."}, 200
 
 
 class GetTextPhrase(Resource):
 
     def get(self, user_email):
         import random
+        from json import JSONDecodeError
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
-        response = requests.request("GET", url).json()
+        try:
+            response = requests.request("GET", url).json()
+        except JSONDecodeError:
+            return {'message': 'User email not found!',
+                    'status': 'error'}
         number_of_text: int = len(response['data']['texts'])
         text_choice = random.choice(range(number_of_text))
         user_id = response['data']['userId']

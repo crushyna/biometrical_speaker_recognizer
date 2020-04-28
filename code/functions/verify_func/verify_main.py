@@ -9,17 +9,12 @@ from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
 
-
 UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-parse = reqparse.RequestParser()
-parse.add_argument('file', type=FileStorage, location='files')
-
 
 class VoiceFileUpload(Resource):
-
     UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
@@ -29,12 +24,14 @@ class VoiceFileUpload(Resource):
         Upload a new voicefile from front-end.
         :return: message
         """
+        parse = reqparse.RequestParser()
+        parse.add_argument('file', type=FileStorage, location='files', help='File was not provided!')
         data = parse.parse_args()
         if data['file'] == "":
             return {
                 'message': 'No file found',
                 'status': 'error'
-            }
+            }, 400
         wave_file = data['file']
 
         if wave_file:
@@ -42,11 +39,11 @@ class VoiceFileUpload(Resource):
             return {
                 'message': 'File uploaded',
                 'status': 'success'
-            }
+            }, 200
         return {
             'message': 'Something when wrong',
             'status': 'error'
-            }
+        }, 400
 
 
 class VoiceVerification(Resource):
@@ -68,9 +65,9 @@ class VoiceVerification(Resource):
                         )
 
     # def get(self, user_email, us_image_file, us_text_id):
-    def get(self, user_id, text_id, filename):
+    def get(self, user_email, text_id, filename):
         # request_data = VoiceVerification.parser.parse_args()
-        user_data = UserModel.retrieve_user_data_2(user_id)
+        user_data = UserModel.retrieve_user_data_3(user_email, text_id, filename)
         ongoing_user = UserModel(**user_data)
 
         file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, filename))

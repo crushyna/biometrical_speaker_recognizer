@@ -6,6 +6,7 @@ from flask_restful import Resource, reqparse
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
+from helpers.helpers import DownloadFileFromDatabase
 
 UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -16,14 +17,10 @@ class VoiceFileUpload(Resource):
     """
     endpoint for uploading new wavefile from front-end
     """
-    UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
-
     def post(self, filename):
         """
         Upload a new voicefile from front-end.
-        :return: message
+        :return: json message
         """
         parse = reqparse.RequestParser()
         parse.add_argument('file', type=FileStorage, location='files', help='File was not provided!')
@@ -71,27 +68,26 @@ class VoiceVerification(Resource):
     def get(self, user_email, text_id, filename):
         user_data = UserModel.retrieve_user_data_3(user_email, text_id, filename)
         ongoing_user = UserModel(**user_data)
+
+        # check, if file uploaded from front-end exists
         local_file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, filename))
 
-        url = f"https://dbapi.pl/file/download/{ongoing_user.image_file}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            with open(os.path.join(UPLOAD_FOLDER, ongoing_user.image_file, 'wb')) as f:
-                f.write(response.content)
-
-        else:
-            return {
-                       'message': 'Something when wrong or file does NOT exist on remote server!',
-                       'status': 'error'
-                   }, 400
+        # download voice image per user, per text
+        file_from_server_path = DownloadFileFromDatabase.get(ongoing_user.image_file)
+        if file_from_server_path[0]['status'] == 'error':
+            return {'message': 'Remote file not found!',
+                    'status': 'error'}, 400
 
         remote_file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, ongoing_user.image_file))
+        # file_from_server_exists = os.path.isfile(file_from_server_path)
 
         return {'ongoing_user': ongoing_user.return_all_attributes(),
                 'local_filename': filename,
                 'local_file_exists': local_file_exist,
                 'remote_image_filename': ongoing_user.image_file,
-                'remote_image_filename_exists': remote_file_exist
+                # 'file_from_server_exists': file_from_server_exists,
+                'remote_image_filename_exists': remote_file_exist,
+                'file_from_server_path_exists': file_from_server_path
                 }, 200
 
     def verify_voice(self):

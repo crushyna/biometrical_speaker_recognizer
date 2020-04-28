@@ -1,6 +1,11 @@
+import os
 import requests
 from flask_restful import Resource
 from models.user_model import UserModel
+
+UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 
 class VoiceVerificationTest(Resource):
@@ -43,3 +48,23 @@ class GetTextPhrase(Resource):
         # return {'text_phrase': user_data_dict[selected_text_id]['text_phrase']}, 200
         # return {'ongoing user': f'{new_user.return_all_attributes()}'}
         return {'message': user_data_dict['text_phrase']}, 200
+
+
+class DownloadFileFromDatabase:
+
+    @staticmethod
+    def get(filename):
+
+        url = f"https://dbapi.pl/file/download/{filename}"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            with open(os.path.join(UPLOAD_FOLDER, filename, 'wb')) as f:
+                f.write(response.content)
+        else:
+            return {
+                       'message': 'Something when wrong or file does NOT exist on remote server!',
+                       'status': 'error'
+                   }, 400
+
+        return os.path.join(UPLOAD_FOLDER, filename)

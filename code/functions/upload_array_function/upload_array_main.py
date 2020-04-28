@@ -1,36 +1,39 @@
 from io import BytesIO
+import requests
 from flask_restful import Resource
-#from src.controllers.azure_sql_controller import SQLController
-from code.src.sound_preprocessor_1 import SoundPreprocessor
-#from src.controllers.azure_blob_controller import AzureBlobController
+from models.voice_array_model import VoiceArrayModel
+from src.sound_preprocessor_1 import SoundPreprocessor
 
 
 class VoiceArrayUploader(Resource):
 
-    def __init__(self, user_id: int, sound_sample_filename: str, text_id: int):
-        self.name = f'{user_id}+{sound_sample_filename}'
-        self.user_id = user_id
-        self.text_id = text_id
-        self.sound_sample_filename = sound_sample_filename
-        self.azure_blob_connection_string = """DefaultEndpointsProtocol=https;AccountName=storageaccountvbioma487;AccountKey=kQjOecdi/KtMStu4iQkxmsAbe4HupAiByUqoumRVmCn+IfcYqNuEhPJGdbpBzta5rPqk8A0JxGrMxzwUJKAJDw==;EndpointSuffix=core.windows.net"""
-        self.blob_container = "default"
-        self.blob_folder = "voices/"
+    def post(self, merchant_id, user_id, text_id, filename):    # "merchantId: 100000, "userId": 100001, "textId": 100001
+        # initialize model from input data
+        new_voice_array = VoiceArrayModel(merchant_id, user_id, text_id, filename)
 
-        # make connections
-        #self.upload_array_sql_database = SQLController()
-        #self.upload_array_blob_service = AzureBlobController(self.azure_blob_connection_string, self.blob_container)
+        # retrieve filepath/filename for storing data on server
+        url = "https://dbapi.pl/sample/add"
+        payload = {
+            "merchantId": new_voice_array.merchant_id,
+            "userId": new_voice_array.user_id,
+            "textId": new_voice_array.text_id
+        }
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("POST", url, headers=headers, data=payload)
+        remote_filename = response.text.encode('utf8')
 
-    def upload_voice_array(self):
+        return {'message': remote_filename,
+                'status': 'success'}
+
+    def upload_voice_array(self, remote_filename):
         """
         create an ndarray out of .wav file sample and upload it to database
-        :return: bool
+        :return: json message
         """
 
         # first: check, if user even exists
-        login, _ = self.upload_array_sql_database.get_user_login_and_voice_id(self.user_id)
-        voices_list = self.upload_array_blob_service.ls_files(self.blob_folder)
-        if self.sound_sample_filename not in voices_list:
-            raise FileNotFoundError('File not found in blob container!')
 
         # get new file from blob
         input_blob_buffer: BytesIO

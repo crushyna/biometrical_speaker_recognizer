@@ -1,53 +1,68 @@
 from io import BytesIO
 import requests
+import os
+from json import dumps
 from flask_restful import Resource
 from models.voice_array_model import VoiceArrayModel
+from helpers.helpers import UploadFileToDatabase
 from src.sound_preprocessor_1 import SoundPreprocessor
+from numpy import save
+
+UPLOAD_FOLDER = 'code/temp/voicefiles'
+ARRAYS_FOLDER = 'code/temp/arrays'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 
 class VoiceArrayUploader(Resource):
 
-    def post(self, merchant_id, user_id, text_id, filename):    # "merchantId: 100000, "userId": 100001, "textId": 100001
-        # initialize model from input data
-        new_voice_array = VoiceArrayModel(merchant_id, user_id, text_id, filename)
-
-        # retrieve filepath/filename for storing data on server
-        url = "https://dbapi.pl/sample/add"
-        payload = {
-            "merchantId": new_voice_array.merchant_id,
-            "userId": new_voice_array.user_id,
-            "textId": new_voice_array.text_id
-        }
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
-        remote_filename = response.text.encode('utf8')
-
-        return {'message': remote_filename,
-                'status': 'success'}
-
-    def upload_voice_array(self, remote_filename):
+    def post(self, merchant_id, user_id, text_id, filename):
         """
         create an ndarray out of .wav file sample and upload it to database
         :return: json message
         """
+        # initialize voice array model from input data
+        new_voice_array = VoiceArrayModel(merchant_id, user_id, text_id, filename)
 
-        # first: check, if user even exists
+        # retrieve filepath/filename for storing data on server
+        remote_dest = VoiceArrayUploader.get_remote_destination(new_voice_array.merchant_id, new_voice_array.user_id, new_voice_array.text_id)
+        filename_to_upload = remote_dest['message']
 
-        # get new file from blob
-        input_blob_buffer: BytesIO
-        _, input_blob_buffer = self.upload_array_blob_service.download_file_to_bytesbuffer(
-            self.blob_folder + self.sound_sample_filename)
-
-        input_sound = SoundPreprocessor(login, input_blob_buffer)
+        # transform input wavefile
+        input_sound = SoundPreprocessor(os.path.join(UPLOAD_FOLDER, filename))
         input_sound.convert_stereo_to_mono()
         input_sound.fourier_transform_audio()
         input_sound.minmax_array_numpy()
 
+        save(os.path.join(ARRAYS_FOLDER, filename_to_upload), input_sound.scipy_audio)
+
         # upload to database as binary
-        result = self.upload_array_sql_database.upload_voice_array(self.user_id, input_sound.scipy_audio, self.text_id)
+        result = UploadFileToDatabase.post(os.path.join(ARRAYS_FOLDER, filename_to_upload))
 
-        input_blob_buffer.close()
+        # delete local array
+        os.remove(os.path.join(ARRAYS_FOLDER, filename_to_upload))
 
-        return result
+        return {'message': result.json()}
+
+    @staticmethod
+    def get_remote_destination(merchant_id, user_id, text_id):  # "merchantId: 100000, "userId": 100001, "textId": 100001
+
+        url = "https://dbapi.pl/sample/add"
+        payload = {
+            "merchantId": merchant_id,
+            "userId": user_id,
+            "textId": text_id
+        }
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("POST", url, headers=headers, data=dumps(payload))
+        if response.status_code == 200:
+            remote_filename = response.json()['data']['fileAddress']
+            return {'message': remote_filename,
+                    'status': 'success'}
+        else:
+            return {
+                       'message': 'Cannot establish connection to the server!',
+                       'status': 'error'
+                   }, 400

@@ -24,39 +24,7 @@ class UserModel:
         return self.__dict__
 
     @staticmethod
-    def create_table_for_users():
-        connection = sqlite3.connect('users_data.db')
-        cursor = connection.cursor()
-
-        create_table = "CREATE TABLE IF NOT EXISTS temp_users (user_id int, image_file text, image_id int, text_id int, text_phrase text, hash_int int)"
-        cursor.execute(create_table)
-        connection.commit()
-        connection.close()
-
-    @staticmethod
-    def _retrieve_user_data(user_id, text_id):
-        connection = sqlite3.connect('users_data.db')
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-
-        search_for_user = "SELECT * FROM temp_users WHERE user_id = ? AND text_id = ?"
-        cursor.execute(search_for_user, (user_id, text_id))
-        result = [dict(row) for row in cursor.fetchall()]
-
-        connection.commit()
-        connection.close()
-
-        return result
-
-    @staticmethod
-    def _retrieve_user_data_2(user_id):
-        url = f"https://dbapi.pl/user/byId/{user_id}"
-        response = requests.request("GET", url).json()
-
-        return response['data']
-
-    @staticmethod
-    def retrieve_user_data_3(user_email, text_id, filename):
+    def retrieve_user_data_3(user_email, text_id):
         from json import JSONDecodeError
         new_user_data_dict: dict
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
@@ -74,14 +42,6 @@ class UserModel:
                                       'text_id': each_text_data['textId'],
                                       'text_phrase': each_text_data['phrase'],
                                       }
-        '''
-        user_data_dict = {'user_id': user_id,
-                          'image_file': response['data']['texts'][text_id]['imageFile'],
-                          'image_id': response['data']['texts'][text_id]['imageId'],
-                          'text_id': response['data']['texts'][text_id]['textId'],
-                          'text_phrase': response['data']['texts'][text_id]['phrase'],
-                          }
-        '''
 
         return new_user_data_dict
 

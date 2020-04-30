@@ -3,9 +3,13 @@ import requests
 from flask_restful import Resource
 from models.user_model import UserModel
 
-UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
+UPLOAD_FOLDER = 'code/temp/voicefiles'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+ARRAYS_FOLDER = 'code/temp/arrays'
+if not os.path.exists(ARRAYS_FOLDER):
+    os.makedirs(ARRAYS_FOLDER)
 
 
 class VoiceVerificationTest(Resource):
@@ -41,12 +45,6 @@ class GetTextPhrase(Resource):
                           'text_phrase': response['data']['texts'][text_choice]['phrase'],
                           }
 
-        # new_user = UserModel(**user_data_dict)
-        # UserModel.create_table_for_users()
-        # new_user.save_user_to_database()
-
-        # return {'text_phrase': user_data_dict[selected_text_id]['text_phrase']}, 200
-        # return {'ongoing user': f'{new_user.return_all_attributes()}'}
         return {'message': user_data_dict['text_phrase']}, 200
 
 
@@ -54,6 +52,11 @@ class DownloadFileFromDatabase:
 
     @staticmethod
     def get(filename):
+        """
+        download specific file from database
+        :param filename:
+        :return: location + filename
+        """
 
         url = f"https://dbapi.pl/file/download/{filename}"
         response = requests.get(url)
@@ -61,10 +64,34 @@ class DownloadFileFromDatabase:
         if response.status_code == 200:
             with open(os.path.join(UPLOAD_FOLDER, filename, 'wb')) as f:
                 f.write(response.content)
+
+            return os.path.join(UPLOAD_FOLDER, filename)
+
         else:
             return {
                        'message': 'Something when wrong or file does NOT exist on remote server!',
                        'status': 'error'
                    }, 400
 
-        return os.path.join(UPLOAD_FOLDER, filename)
+
+class UploadFileToDatabase:
+
+    @staticmethod
+    def post(filename):
+        """
+        just read class name
+        :param filename:
+        :return: response
+        """
+        url = "https://dbapi.pl/file/upload"
+        files = [
+            ('file', open(filename, 'rb'))
+        ]
+        response = requests.request("POST", url, files=files)
+        if response.status_code == 200:
+            return response
+        else:
+            return {
+                       'message': 'Something when wrong or file does NOT exist on remote server!',
+                       'status': 'error'
+                   }, 400

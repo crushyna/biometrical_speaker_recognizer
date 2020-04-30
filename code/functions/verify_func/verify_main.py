@@ -8,9 +8,13 @@ from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
 from helpers.helpers import DownloadFileFromDatabase
 
-UPLOAD_FOLDER = 'code/functions/verify_func/temp_voicefiles'
+UPLOAD_FOLDER = 'code/temp/voicefiles'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+ARRAYS_FOLDER = 'code/temp/arrays'
+if not os.path.exists(ARRAYS_FOLDER):
+    os.makedirs(ARRAYS_FOLDER)
 
 
 class VoiceFileUpload(Resource):

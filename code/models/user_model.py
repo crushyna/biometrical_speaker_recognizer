@@ -44,22 +44,3 @@ class UserModel:
                                       }
 
         return new_user_data_dict
-
-    def save_user_to_database(self):
-        connection = sqlite3.connect('users_data.db')
-        cursor = connection.cursor()
-
-        search_for_user = "SELECT * FROM temp_users WHERE hash_int = ?"
-        cursor.execute(search_for_user, (self.user_hash,))
-        data = cursor.fetchone()
-        if data is None:
-            new_user = "INSERT INTO temp_users VALUES (?, ?, ?, ?, ?, ?)"
-            cursor.execute(new_user,
-                           (self.user_id, self.image_file, self.image_id, self.text_id, self.text_phrase,
-                            self.user_hash))
-            connection.commit()
-            connection.close()
-        else:
-            connection.commit()
-            connection.close()
-            return {'message': 'User already exists in temporary database!'}

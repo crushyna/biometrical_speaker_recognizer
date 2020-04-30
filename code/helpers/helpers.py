@@ -1,7 +1,8 @@
 import os
+from dataclasses import dataclass
 import requests
-from flask_restful import Resource
-from models.user_model import UserModel
+from flask_restful import Resource, reqparse
+from werkzeug.datastructures import FileStorage
 
 UPLOAD_FOLDER = 'code/temp/voicefiles'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -10,6 +11,17 @@ if not os.path.exists(UPLOAD_FOLDER):
 ARRAYS_FOLDER = 'code/temp/arrays'
 if not os.path.exists(ARRAYS_FOLDER):
     os.makedirs(ARRAYS_FOLDER)
+
+IMAGES_FOLDER = 'code/temp/voice_images'
+if not os.path.exists(IMAGES_FOLDER):
+    os.makedirs(IMAGES_FOLDER)
+
+
+@dataclass
+class WorkingFolders:
+    upload_folder = UPLOAD_FOLDER
+    arrays_folder = ARRAYS_FOLDER
+    images_folder = IMAGES_FOLDER
 
 
 class VoiceVerificationTest(Resource):
@@ -48,13 +60,47 @@ class GetTextPhrase(Resource):
         return {'message': user_data_dict['text_phrase']}, 200
 
 
+class VoiceFileUpload(Resource):
+    """
+    endpoint for uploading new wavefile from front-end
+    """
+
+    @staticmethod
+    def post(filename):
+        """
+        Retrieve a new voicefile from the front-end.
+        :return: json message
+        """
+        parse = reqparse.RequestParser()
+        parse.add_argument('file', type=FileStorage, location='files', help='File was not provided!')
+        data = parse.parse_args()
+        if data['file'] == "":
+            return {
+                       'message': 'No file found',
+                       'status': 'error'
+                   }, 400
+        wave_file = data['file']
+
+        if wave_file:
+            wave_file.save(os.path.join(WorkingFolders.upload_folder, filename))
+            return {
+                       'message': 'File uploaded',
+                       'status': 'success'
+                   }, 200
+        return {
+                   'message': 'Something when wrong',
+                   'status': 'error'
+               }, 400
+
+
 class DownloadFileFromDatabase:
 
     @staticmethod
-    def get(filename):
+    def get(filename, destination):
         """
         download specific file from database
-        :param filename:
+        :param destination: string
+        :param filename: string
         :return: location + filename
         """
 
@@ -62,16 +108,18 @@ class DownloadFileFromDatabase:
         response = requests.get(url)
 
         if response.status_code == 200:
-            with open(os.path.join(UPLOAD_FOLDER, filename, 'wb')) as f:
+            with open(os.path.join(destination, filename), 'wb') as f:
                 f.write(response.content)
 
-            return os.path.join(UPLOAD_FOLDER, filename)
-
+            return {
+                'message': os.path.join(destination, filename),
+                'status': 'success'
+            }
         else:
             return {
-                       'message': 'Something when wrong or file does NOT exist on remote server!',
-                       'status': 'error'
-                   }, 400
+                'message': 'Something when wrong or file does NOT exist on remote server!',
+                'status': 'error'
+            }
 
 
 class UploadFileToDatabase:
@@ -81,15 +129,15 @@ class UploadFileToDatabase:
         """
         just read class name
         :param filename:
-        :return: response
+        :return: json response
         """
         url = "https://dbapi.pl/file/upload"
         files = [
             ('file', open(filename, 'rb'))
         ]
         response = requests.request("POST", url, files=files)
-        if response.status_code == 200:
-            return response
+        if response.status_code == 201:
+            return response.json()
         else:
             return {
                        'message': 'Something when wrong or file does NOT exist on remote server!',

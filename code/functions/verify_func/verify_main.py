@@ -1,51 +1,10 @@
 from io import BytesIO
 import os
-import requests
-from werkzeug.datastructures import FileStorage
 from flask_restful import Resource, reqparse
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
-from helpers.helpers import DownloadFileFromDatabase
-
-UPLOAD_FOLDER = 'code/temp/voicefiles'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-ARRAYS_FOLDER = 'code/temp/arrays'
-if not os.path.exists(ARRAYS_FOLDER):
-    os.makedirs(ARRAYS_FOLDER)
-
-
-class VoiceFileUpload(Resource):
-    """
-    endpoint for uploading new wavefile from front-end
-    """
-    def post(self, filename):
-        """
-        Upload a new voicefile from front-end.
-        :return: json message
-        """
-        parse = reqparse.RequestParser()
-        parse.add_argument('file', type=FileStorage, location='files', help='File was not provided!')
-        data = parse.parse_args()
-        if data['file'] == "":
-            return {
-                       'message': 'No file found',
-                       'status': 'error'
-                   }, 400
-        wave_file = data['file']
-
-        if wave_file:
-            wave_file.save(os.path.join(UPLOAD_FOLDER, filename))
-            return {
-                       'message': 'File uploaded',
-                       'status': 'success'
-                   }, 200
-        return {
-                   'message': 'Something when wrong',
-                   'status': 'error'
-               }, 400
+from helpers.helpers import WorkingFolders, DownloadFileFromDatabase
 
 
 class VoiceVerification(Resource):
@@ -70,19 +29,19 @@ class VoiceVerification(Resource):
                         )
 
     def get(self, user_email, text_id, filename):
-        user_data = UserModel.retrieve_user_data_3(user_email, text_id, filename)
+        user_data = UserModel.retrieve_user_data_3(user_email, text_id)
         ongoing_user = UserModel(**user_data)
 
         # check, if file uploaded from front-end exists
-        local_file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, filename))
+        local_file_exist = os.path.isfile(os.path.join(WorkingFolders.upload_folder, filename))
 
         # download voice image per user, per text
-        file_from_server_path = DownloadFileFromDatabase.get(ongoing_user.image_file)
-        if file_from_server_path[0]['status'] == 'error':
-            return {'message': 'Remote file not found!',
+        file_from_server_path = DownloadFileFromDatabase.get(ongoing_user.image_file, WorkingFolders.images_folder)
+        if file_from_server_path['status'] == 'error':
+            return {'message': f'Remote file not found! Searched filename: {ongoing_user.image_file}',
                     'status': 'error'}, 400
 
-        remote_file_exist = os.path.isfile(os.path.join(UPLOAD_FOLDER, ongoing_user.image_file))
+        remote_file_exist = os.path.isfile(os.path.join(WorkingFolders.images_folder, ongoing_user.image_file))
         # file_from_server_exists = os.path.isfile(file_from_server_path)
 
         return {'ongoing_user': ongoing_user.return_all_attributes(),
@@ -91,8 +50,10 @@ class VoiceVerification(Resource):
                 'remote_image_filename': ongoing_user.image_file,
                 # 'file_from_server_exists': file_from_server_exists,
                 'remote_image_filename_exists': remote_file_exist,
-                'file_from_server_path_exists': file_from_server_path
+                'file_from_server_path': file_from_server_path['message']
                 }, 200
+
+        # os.remove(file_from_server_path['message'])
 
     def verify_voice(self):
         # get database-stored image into buffer

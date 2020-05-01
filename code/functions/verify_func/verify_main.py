@@ -29,6 +29,7 @@ class VoiceVerification(Resource):
                         )
 
     def get(self, user_email, text_id, filename):
+        # create User model
         user_data = UserModel.retrieve_user_data_3(user_email, text_id)
         ongoing_user = UserModel(**user_data)
 
@@ -65,13 +66,6 @@ class VoiceVerification(Resource):
         :return: bool
         """
 
-        # check if requested data exists
-        user_id, voice_id = self.verify_main_sql_database.get_user_id_and_voice_id(self.user_login)
-        voices_list = self.verify_main_blob_service.ls_files(self.blob_folder)
-        if self.sound_sample_filename not in voices_list:
-            raise FileNotFoundError('File not found in blob container!')
-
-        # TODO: needs recognition Voice Image per Text
         # get database-stored image into buffer
         voice_image_id = self.verify_main_sql_database.get_image_voice_id(voice_id, self.text_id)
         voice_image_bytes = self.verify_main_sql_database.download_voice_image(voice_image_id)

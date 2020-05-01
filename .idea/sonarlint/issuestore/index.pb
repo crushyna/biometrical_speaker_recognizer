@@ -46,3 +46,7 @@ P
  code/models/voice_array_model.py,f\4\f4b3e8de69dfbbe7e98e056cc2921173a03efbd1
 X
 (venv/Lib/site-packages/numpy/__init__.py,f\c\fc7728cafeb9d7b8f2f983885e79d6e8ae0a2155
+P
+ code/models/voice_image_model.py,3\7\379a7f1cca5498d6b90152eaf098ef57d10420b5
+O
+.idea/dictionaries/crushyna.xml,b\7\b7ee41be8e011a321b0f395ad568c8d14a2fa978

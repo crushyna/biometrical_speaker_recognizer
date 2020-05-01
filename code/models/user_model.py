@@ -1,3 +1,5 @@
+from json import dumps
+
 import requests
 
 
@@ -34,3 +36,20 @@ class UserModel:
                                       }
 
         return new_user_data_dict
+
+    @staticmethod
+    def retrieve_new_user_data(user_email, merchant_id, password):
+        url = "https://dbapi.pl/user/add"
+
+        payload = {
+            "email": user_email,
+            "merchantId": merchant_id,
+            "password": password
+        }
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=dumps(payload))
+
+        return response

@@ -1,17 +1,7 @@
-import sqlite3
 import requests
 
 
 class UserModel:
-    '''
-    def __init__(self, user_id, image_file, image_id, text_id, text_phrase):
-        self.user_id = user_id
-        self.image_file = image_file
-        self.image_id = image_id
-        self.text_id = text_id
-        self.text_phrase = text_phrase
-        self.user_hash = hash(self.user_id * self.image_id * self.text_id)
-    '''
 
     def __init__(self, *initial_data, **kwargs):
         for dictionary in initial_data:

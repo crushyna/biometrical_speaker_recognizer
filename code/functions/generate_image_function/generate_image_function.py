@@ -1,11 +1,16 @@
-from code.src.sound_preprocessor_1 import SoundPreprocessor
+from src.sound_preprocessor_1 import SoundPreprocessor
+from models.voice_image_model import VoiceImageModel
 from flask_restful import Resource
 
 
 class VoiceImageGenerator(Resource):
 
-    def post(self, user_id, text_id):
-        pass
+    def post(self, user_email, text_id):
+        new_image_data = VoiceImageModel.retrieve_user_image_data(user_email, text_id)
+        ongoing_image = VoiceImageModel(**new_image_data)
+
+        return {'message': ongoing_image.__dict__,
+                'status': 'success'}
 
     def generate_binary_voice_image(self):
         """

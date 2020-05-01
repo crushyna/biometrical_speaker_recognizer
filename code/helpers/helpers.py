@@ -38,7 +38,7 @@ class VoiceVerificationTest(Resource):
 
 class GetTextPhrase(Resource):
 
-    def get(self, user_email):
+    def get(self, user_email: str):
         import random
         from json import JSONDecodeError
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
@@ -66,7 +66,7 @@ class VoiceFileUpload(Resource):
     """
 
     @staticmethod
-    def post(filename):
+    def post(filename: str):
         """
         Retrieve a new voicefile from the front-end.
         :return: json message
@@ -96,7 +96,7 @@ class VoiceFileUpload(Resource):
 class DownloadFileFromDatabase:
 
     @staticmethod
-    def get(filename, destination):
+    def get(filename: str, destination: str):
         """
         download specific file from database
         :param destination: string
@@ -125,10 +125,10 @@ class DownloadFileFromDatabase:
 class UploadFileToDatabase:
 
     @staticmethod
-    def post(filename):
+    def post(filename: str):
         """
         just read class name
-        :param filename:
+        :param filename: string
         :return: json response
         """
         url = "https://dbapi.pl/file/upload"

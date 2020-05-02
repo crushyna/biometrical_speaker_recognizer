@@ -47,15 +47,19 @@ class GetTextPhrase(Resource):
         except JSONDecodeError:
             return {'message': 'User email not found!',
                     'status': 'error'}
-        number_of_text: int = len(response['data']['texts'])
-        text_choice = random.choice(range(number_of_text))
-        user_id = response['data']['userId']
-        user_data_dict = {'user_id': user_id,
-                          'image_file': response['data']['texts'][text_choice]['imageFile'],
-                          'image_id': response['data']['texts'][text_choice]['imageId'],
-                          'text_id': response['data']['texts'][text_choice]['textId'],
-                          'text_phrase': response['data']['texts'][text_choice]['phrase'],
-                          }
+        try:
+            number_of_text: int = len(response['data']['texts'])
+            text_choice = random.choice(range(number_of_text))
+            user_id = response['data']['userId']
+            user_data_dict = {'user_id': user_id,
+                              'image_file': response['data']['texts'][text_choice]['imageFile'],
+                              'image_id': response['data']['texts'][text_choice]['imageId'],
+                              'text_id': response['data']['texts'][text_choice]['textId'],
+                              'text_phrase': response['data']['texts'][text_choice]['phrase'],
+                              }
+        except IndexError:
+            return {'message': 'Insufficient data for completing user model!',
+                    'status': 'error'}
 
         return {'message': user_data_dict['text_phrase']}, 200
 

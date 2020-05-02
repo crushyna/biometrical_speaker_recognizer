@@ -1,6 +1,8 @@
 IMPORTANT:
 1. Upon release, test user, arrays and image must be uploaded!
 
+ceac0e88ac3046c2faee611cb567a43cdd4ce5472acd56b8d9c836c485468b921fed4ab223e5d435ec3a8b9ccefb55a74bc1d968d96c10d7b3c264c79f266879
+
 radek_1a = SoundPreprocessor('radek_1a', test_filename_1)
 radek_1b = SoundPreprocessor('radek_1b', test_filename_2)
 paulina_1a = SoundPreprocessor('paulina_1a', test_filename_3)

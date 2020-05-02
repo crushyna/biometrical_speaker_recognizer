@@ -50,3 +50,7 @@ P
  code/models/voice_image_model.py,3\7\379a7f1cca5498d6b90152eaf098ef57d10420b5
 O
 .idea/dictionaries/crushyna.xml,b\7\b7ee41be8e011a321b0f395ad568c8d14a2fa978
+S
+#code/functions/add_user/__init__.py,c\8\c8df186a0df6c88aaf44aea2db7a0cdf15e0d8f9
+S
+#code/functions/add_user/add_user.py,3\5\35a884410b15f5a70e034c16cbbd5742e18ad270

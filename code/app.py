@@ -1,6 +1,7 @@
 from flask_restful import Api
 from flask import Flask
-from functions.add_user.add_user import AddUser
+from functions.frontend_functions.add_user import AddUser
+from functions.frontend_functions.login_user import LoginUser
 from functions.verify_func.verify_main import VoiceVerification
 from functions.upload_array_function.upload_array_main import VoiceArrayUploader
 from functions.generate_image_function.generate_image_function import VoiceImageGenerator
@@ -12,7 +13,11 @@ api = Api(app_main)
 # REST test endpoint
 api.add_resource(VoiceVerificationTest, '/verify_voice_test')
 
+# add new user to database
 api.add_resource(AddUser, '/add_new_user/')
+
+# login module: check if user exists in database
+api.add_resource(LoginUser, '/user_login/')
 
 # get random text phrase per user email
 api.add_resource(GetTextPhrase, '/get_text_phrase/<string:user_email>')

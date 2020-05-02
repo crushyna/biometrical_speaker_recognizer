@@ -1,5 +1,5 @@
 from json import dumps
-
+from json import JSONDecodeError
 import requests
 
 
@@ -17,7 +17,6 @@ class UserModel:
 
     @staticmethod
     def retrieve_user_data_3(user_email, text_id):
-        from json import JSONDecodeError
         new_user_data_dict: dict
         url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
         try:
@@ -53,3 +52,32 @@ class UserModel:
         response = requests.request("POST", url, headers=headers, data=dumps(payload))
 
         return response
+
+    @staticmethod
+    def retrieve_logging_user_data(merchant_id, user_email, password):
+        url1 = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
+        try:
+            response = requests.request("GET", url1).json()
+        except JSONDecodeError:
+            return {'message': 'User data not found!',
+                    'status': 'error'}
+        user_id = response['data']['userId']
+
+        url2 = f"https://dbapi.pl/user/byId/{merchant_id}/{user_id}"
+        try:
+            response = requests.request("GET", url2).json()
+        except JSONDecodeError:
+            return {'message': 'User data not found!',
+                    'status': 'error'}
+
+        user_password = response['data']['password']
+
+        if user_password == password:
+            return {'message': 'Authorized',
+                    'status': 'success'}
+        else:
+            return {'message': 'Unauthorized access!',
+                    'user_password': user_password,
+                    'input_password': password,
+                    'status': 'error'}
+        

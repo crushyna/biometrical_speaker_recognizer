@@ -59,8 +59,9 @@ class VoiceVerification(Resource):
         remote_file_exist = os.path.isfile(os.path.join(WorkingFolders.images_folder, ongoing_user.image_file))
 
         # run verification function
-        verification_result = VoiceVerification.verify_voice(user_email, os.path.join(WorkingFolders.upload_folder, filename),
-                                       file_from_server_path['message'])
+        verification_result = VoiceVerification.verify_voice(user_email,
+                                                             os.path.join(WorkingFolders.upload_folder, filename),
+                                                             file_from_server_path)
 
         # return results
         return {'ongoing_user': ongoing_user.return_all_attributes(),

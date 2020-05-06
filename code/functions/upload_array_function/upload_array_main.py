@@ -23,8 +23,11 @@ class VoiceArrayUploader(Resource):
                     'status': 'error'}
 
         # retrieve filepath/filename for storing data on server
-        remote_dest = VoiceArrayUploader.get_remote_destination(new_voice_array.merchant_id, new_voice_array.user_id, new_voice_array.text_id)
-        filename_to_upload = remote_dest['message']
+        filename_to_upload = VoiceArrayModel.get_remote_destination(new_voice_array.merchant_id, new_voice_array.user_id, new_voice_array.text_id)
+
+        if filename_to_upload is False:
+            return {'message': 'Cannot establish connection to the database server!',
+                    'status': 'error'}
 
         # transform input wavefile
         input_sound = SoundPreprocessor(os.path.join(WorkingFolders.upload_folder, local_filename))
@@ -44,25 +47,3 @@ class VoiceArrayUploader(Resource):
 
         return {'message': result}
 
-    @staticmethod
-    def get_remote_destination(merchant_id, user_id, text_id):  # "merchantId: 100000, "userId": 100001, "textId": 100001
-
-        url = "https://dbapi.pl/sample/add"
-        payload = {
-            "merchantId": merchant_id,
-            "userId": user_id,
-            "textId": text_id
-        }
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.request("POST", url, headers=headers, data=dumps(payload))
-        if response.status_code == 200:
-            remote_filename = response.json()['data']['fileAddress']
-            return {'message': remote_filename,
-                    'status': 'success'}
-        else:
-            return {
-                       'message': 'Cannot establish connection to the server!',
-                       'status': 'error'
-                   }, 400

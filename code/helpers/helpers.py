@@ -4,7 +4,7 @@ import requests
 from flask_restful import Resource, reqparse
 from werkzeug.datastructures import FileStorage
 
-UPLOAD_FOLDER = 'code/temp/voicefiles'
+UPLOAD_FOLDER = 'code/temp/wavefiles'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -24,7 +24,7 @@ class WorkingFolders:
     images_folder = IMAGES_FOLDER
 
 
-class VoiceVerificationTest(Resource):
+class ConnectionTest(Resource):
 
     def get(self):
         return {'message': "GET function called. Working correctly."}, 200
@@ -64,7 +64,7 @@ class GetTextPhrase(Resource):
         return {'message': user_data_dict['text_phrase']}, 200
 
 
-class VoiceFileUpload(Resource):
+class WaveFileUpload(Resource):
     """
     endpoint for uploading new wavefile from front-end
     """
@@ -111,14 +111,11 @@ class DownloadFileFromDatabase:
         url = f"https://dbapi.pl/file/download/{filename}"
         response = requests.get(url)
 
-        if response.status_code == 200:
+        if response.status_code == 200 or 201:
             with open(os.path.join(destination, filename), 'wb') as f:
                 f.write(response.content)
 
-            return {
-                'message': os.path.join(destination, filename),
-                'status': 'success'
-            }
+            return os.path.join(destination, filename)
         else:
             return {
                 'message': 'Something when wrong or file does NOT exist on remote server!',

@@ -37,7 +37,7 @@ class UserModel:
         return new_user_data_dict
 
     @staticmethod
-    def retrieve_new_user_data(user_email, merchant_id, password):
+    def add_new_user(user_email, merchant_id, password):
         url = "https://dbapi.pl/user/add"
 
         payload = {
@@ -57,27 +57,21 @@ class UserModel:
     def retrieve_logging_user_data(merchant_id, user_email, password):
         url1 = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         try:
-            response = requests.request("GET", url1).json()
-        except JSONDecodeError:
-            return {'message': 'User data not found!',
-                    'status': 'error'}
-        user_id = response['data']['userId']
+            response1 = requests.request("GET", url1).json()
+        except JSONDecodeError as error:
+            return error
+
+        user_id = response1['data']['userId']
 
         url2 = f"https://dbapi.pl/user/byId/{merchant_id}/{user_id}"
         try:
-            response = requests.request("GET", url2).json()
-        except JSONDecodeError:
-            return {'message': 'User data not found!',
-                    'status': 'error'}
+            response2 = requests.request("GET", url2).json()
+        except JSONDecodeError as error:
+            return error
 
-        user_password = response['data']['password']
+        user_password = response2['data']['password']
 
         if user_password == password:
-            return {'message': 'Authorized',
-                    'status': 'success'}
+            return True
         else:
-            return {'message': 'Unauthorized access!',
-                    'user_password': user_password,
-                    'input_password': password,
-                    'status': 'error'}
-        
+            return False

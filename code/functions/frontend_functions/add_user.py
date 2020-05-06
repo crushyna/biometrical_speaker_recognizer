@@ -27,9 +27,9 @@ class AddUser(Resource):
         :return:
         """
         data = AddUser.parser.parse_args()
-        response = UserModel.retrieve_new_user_data(**data)
+        response = UserModel.add_new_user(**data)
         if response.json()['error'] != 0:
-            return {'message': response['message'],
+            return {'message': 'Database or connection error!',
                     'status': 'error'}
         else:
             return {'message': response.json(),

@@ -11,6 +11,7 @@ class VoiceVerification(Resource):
     """
     Entry point for actual function of this application.
     """
+    '''
     parser = reqparse.RequestParser()
     parser.add_argument('user_id',
                         type=int,
@@ -27,20 +28,21 @@ class VoiceVerification(Resource):
                         required=True,
                         help="Missing filename in request!"
                         )
-
-    def get(self, user_email: str, text_id: int, filename: str):
+    '''
+    def get(self, merchant_id: int, user_email: str, text_id: int, filename: str):
         """
         First, create user model.
         Then, check if filename provided by front-end DOES exists on back-end server.
         Then, download voice image file from database to back-end server.
         Finally, execute verify_voice() function and return it's result.
+        :param merchant_id: int
         :param user_email: str
         :param text_id: int
         :param filename: str
         :return: json message
         """
         # create User model
-        user_data = UserModel.retrieve_user_data_3(user_email, text_id)
+        user_data = UserModel.retrieve_user_data_3(merchant_id, user_email, text_id)
         ongoing_user = UserModel(**user_data)
 
         # check, if wavefile uploaded from front-end exists

@@ -1,3 +1,4 @@
+import requests
 from flask_restful import Resource, reqparse
 from models.user_model import UserModel
 
@@ -28,10 +29,10 @@ class AddUser(Resource):
         """
         data = AddUser.parser.parse_args()
         response = UserModel.add_new_user(**data)
-        if response.json()['error'] != 0:
-            return {'message': 'Database or connection error!',
-                    'status': 'error'}
-        else:
+
+        if response.status_code in (200, 201):
             return {'message': response.json(),
                     'status': 'success'}
-
+        else:
+            return {'message': 'Database or connection error!',
+                    'status': 'error'}

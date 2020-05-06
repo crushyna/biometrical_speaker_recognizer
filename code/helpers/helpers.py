@@ -57,9 +57,10 @@ class GetTextPhrase(Resource):
                               'text_id': response['data']['texts'][text_choice]['textId'],
                               'text_phrase': response['data']['texts'][text_choice]['phrase'],
                               }
-        except IndexError:
+        # except IndexError:
+        except Exception:
             return {'message': 'Insufficient data for completing user model!',
-                    'status': 'error'}
+                    'status': 'error'}, 500
 
         return {'message': user_data_dict['text_phrase']}, 200
 
@@ -68,7 +69,6 @@ class WaveFileUpload(Resource):
     """
     endpoint for uploading new wavefile from front-end
     """
-
     @staticmethod
     def post(filename: str):
         """

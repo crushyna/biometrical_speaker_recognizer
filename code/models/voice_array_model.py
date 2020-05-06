@@ -24,7 +24,7 @@ class VoiceArrayModel:
             'Content-Type': 'application/json'
         }
         response = requests.request("POST", url, headers=headers, data=dumps(payload))
-        if response.status_code == 200 or 201:
+        if response.status_code in (200, 201):
             remote_filename = response.json()['data']['sampleFile']
             return remote_filename
         else:

@@ -16,9 +16,9 @@ class UserModel:
         return self.__dict__
 
     @staticmethod
-    def retrieve_user_data_3(user_email, text_id):
+    def retrieve_user_data_3(merchant_id, user_email, text_id):
         new_user_data_dict: dict
-        url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
+        url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         try:
             response = requests.request("GET", url).json()
         except JSONDecodeError:
@@ -28,6 +28,7 @@ class UserModel:
         for each_text_data in response['data']['texts']:
             if each_text_data['textId'] == text_id:
                 new_user_data_dict = {'user_id': user_id,
+                                      'merchant_id': merchant_id,
                                       'image_file': each_text_data['imageFile'],
                                       'image_id': each_text_data['imageId'],
                                       'text_id': each_text_data['textId'],

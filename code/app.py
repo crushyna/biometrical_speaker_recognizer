@@ -29,11 +29,11 @@ api.add_resource(WaveFileUpload, '/upload_wavefile/<string:filename>')
 api.add_resource(VoiceArrayUploader,
                  '/array_upload/<int:merchant_id>/<int:user_id>/<int:text_id>/<string:local_filename>')
 
-# verify voice entry point
-api.add_resource(VoiceVerification, '/verify_voice/<string:user_email>/<int:text_id>/<string:filename>')
-
 # generate voice images from arrays on the server
 api.add_resource(VoiceImageGenerator, '/image_generator/<int:merchant_id>/<string:user_email>/<int:text_id>')
+
+# verify voice entry point
+api.add_resource(VoiceVerification, '/verify_voice/<int:merchant_id>/<string:user_email>/<int:text_id>/<string:filename>')
 
 if __name__ == '__main__':
     app_main.run(host='0.0.0.0', port=5500, debug=True)

@@ -46,6 +46,7 @@ class ImagePreprocessor:
         image_buffer = BytesIO()
 
         plt.figure(figsize=(5, 2), frameon=False)
+        plt.axis('off')
         plt.plot(array)
         plt.savefig(image_buffer, format='png', facecolor='white', transparent=False, bbox_inches='tight',
                     pad_inches=0, dpi=300)

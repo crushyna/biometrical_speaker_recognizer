@@ -43,22 +43,29 @@ class VoiceVerification(Resource):
         """
         # create User model
         user_data = UserModel.retrieve_user_data_3(merchant_id, user_email, text_id)
+        if not user_data:
+            return {'message': 'Database error! Cannot retrieve user data!',
+                    'status': 'error'}, 500
+
         ongoing_user = UserModel(**user_data)
 
         # check, if wavefile uploaded from front-end exists
         local_file_exist = os.path.isfile(os.path.join(WorkingFolders.upload_folder, filename))
         if not local_file_exist:
             return {'message': f'File: {filename} has not been found on back-end server!',
-                    'status': 'error'}
+                    'status': 'error'}, 400
 
         # download voice image per user, per text
         file_from_server_path = DownloadFileFromDatabase.get(ongoing_user.image_file, WorkingFolders.images_folder)
-        if file_from_server_path['status'] == 'error':
-            return {'message': f'Remote file not found! Searched filename: {ongoing_user.image_file}',
+        if not file_from_server_path:
+            return {'message': f'Error when downloading file from server: {ongoing_user.image_file}',
                     'status': 'error'}, 400
 
-        # check, if downloaded file exist
+        # check, if downloaded voice image exist
         remote_file_exist = os.path.isfile(os.path.join(WorkingFolders.images_folder, ongoing_user.image_file))
+        if not remote_file_exist:
+            return {'message': f'Downloaded file not found! Searched filename: {ongoing_user.image_file}',
+                    'status': 'error'}, 400
 
         # run verification function
         verification_result = VoiceVerification.verify_voice(user_email,
@@ -71,7 +78,7 @@ class VoiceVerification(Resource):
                 'local_file_exists': local_file_exist,
                 'remote_image_filename': ongoing_user.image_file,
                 'remote_image_filename_exists': remote_file_exist,
-                'file_from_server_path': file_from_server_path['message'],
+                'file_from_server_path': file_from_server_path,
                 'verification_result': verification_result
                 }, 200
 
@@ -106,6 +113,8 @@ class VoiceVerification(Resource):
             return {'message': 'Values over 1000!',
                     'status': 'error'}
         else:
+            print(result_dhash)
+            print(result_whash)
             if result_dhash / result_whash > 0.85:
                 if result_dhash + result_whash <= 1500:
                     return {'message': f'Sum: {result_dhash + result_whash}',
@@ -129,62 +138,6 @@ class VoiceVerification(Resource):
             else:
                 return False
         '''
-
-        # TODO: upload result if OK
-        # if result (some operation) then:
-        # upload result = upload_voice_array(user_id, sound_sample)
-
-    def _old_verify_voice(self):
-        """
-        entry point for module, that is simple voice hash comparison
-        :return: bool
-        """
-
-        # get database-stored image into buffer
-        voice_image_id = self.verify_main_sql_database.get_image_voice_id(voice_id, self.text_id)
-        voice_image_bytes = self.verify_main_sql_database.download_voice_image(voice_image_id)
-        stored_image_buffer: BytesIO
-        _, stored_image_buffer = ImagePreprocessor.generate_audio_image(voice_image_bytes)
-
-        # get input file from blob
-        input_blob_buffer: BytesIO
-        _, input_blob_buffer = self.verify_main_blob_service.download_file_to_bytesbuffer(
-            self.blob_folder + self.sound_sample_filename)
-
-        # process input sound
-        input_sound = SoundPreprocessor(self.user_login, input_blob_buffer)
-        input_sound.convert_stereo_to_mono()
-        input_sound.fourier_transform_audio()
-        input_sound.minmax_array_numpy()
-
-        # generate image from processed audio and put it into buffer
-        input_image_buffer: BytesIO
-        _, input_image_buffer = ImagePreprocessor.generate_audio_image(input_sound.scipy_audio)
-
-        # compare images
-        image_preprocessor = ImagePreprocessor(input_image_buffer, stored_image_buffer)
-
-        result_dhash = image_preprocessor.compare_dhash()
-        result_whash = image_preprocessor.compare_whash()
-
-        print(f"DHASH Difference: {result_dhash}")
-        print(f"WHASH Difference: {result_whash}")
-
-        # close BytesIO buffers
-        stored_image_buffer.close()
-        input_image_buffer.close()
-        input_blob_buffer.close()
-
-        if result_dhash > 1000 or result_whash > 1000:
-            return False
-        else:
-            if result_dhash / result_whash > 0.85:
-                if result_dhash + result_whash <= 1500:
-                    return True
-                else:
-                    return False
-            else:
-                return False
 
         # TODO: upload result if OK
         # if result (some operation) then:

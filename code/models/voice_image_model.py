@@ -1,3 +1,5 @@
+from json import dumps
+
 import requests
 
 
@@ -16,11 +18,12 @@ class VoiceImageModel:
         from json import JSONDecodeError
         new_image_data_dict = {}
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
-        try:
+        response = requests.request("GET", url)
+
+        if response.status_code not in (200, 201):
+            return False
+        else:
             response = requests.request("GET", url).json()
-        except JSONDecodeError:
-            return {'message': 'Image data not found!',
-                    'status': 'error'}
 
         user_id = response['data']['userId']
 
@@ -35,5 +38,38 @@ class VoiceImageModel:
                                        }
                 return new_image_data_dict
             else:
-                return {'message': 'Error! Cannot retrieve user image data!',
-                        'status': 'error'}, 400
+                return False
+
+    @staticmethod
+    def get_list_of_numpy_arrays(merchant_id, user_id, text_id):
+        url = f"https://dbapi.pl/samples/byUserIdAndTextId/{merchant_id}/{user_id}/{text_id}"
+        numpy_arrays_list = []
+        response = requests.request("GET", url)
+        data = response.json()
+        if response.status_code in (200, 201):
+            for each_sample in data['data']['samples']:
+                var = each_sample['sampleFile']
+                numpy_arrays_list.append(var)
+
+            return numpy_arrays_list
+        else:
+            return False
+
+    @staticmethod
+    def get_remote_destination(merchant_id, user_id, text_id):
+
+        url = "https://dbapi.pl/image/add"
+        payload = {
+            "merchantId": merchant_id,
+            "userId": user_id,
+            "textId": text_id
+        }
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        response = requests.request("POST", url, headers=headers, data=dumps(payload))
+        if response.status_code in (200, 201):
+            remote_filename = response.json()['data']['imageFile']
+            return remote_filename
+        else:
+            return False

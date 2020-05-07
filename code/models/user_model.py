@@ -34,6 +34,8 @@ class UserModel:
                                       'text_id': each_text_data['textId'],
                                       'text_phrase': each_text_data['phrase'],
                                       }
+            else:
+                return False
 
         return new_user_data_dict
 

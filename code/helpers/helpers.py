@@ -117,10 +117,7 @@ class DownloadFileFromDatabase:
 
             return os.path.join(destination, filename)
         else:
-            return {
-                'message': 'Something when wrong or file does NOT exist on remote server!',
-                'status': 'error'
-            }
+            return False
 
 
 class UploadFileToDatabase:
@@ -137,7 +134,7 @@ class UploadFileToDatabase:
             ('file', open(filename, 'rb'))
         ]
         response = requests.request("POST", url, files=files)
-        if response.status_code == 201:
+        if response.status_code in (200, 201):
             return response.json()
         else:
             return {

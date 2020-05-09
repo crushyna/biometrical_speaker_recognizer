@@ -9,7 +9,7 @@ from flask_restful import Resource
 
 class VoiceImageGenerator(Resource):
 
-    def post(self, merchant_id, user_id, text_id):
+    def post(self, merchant_id: int, user_id: int, text_id: int):
         '''
         new_image_data: dict = VoiceImageModel.retrieve_user_image_data(merchant_id, user_email, text_id)
 
@@ -74,7 +74,7 @@ class VoiceImageGenerator(Resource):
         return final_result
 
     @staticmethod
-    def generate_binary_voice_image(arrays_list, local_filename):
+    def generate_binary_voice_image(arrays_list: list, local_filename: str):
         """
         generates binary image from average values of voice arrays (per specific text) and upload it up to database
         :return: bool

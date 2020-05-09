@@ -1,0 +1,6 @@
+
+fpython:S1144H"BRemove this unused class-private '__old__save_audio_image' method.(¨şõÆÿÿÿÿÿ8ö®‰.
+upython:S1144Y"QRemove this unused class-private '__old__generate_voice_image_from_bytes' method.(¦Îçüÿÿÿÿ8ö®‰.
+cpython:S11440"DRemove this unused class-private '__old__maxabs_array_numpy' method.(œ·«ç8ö®‰.
+npython:S1144q"JRemove this unused class-private '__old__create_voice_image_array' method.(ÿ ƒÚşÿÿÿÿ8ö®‰.
+[python:S1144"<Remove this unused class-private '__old__plot_audio' method.(Ú‡Ùô8ö®‰.

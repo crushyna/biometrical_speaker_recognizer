@@ -1,6 +1,6 @@
 from io import BytesIO
 import os
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
@@ -85,7 +85,7 @@ class VoiceVerification(Resource):
         # os.remove(file_from_server_path['message'])
 
     @staticmethod
-    def verify_voice(user_email, local_wavefile, local_voice_image):
+    def verify_voice(user_email: str, local_wavefile: str, local_voice_image: str):
 
         # process input sound
         input_sound = SoundPreprocessor(local_wavefile)

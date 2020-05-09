@@ -16,7 +16,7 @@ class UserModel:
         return self.__dict__
 
     @staticmethod
-    def retrieve_user_data_3(merchant_id, user_email, text_id):
+    def retrieve_user_data_3(merchant_id: int, user_email: str, text_id: int):
         new_user_data_dict: dict
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         try:
@@ -40,7 +40,7 @@ class UserModel:
         return new_user_data_dict
 
     @staticmethod
-    def add_new_user(user_email, merchant_id, password):
+    def add_new_user(user_email: str, merchant_id: int, password: str):
         url = "https://dbapi.pl/user/add"
 
         payload = {
@@ -57,7 +57,7 @@ class UserModel:
         return response
 
     @staticmethod
-    def retrieve_logging_user_data(merchant_id, user_email, password):
+    def retrieve_logging_user_data(merchant_id: int, user_email: str, password: str):
         url1 = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         try:
             response1 = requests.request("GET", url1).json()

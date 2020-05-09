@@ -10,7 +10,7 @@ from numpy import save
 
 class VoiceArrayUploader(Resource):
 
-    def post(self, merchant_id, user_id, text_id, local_filename):
+    def post(self, merchant_id: int, user_id: int, text_id: int, local_filename: str):
         """
         create an ndarray out of .wav file sample and upload it to database
         :return: json message

@@ -4,15 +4,15 @@ from flask.json import dumps
 
 class VoiceArrayModel:
 
-    def __init__(self, merchant_id, user_id, text_id, local_filename):
+    def __init__(self, merchant_id: int, user_id: int, text_id: int, local_filename: str):
         self.merchant_id = merchant_id
         self.user_id = user_id
         self.text_id = text_id
         self.local_filename = local_filename
 
     @staticmethod
-    def get_remote_destination(merchant_id, user_id,
-                               text_id):  # "merchantId: 100000, "userId": 100001, "textId": 100001
+    def get_remote_destination(merchant_id: int, user_id: int,
+                               text_id: int):  # "merchantId: 100000, "userId": 100001, "textId": 100001
 
         url = "https://dbapi.pl/sample/add"
         payload = {

@@ -14,7 +14,7 @@ class VoiceImageModel:
         self.image_file = image_file
 
     @staticmethod
-    def retrieve_user_image_data(merchant_id, user_email, text_id):
+    def retrieve_user_image_data(merchant_id: int, user_email: str, text_id: int):
         from json import JSONDecodeError
         new_image_data_dict = {}
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
@@ -41,7 +41,7 @@ class VoiceImageModel:
                 return False
 
     @staticmethod
-    def get_list_of_numpy_arrays(merchant_id, user_id, text_id):
+    def get_list_of_numpy_arrays(merchant_id: int, user_id: int, text_id: int):
         url = f"https://dbapi.pl/samples/byUserIdAndTextId/{merchant_id}/{user_id}/{text_id}"
         numpy_arrays_list = []
         response = requests.request("GET", url)
@@ -56,7 +56,7 @@ class VoiceImageModel:
             return False
 
     @staticmethod
-    def get_remote_destination(merchant_id, user_id, text_id):
+    def get_remote_destination(merchant_id: int, user_id: int, text_id: int):
 
         url = "https://dbapi.pl/image/add"
         payload = {

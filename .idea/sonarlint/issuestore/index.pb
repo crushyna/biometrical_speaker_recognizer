@@ -17,8 +17,6 @@ P
  code/src/image_preprocessor_1.py,5\0\500700a4b9bdf82e1a7947e54007ec983c94a635
 P
  code/src/sound_preprocessor_1.py,5\6\5607a0284d5cf0f4c7fef896b9ddc3a21c673fc0
-U
-%code/src/test_sound_preprocessor_1.py,e\1\e156c759493b6b74ec6b15b02ccf15c29f022f15
 @
 code/__init__.py,a\2\a24373fe804f6c1531d732981ecab6252c049977
 5

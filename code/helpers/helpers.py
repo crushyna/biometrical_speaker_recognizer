@@ -46,7 +46,7 @@ class GetTextPhrase(Resource):
             response = requests.request("GET", url).json()
         except JSONDecodeError:
             return {'message': 'User email not found!',
-                    'status': 'error'}
+                    'status': 'error'}, 403
         try:
             number_of_text: int = len(response['data']['texts'])
             text_choice = random.choice(range(number_of_text))

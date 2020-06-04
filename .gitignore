@@ -189,3 +189,6 @@ venv/pyvenv.cfg
 .idea/sonarlint/issuestore/d/a/daccbc0365efa19b23277308248942c10ade0a3e
 .vscode/settings.json
 /venv/
+venv/images/imagehash.png
+venv/Scripts/easy_install-3.7.exe
+*.exe

@@ -32,7 +32,7 @@ class AddUser(Resource):
 
         if response.status_code in (200, 201):
             return {'message': response.json(),
-                    'status': 'success'}
+                    'status': 'success'}, 201
         else:
             return {'message': 'Database or connection error!',
-                    'status': 'error'}
+                    'status': 'error'}, 400

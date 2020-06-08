@@ -6,4 +6,3 @@ sklearn
 requests
 flask
 flask_restful
-passlib

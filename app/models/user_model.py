@@ -1,6 +1,5 @@
 from json import dumps
 from json import JSONDecodeError
-from passlib.handlers.sha2_crypt import sha512_crypt
 import requests
 
 
@@ -75,8 +74,7 @@ class UserModel:
 
         user_password = response2['data']['password']
 
-        # if user_password == password:
-        if sha512_crypt.verify(password, user_password):
+        if user_password == password:
             return True
         else:
             return False

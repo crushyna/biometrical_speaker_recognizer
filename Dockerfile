@@ -1,7 +1,7 @@
 # Dockerfile - this is a comment. Delete me if you want.
-FROM python:3.7
-COPY . /app
+FROM tiangolo/uwsgi-nginx-flask:python3.8
+COPY ./app /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 ENTRYPOINT ["python"]
-CMD ["-u", "code/app.py"]
+CMD ["-u", "main.py"]

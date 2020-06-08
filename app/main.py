@@ -7,8 +7,8 @@ from functions.upload_array_function.upload_array_main import VoiceArrayUploader
 from functions.generate_image_function.generate_image_function import VoiceImageGenerator
 from helpers.helpers import ConnectionTest, GetTextPhrase, WaveFileUpload
 
-app_main = Flask(__name__)
-api = Api(app_main)
+app = Flask(__name__)
+api = Api(app)
 
 # REST test endpoint
 api.add_resource(ConnectionTest, '/connection_test')
@@ -36,4 +36,4 @@ api.add_resource(VoiceImageGenerator, '/image_generator/<int:merchant_id>/<int:u
 api.add_resource(VoiceVerification, '/verify_voice/<int:merchant_id>/<string:user_email>/<int:text_id>/<string:filename>')
 
 if __name__ == '__main__':
-    app_main.run(host='0.0.0.0', port=5500, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)

@@ -24,19 +24,19 @@ class LoginUser(Resource):
         """
         check is user has an account in application (check if user / password is correct)
         user data needs to be included in request BODY
-        :return:
+        :return: message, status and status code
         """
         data = LoginUser.parser.parse_args()
         response = UserModel.retrieve_logging_user_data(**data)
 
         if response:
             return {
-                    "message": "Authorized",
-                    "status": "success"
-                }
+                       "message": "Authorized",
+                       "status": "success"
+                   }, 200
         else:
             return {
-                    "message": "Unauthorized!",
-                    "error": response,
-                    "status": "error"
-                }
+                       "message": "Unauthorized!",
+                       "error": response,
+                       "status": "error"
+                   }, 401

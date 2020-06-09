@@ -4,15 +4,15 @@ import requests
 from flask_restful import Resource, reqparse
 from werkzeug.datastructures import FileStorage
 
-UPLOAD_FOLDER = 'app/temp/wavefiles'
+UPLOAD_FOLDER = 'temp/wavefiles'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-ARRAYS_FOLDER = 'app/temp/arrays'
+ARRAYS_FOLDER = 'temp/arrays'
 if not os.path.exists(ARRAYS_FOLDER):
     os.makedirs(ARRAYS_FOLDER)
 
-IMAGES_FOLDER = 'app/temp/voice_images'
+IMAGES_FOLDER = 'temp/voice_images'
 if not os.path.exists(IMAGES_FOLDER):
     os.makedirs(IMAGES_FOLDER)
 

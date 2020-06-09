@@ -29,14 +29,11 @@ class LoginUser(Resource):
         data = LoginUser.parser.parse_args()
         response = UserModel.retrieve_logging_user_data(**data)
 
-        if response:
-            return {
-                       "message": "Authorized",
-                       "status": "success"
-                   }, 200
+        if response['message'] == 'authorized':
+            return response, 200
+
+        elif response['message'] == 'unauthorized':
+            return response, 401
+
         else:
-            return {
-                       "message": "Unauthorized!",
-                       "error": response,
-                       "status": "error"
-                   }, 401
+            return response, 400

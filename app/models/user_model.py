@@ -59,22 +59,24 @@ class UserModel:
     @staticmethod
     def retrieve_logging_user_data(merchant_id: int, user_email: str, password: str):
         url1 = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
-        try:
-            response1 = requests.request("GET", url1).json()
-        except JSONDecodeError as error:
-            return error
+        response1 = requests.request("GET", url1)
+        if response1.status_code not in (200, 201):
+            return {'message': 'Database error while executing url: https://dbapi.pl/texts/byEmail/',
+                    'status': 'error'}
 
-        user_id = response1['data']['userId']
+        user_id = response1.json()['data']['userId']
 
         url2 = f"https://dbapi.pl/user/byId/{merchant_id}/{user_id}"
-        try:
-            response2 = requests.request("GET", url2).json()
-        except JSONDecodeError as error:
-            return error
+        response2 = requests.request("GET", url2)
+        if response2.status_code not in (200, 201):
+            return {'message': 'Database error while executing url: https://dbapi.pl/user/byId/',
+                    'status': 'error'}
 
-        user_password = response2['data']['password']
+        user_password = response2.json()['data']['password']
 
         if user_password == password:
-            return True
+            return {'message': 'authorized',
+                    'status': 'success'}
         else:
-            return False
+            return {'message': 'unauthorized',
+                    'status': 'success'}

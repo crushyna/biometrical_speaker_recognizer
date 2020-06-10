@@ -38,14 +38,14 @@ class ConnectionTest(Resource):
 
 class GetTextPhrase(Resource):
 
-    def get(self, user_email: str):
+    def get(self, user_email: str, merchant_id: int):
         import random
         from json import JSONDecodeError
-        url = f"https://dbapi.pl/texts/byEmail/100000/{user_email}"
+        url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         try:
             response = requests.request("GET", url).json()
         except JSONDecodeError:
-            return {'message': 'User email not found!',
+            return {'message': 'Database error!',
                     'status': 'error'}, 403
         try:
             number_of_text: int = len(response['data']['texts'])

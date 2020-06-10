@@ -20,7 +20,7 @@ api.add_resource(AddUser, '/add_new_user/')
 api.add_resource(LoginUser, '/user_login/')
 
 # get random text phrase per user email
-api.add_resource(GetTextPhrase, '/get_text_phrase/<string:user_email>')
+api.add_resource(GetTextPhrase, '/get_text_phrase/<int:merchant_id>/<string:user_email>')
 
 # upload wave file to server
 api.add_resource(WaveFileUpload, '/upload_wavefile/<string:filename>')

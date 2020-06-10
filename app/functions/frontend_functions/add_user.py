@@ -32,6 +32,9 @@ class AddUser(Resource):
         if response.status_code in (200, 201):
             return {'message': response.json(),
                     'status': 'success'}, 201
+        elif response.status_code == 409:
+            return {'message': 'User already exists!',
+                    'status': 'success'}, 409
         else:
             return {'message': 'Database or connection error!',
                     'status': 'error'}, 400

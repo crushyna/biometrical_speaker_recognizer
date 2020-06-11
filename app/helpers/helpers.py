@@ -40,19 +40,19 @@ class CheckIfUserExists(Resource):
 
     def get(self, merchant_id: int, user_email: str):
         from json import JSONDecodeError
-        url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
+        url = f"https://dbapi.pl/user/check/exist{merchant_id}/{user_email}"
         try:
             response = requests.request("GET", url)
         except JSONDecodeError:
             return {'message': 'Database error!',
                     'status': 'error'}, 403
 
-        if response.status_code not in (200, 201):
-            return {'message': 'User does not exits!',
-                    'status': 'success'}, 400
-        else:
-            return {'message': 'User already exists!',
+        if response.status_code in (200, 201):
+            return {'message': 'User exist!',
                     'status': 'success'}, 200
+        else:
+            return {'message': 'User does not exists!',
+                    'status': 'error'}, 404
 
 
 class GetTextPhrase(Resource):

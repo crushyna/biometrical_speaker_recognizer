@@ -36,6 +36,25 @@ class ConnectionTest(Resource):
         return {'message': "POST function called. Working correctly."}, 200
 
 
+class CheckIfUserExists(Resource):
+
+    def get(self, merchant_id: int, user_email: str):
+        from json import JSONDecodeError
+        url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
+        try:
+            response = requests.request("GET", url)
+        except JSONDecodeError:
+            return {'message': 'Database error!',
+                    'status': 'error'}, 403
+
+        if response.status_code not in (200, 201):
+            return {'message': 'User does not exits!',
+                    'status': 'success'}, 400
+        else:
+            return {'message': 'User already exists!',
+                    'status': 'success'}, 200
+
+
 class GetTextPhrase(Resource):
 
     def get(self, user_email: str, merchant_id: int):
@@ -69,6 +88,7 @@ class WaveFileUpload(Resource):
     """
     endpoint for uploading new wavefile from front-end
     """
+
     @staticmethod
     def post(filename: str):
         """

@@ -40,7 +40,7 @@ class CheckIfUserExists(Resource):
 
     def get(self, merchant_id: int, user_email: str):
         from json import JSONDecodeError
-        url = f"https://dbapi.pl/user/check/exist{merchant_id}/{user_email}"
+        url = f"https://dbapi.pl/user/check/exist/{merchant_id}/{user_email}"
         try:
             response = requests.request("GET", url)
         except JSONDecodeError:
@@ -50,9 +50,12 @@ class CheckIfUserExists(Resource):
         if response.status_code in (200, 201):
             return {'message': 'User exist!',
                     'status': 'success'}, 200
-        else:
+        elif response.status_code == 404:
             return {'message': 'User does not exists!',
                     'status': 'error'}, 404
+        else:
+            return {'message': 'Database error! @function: CheckIfUserExists',
+                    'status': 'error'}, 500
 
 
 class GetTextPhrase(Resource):

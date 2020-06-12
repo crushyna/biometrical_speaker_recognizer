@@ -39,7 +39,7 @@ api.add_resource(VoiceImageGenerator, '/image_generator/<int:merchant_id>/<int:u
 # verify voice entry point
 api.add_resource(VoiceVerification, '/verify_voice/<int:merchant_id>/<string:user_email>/<int:text_id>/<string:filename>')
 
-### STRICTLY FOR FRONT-END REGISTRATION
+### STRICTLY FOR FRONT-END REGISTRATION ###
 api.add_resource(GetSamplesByUserId, '/samples/byUserId/<int:merchant_id>/<int:user_id>')
 api.add_resource(GetTextsRandom, '/texts/random/<int:number_of_missing_texts>')
 

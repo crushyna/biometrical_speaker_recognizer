@@ -25,7 +25,7 @@ class HashFunctions:
         # test 1
         k = bytes(key, 'utf-8')
         message = bytes(message, 'utf-8')
-        result = hmac_sha512(k, message)
+        result = self.hmac_sha512(k, message)
         return result.hex()
         # add tests as desired
 

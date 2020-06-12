@@ -2,6 +2,8 @@ from json import dumps
 
 import requests
 
+import Config
+
 
 class VoiceImageModel:
 
@@ -18,12 +20,13 @@ class VoiceImageModel:
         from json import JSONDecodeError
         new_image_data_dict = {}
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
-        response = requests.request("GET", url)
+        basic_auth = Config.BasicAuth()
+        response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
 
         if response.status_code not in (200, 201):
             return False
         else:
-            response = requests.request("GET", url).json()
+            response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password)).json()
 
         user_id = response['data']['userId']
 
@@ -43,8 +46,9 @@ class VoiceImageModel:
     @staticmethod
     def get_list_of_numpy_arrays(merchant_id: int, user_id: int, text_id: int):
         url = f"https://dbapi.pl/samples/byUserIdAndTextId/{merchant_id}/{user_id}/{text_id}"
+        basic_auth = Config.BasicAuth()
         numpy_arrays_list = []
-        response = requests.request("GET", url)
+        response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
         data = response.json()
         if response.status_code in (200, 201):
             for each_sample in data['data']['samples']:
@@ -59,6 +63,7 @@ class VoiceImageModel:
     def get_remote_destination(merchant_id: int, user_id: int, text_id: int):
 
         url = "https://dbapi.pl/image/add"
+        basic_auth = Config.BasicAuth()
         payload = {
             "merchantId": merchant_id,
             "userId": user_id,
@@ -67,7 +72,7 @@ class VoiceImageModel:
         headers = {
             'Content-Type': 'application/json'
         }
-        response = requests.request("POST", url, headers=headers, data=dumps(payload))
+        response = requests.request("POST", url, headers=headers, data=dumps(payload), auth=(basic_auth.login, basic_auth.password))
         if response.status_code in (200, 201):
             remote_filename = response.json()['data']['imageFile']
             return remote_filename

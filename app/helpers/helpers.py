@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import requests
 from flask_restful import Resource, reqparse
 from werkzeug.datastructures import FileStorage
+import Config
 
 UPLOAD_FOLDER = 'temp/wavefiles'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -41,8 +42,9 @@ class CheckIfUserExists(Resource):
     def get(self, merchant_id: int, user_email: str):
         from json import JSONDecodeError
         url = f"https://dbapi.pl/user/check/exist/{merchant_id}/{user_email}"
+        basic_auth = Config.BasicAuth()
         try:
-            response = requests.request("GET", url)
+            response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
         except JSONDecodeError:
             return {'message': 'Database error!',
                     'status': 'error'}, 403
@@ -64,8 +66,9 @@ class GetTextPhrase(Resource):
         import random
         from json import JSONDecodeError
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
+        basic_auth = Config.BasicAuth()
         try:
-            response = requests.request("GET", url).json()
+            response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password)).json()
         except JSONDecodeError:
             return {'message': 'Database error!',
                     'status': 'error'}, 403
@@ -132,7 +135,8 @@ class DownloadFileFromDatabase:
         """
 
         url = f"https://dbapi.pl/file/download/{filename}"
-        response = requests.get(url)
+        basic_auth = Config.BasicAuth()
+        response = requests.get(url,auth=(basic_auth.login, basic_auth.password))
 
         if response.status_code == 200 or 201:
             with open(os.path.join(destination, filename), 'wb') as f:
@@ -153,10 +157,11 @@ class UploadFileToDatabase:
         :return: json response
         """
         url = "https://dbapi.pl/file/upload"
+        basic_auth = Config.BasicAuth()
         files = [
             ('file', open(filename, 'rb'))
         ]
-        response = requests.request("POST", url, files=files)
+        response = requests.request("POST", url, files=files, auth=(basic_auth.login, basic_auth.password))
         if response.status_code in (200, 201):
             return response.json()
         else:

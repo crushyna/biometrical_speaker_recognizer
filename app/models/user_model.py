@@ -1,6 +1,8 @@
+import base64
 from json import dumps
 from json import JSONDecodeError
 import requests
+import Config
 
 
 class UserModel:
@@ -19,8 +21,10 @@ class UserModel:
     def retrieve_user_data_3(merchant_id: int, user_email: str, text_id: int):
         new_user_data_dict: dict
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
+        basic_auth = Config.BasicAuth()
+
         try:
-            response = requests.request("GET", url).json()
+            response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password)).json()
         except JSONDecodeError:
             return {'message': 'User data not found!',
                     'status': 'error'}
@@ -42,6 +46,7 @@ class UserModel:
     @staticmethod
     def add_new_user(user_email: str, merchant_id: int, password: str):
         url = "https://dbapi.pl/user/add"
+        basic_auth = Config.BasicAuth()
 
         payload = {
             "email": user_email,
@@ -52,14 +57,15 @@ class UserModel:
             'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", url, headers=headers, data=dumps(payload))
+        response = requests.request("POST", url, headers=headers, data=dumps(payload), auth=(basic_auth.login, basic_auth.password))
 
         return response
 
     @staticmethod
     def retrieve_logging_user_data(merchant_id: int, user_email: str, password: str):
         url1 = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
-        response1 = requests.request("GET", url1)
+        basic_auth = Config.BasicAuth()
+        response1 = requests.request("GET", url1, auth=(basic_auth.login, basic_auth.password))
         if response1.status_code not in (200, 201):
             return {'message': 'Database error while executing url: https://dbapi.pl/texts/byEmail/',
                     'status': 'error'}
@@ -67,7 +73,7 @@ class UserModel:
         user_id = response1.json()['data']['userId']
 
         url2 = f"https://dbapi.pl/user/byId/{merchant_id}/{user_id}"
-        response2 = requests.request("GET", url2)
+        response2 = requests.request("GET", url2, auth=(basic_auth.login, basic_auth.password))
         if response2.status_code not in (200, 201):
             return {'message': 'Database error while executing url: https://dbapi.pl/user/byId/',
                     'status': 'error'}

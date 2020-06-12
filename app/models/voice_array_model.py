@@ -1,6 +1,6 @@
 import requests
 from flask.json import dumps
-
+import Config
 
 class VoiceArrayModel:
 
@@ -15,6 +15,7 @@ class VoiceArrayModel:
                                text_id: int):  # "merchantId: 100000, "userId": 100001, "textId": 100001
 
         url = "https://dbapi.pl/sample/add"
+        basic_auth = Config.BasicAuth()
         payload = {
             "merchantId": merchant_id,
             "userId": user_id,
@@ -23,7 +24,7 @@ class VoiceArrayModel:
         headers = {
             'Content-Type': 'application/json'
         }
-        response = requests.request("POST", url, headers=headers, data=dumps(payload))
+        response = requests.request("POST", url, headers=headers, data=dumps(payload), auth=(basic_auth.login, basic_auth.password))
         if response.status_code in (200, 201):
             remote_filename = response.json()['data']['sampleFile']
             return remote_filename

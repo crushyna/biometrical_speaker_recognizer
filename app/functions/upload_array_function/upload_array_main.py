@@ -31,7 +31,7 @@ class VoiceArrayUploader(Resource):
 
         # transform input wavefile
         input_sound = SoundPreprocessor(os.path.join(WorkingFolders.upload_folder, local_filename))
-        input_sound.convert_stereo_to_mono()
+        # input_sound.convert_stereo_to_mono()
         input_sound.fourier_transform_audio()
         input_sound.minmax_array_numpy()
 

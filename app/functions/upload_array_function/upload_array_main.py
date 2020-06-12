@@ -26,12 +26,15 @@ class VoiceArrayUploader(Resource):
         if filename_to_upload is False:
             return {'message': 'Cannot establish connection to the database server!',
                     'status': 'error'}, 400
+        try:
+            # transform input wavefile
+            input_sound = SoundPreprocessor(os.path.join(WorkingFolders.upload_folder, local_filename))
+            # input_sound.convert_stereo_to_mono()
+            input_sound.fourier_transform_audio()
+            input_sound.minmax_array_numpy()
 
-        # transform input wavefile
-        input_sound = SoundPreprocessor(os.path.join(WorkingFolders.upload_folder, local_filename))
-        # input_sound.convert_stereo_to_mono()
-        input_sound.fourier_transform_audio()
-        input_sound.minmax_array_numpy()
+        except Exception as e:
+            return e
 
         # save .npy file
         save(os.path.join(WorkingFolders.arrays_folder, filename_to_upload), input_sound.scipy_audio)

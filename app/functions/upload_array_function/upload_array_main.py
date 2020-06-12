@@ -1,6 +1,4 @@
-import requests
 import os
-from json import dumps
 from flask_restful import Resource
 from models.voice_array_model import VoiceArrayModel
 from helpers.helpers import UploadFileToDatabase, WorkingFolders

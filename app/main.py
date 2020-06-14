@@ -37,13 +37,13 @@ api.add_resource(VoiceArrayUploader,
 api.add_resource(VoiceImageGenerator, '/image_generator/<int:merchant_id>/<int:user_id>/<int:text_id>')
 
 # verify voice entry point
-api.add_resource(VoiceVerification, '/verify_voice/<int:merchant_id>/<string:user_email>/<int:text_id>/<string:filename>')
+api.add_resource(VoiceVerification,
+                 '/verify_voice/<int:merchant_id>/<string:user_email>/<int:text_id>/<string:filename>')
 
 ### STRICTLY FOR FRONT-END REGISTRATION ###
 api.add_resource(GetSamplesByUserId, '/samples/byUserId/<int:merchant_id>/<int:user_id>')
 api.add_resource(GetTextsRandom, '/texts/random/<int:number_of_missing_texts>')
 api.add_resource(GetTextsInfoByUserId, '/texts/info/byUserId/<int:merchant_id>/<int:user_id>')
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)

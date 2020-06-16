@@ -161,11 +161,25 @@ class UploadFileToDatabase:
         files = [
             ('file', open(filename, 'rb'))
         ]
-        response = requests.request("POST", url, files=files, auth=(basic_auth.login, basic_auth.password))
-        if response.status_code in (200, 201):
+        response = requests.request("PUT", url, files=files, auth=(basic_auth.login, basic_auth.password))
+        status = response.status_code
+        if status == 201:
             return response.json()
         else:
-            return {
-                       'message': 'Something when wrong or file does NOT exist on remote server!',
-                       'status': 'error'
-                   }, 400
+            # return {
+            #            'message': 'Something when wrong or file does NOT exist on remote server!',
+            #            'status': 'error'
+            #        }, 400
+
+            if str(status).startswith('5'):
+                return {
+                           'message': 'Database server error!',
+                           'status': 'error'
+                       }, 400
+            elif str(status).startswith('4'):
+                return {
+                           'message': 'Backend server error!',
+                           'status': 'error'
+                       }, 400
+
+

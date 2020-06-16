@@ -164,7 +164,7 @@ class UploadFileToDatabase:
         response = requests.request("PUT", url, files=files, auth=(basic_auth.login, basic_auth.password))
         status = response.status_code
         if status == 201:
-            return response.json()
+            return response.json(), status
         else:
             # return {
             #            'message': 'Something when wrong or file does NOT exist on remote server!',

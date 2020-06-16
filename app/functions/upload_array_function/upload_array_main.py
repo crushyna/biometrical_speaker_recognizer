@@ -8,7 +8,7 @@ from numpy import save
 
 class VoiceArrayUploader(Resource):
 
-    def post(self, merchant_id: int, user_id: int, text_id: int, local_filename: str):
+    def post(self, merchant_id: int, user_id: int, text_id: int, local_filename: str, remote_filename: str):
         """
         create an ndarray out of .wav file sample and upload it to database
         :return: json message
@@ -21,11 +21,13 @@ class VoiceArrayUploader(Resource):
                     'status': 'error'}, 404
 
         # retrieve filepath/filename for storing data on server
-        filename_to_upload = VoiceArrayModel.get_remote_destination(new_voice_array.merchant_id, new_voice_array.user_id, new_voice_array.text_id)
+        '''
+        filename_to_upload: str = VoiceArrayModel.get_remote_destination(new_voice_array.merchant_id, new_voice_array.user_id, new_voice_array.text_id)
 
         if filename_to_upload is False:
             return {'message': 'Cannot establish connection to the database server!',
                     'status': 'error'}, 400
+        '''
         try:
             # transform input wavefile
             input_sound = SoundPreprocessor(os.path.join(WorkingFolders.upload_folder, local_filename))
@@ -37,13 +39,13 @@ class VoiceArrayUploader(Resource):
             return e
 
         # save .npy file
-        save(os.path.join(WorkingFolders.arrays_folder, filename_to_upload), input_sound.scipy_audio)
+        save(os.path.join(WorkingFolders.arrays_folder, remote_filename), input_sound.scipy_audio)
 
         # upload to database as binary
-        result = UploadFileToDatabase.post(os.path.join(WorkingFolders.arrays_folder, filename_to_upload))
+        result = UploadFileToDatabase.post(os.path.join(WorkingFolders.arrays_folder, remote_filename))
 
         # delete local array
-        os.remove(os.path.join(WorkingFolders.arrays_folder, filename_to_upload))
+        os.remove(os.path.join(WorkingFolders.arrays_folder, remote_filename))
         os.remove(os.path.join(WorkingFolders.upload_folder, new_voice_array.local_filename))
 
         return {'message': result}

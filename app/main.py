@@ -31,7 +31,7 @@ api.add_resource(WaveFileUpload, '/upload_wavefile/<string:filename>')
 
 # upload from back-end server to database
 api.add_resource(VoiceArrayUploader,
-                 '/array_upload/<int:merchant_id>/<int:user_id>/<int:text_id>/<string:local_filename>')
+                 '/array_upload/<int:merchant_id>/<int:user_id>/<int:text_id>/<string:local_filename>/<string:remote_filename>')
 
 # generate voice images from arrays on the server
 api.add_resource(VoiceImageGenerator, '/image_generator/<int:merchant_id>/<int:user_id>/<int:text_id>')

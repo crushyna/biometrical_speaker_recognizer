@@ -16,7 +16,7 @@ class GetSamplesInfoByUserId(Resource):
             return {'message': 'Database error!',
                     'status': 'error'}, 403
 
-        return response.json()
+        return response.json(), response.status_code
 
 
 class GetTextsRandom(Resource):

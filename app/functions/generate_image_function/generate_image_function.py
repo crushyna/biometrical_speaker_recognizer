@@ -43,7 +43,8 @@ class VoiceImageGenerator(Resource):
         local_arrays_list = []
 
         for each_numpy_file in response_list:
-            next_numpyfile = DownloadFileFromDatabase.get(filename=each_numpy_file, destination=WorkingFolders.arrays_folder)
+            next_numpyfile = DownloadFileFromDatabase.get(filename=each_numpy_file,
+                                                          destination=WorkingFolders.arrays_folder)
             if not next_numpyfile:
                 return {'message': f'Cannot retrieve {each_numpy_file} from database!',
                         'status': 'error'}, 400
@@ -54,7 +55,8 @@ class VoiceImageGenerator(Resource):
         # compile all local numpy files into one image
         local_image_file = VoiceImageGenerator.generate_binary_voice_image(arrays_list=local_arrays_list,
                                                                            local_filename=os.path.join(
-                                                                               WorkingFolders.images_folder, image_filename))
+                                                                               WorkingFolders.images_folder,
+                                                                               image_filename))
 
         if not os.path.isfile(local_image_file):
             return {
@@ -88,5 +90,3 @@ class VoiceImageGenerator(Resource):
             f.write(stored_image_buffer.getbuffer())
 
         return local_filename
-
-

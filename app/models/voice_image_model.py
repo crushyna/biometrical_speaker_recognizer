@@ -61,7 +61,6 @@ class VoiceImageModel:
 
     @staticmethod
     def get_remote_destination(merchant_id: int, user_id: int, text_id: int):
-
         url = "https://dbapi.pl/image/add"
         basic_auth = Config.BasicAuth()
         payload = {

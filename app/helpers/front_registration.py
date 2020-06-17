@@ -4,11 +4,11 @@ from flask_restful import Resource
 import Config
 
 
-class GetSamplesByUserId(Resource):
+class GetSamplesInfoByUserId(Resource):
 
     def get(self, merchant_id: int, user_id: int):
         from json import JSONDecodeError
-        url = f"https://dbapi.pl/samples/byUserId/{merchant_id}/{user_id}"
+        url = f"https://dbapi.pl/samples/info/byUserId/{merchant_id}/{user_id}"
         basic_auth = Config.BasicAuth()
         try:
             response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))

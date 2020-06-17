@@ -6,7 +6,7 @@ from functions.verify_func.verify_main import VoiceVerification
 from functions.upload_array_function.upload_array_main import VoiceArrayUploader
 from functions.generate_image_function.generate_image_function import VoiceImageGenerator
 from helpers.helpers import ConnectionTest, GetTextPhrase, WaveFileUpload, CheckIfUserExists
-from helpers.front_registration import GetSamplesByUserId, GetTextsRandom, GetTextsInfoByUserId
+from helpers.front_registration import GetTextsRandom, GetTextsInfoByUserId, GetSamplesInfoByUserId
 
 app = Flask(__name__)
 api = Api(app)
@@ -41,7 +41,7 @@ api.add_resource(VoiceVerification,
                  '/verify_voice/<int:merchant_id>/<string:user_email>/<int:text_id>/<string:filename>')
 
 ### STRICTLY FOR FRONT-END REGISTRATION ###
-api.add_resource(GetSamplesByUserId, '/samples/byUserId/<int:merchant_id>/<int:user_id>')
+api.add_resource(GetSamplesInfoByUserId, '/samples/info/byUserId/<int:merchant_id>/<int:user_id>')
 api.add_resource(GetTextsRandom, '/texts/random/<int:number_of_missing_texts>')
 api.add_resource(GetTextsInfoByUserId, '/texts/info/byUserId/<int:merchant_id>/<int:user_id>')
 

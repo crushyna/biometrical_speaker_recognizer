@@ -20,8 +20,6 @@ class VoiceImageGenerator(Resource):
         ongoing_image = VoiceImageModel(**new_image_data)
         '''
 
-        # return ongoing_image.__dict__
-
         # get list of .npy files per user / text
         response_list = VoiceImageModel.get_list_of_numpy_arrays(merchant_id, user_id, text_id)
 
@@ -71,7 +69,7 @@ class VoiceImageGenerator(Resource):
         os.remove(local_image_file)
         for each_file in local_numpy_files_list: os.remove(each_file)
 
-        return final_result
+        return final_result.json()
 
     @staticmethod
     def generate_binary_voice_image(arrays_list: list, local_filename: str):

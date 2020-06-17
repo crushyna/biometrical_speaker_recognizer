@@ -71,7 +71,7 @@ class VoiceImageGenerator(Resource):
         os.remove(local_image_file)
         for each_file in local_numpy_files_list: os.remove(each_file)
 
-        return final_result.json()
+        return final_result
 
     @staticmethod
     def generate_binary_voice_image(arrays_list: list, local_filename: str):

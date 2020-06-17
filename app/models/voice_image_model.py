@@ -51,7 +51,7 @@ class VoiceImageModel:
         response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
         data = response.json()
         if response.status_code in (200, 201):
-            for each_sample in data['data']['samples']:
+            for each_sample in data['data']:
                 var = each_sample['sampleFile']
                 numpy_arrays_list.append(var)
 

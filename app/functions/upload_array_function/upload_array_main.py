@@ -20,14 +20,6 @@ class VoiceArrayUploader(Resource):
             return {'message': f'Filename: {local_filename} does not exists on back-end server!',
                     'status': 'error'}, 404
 
-        # retrieve filepath/filename for storing data on server
-        '''
-        filename_to_upload: str = VoiceArrayModel.get_remote_destination(new_voice_array.merchant_id, new_voice_array.user_id, new_voice_array.text_id)
-
-        if filename_to_upload is False:
-            return {'message': 'Cannot establish connection to the database server!',
-                    'status': 'error'}, 400
-        '''
         try:
             # transform input wavefile
             input_sound = SoundPreprocessor(os.path.join(WorkingFolders.upload_folder, local_filename))

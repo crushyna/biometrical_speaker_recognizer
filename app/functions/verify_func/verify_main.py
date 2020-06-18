@@ -9,30 +9,12 @@ from helpers.helpers import WorkingFolders, DownloadFileFromDatabase
 
 class VoiceVerification(Resource):
     """
-    Entry point for actual function of this application.
+    Entry point for actual magical function of this application.
     """
-    '''
-    parser = reqparse.RequestParser()
-    parser.add_argument('user_id',
-                        type=int,
-                        required=True,
-                        help="Missing user_id in request!"
-                        )
-    parser.add_argument('text_id',
-                        type=int,
-                        required=True,
-                        help="Missing text_id in request!!"
-                        )
-    parser.add_argument('filename',
-                        type=str,
-                        required=True,
-                        help="Missing filename in request!"
-                        )
-    '''
     def get(self, merchant_id: int, user_email: str, text_id: int, filename: str):
         """
         First, create user model.
-        Then, check if filename provided by front-end DOES exists on back-end server.
+        Then, check if filename provided by front-end DOES exists on back-end (this) server.
         Then, download voice image file from database to back-end server.
         Finally, execute verify_voice() function and return it's result.
         :param merchant_id: int

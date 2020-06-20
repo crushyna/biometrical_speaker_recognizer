@@ -11,13 +11,7 @@ class VoiceImageGenerator(Resource):
 
     def post(self, merchant_id: int, user_id: int, text_id: int):
         '''
-        new_image_data: dict = VoiceImageModel.retrieve_user_image_data(merchant_id, user_email, text_id)
-
-        if not isinstance(new_image_data, dict):
-            return {'message': 'Database returned no sample data!',
-                    'status': 'error'}, 500
-
-        ongoing_image = VoiceImageModel(**new_image_data)
+        comment to add here
         '''
 
         # get list of .npy files per user / text

@@ -37,7 +37,8 @@ class SoundPreprocessor:
     def fourier_transform_audio(self):
         # TODO: volume normalisation?
         self.scipy_audio = rfft(self.scipy_audio)
-        self.scipy_audio = self.scipy_audio[250:22050]
+        # self.scipy_audio = self.scipy_audio[250:22050]
+        self.scipy_audio = self.scipy_audio[250:11025]
         return self.scipy_audio
 
     def minmax_array_numpy(self):

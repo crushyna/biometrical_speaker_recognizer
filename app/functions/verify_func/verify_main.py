@@ -11,6 +11,7 @@ class VoiceVerification(Resource):
     """
     Entry point for actual magical function of this application.
     """
+
     def get(self, merchant_id: int, user_email: str, text_id: int, filename: str):
         """
         First, create user model.
@@ -54,6 +55,9 @@ class VoiceVerification(Resource):
                                                              os.path.join(WorkingFolders.upload_folder, filename),
                                                              file_from_server_path)
 
+        # clear space
+        os.remove(file_from_server_path)
+
         # return results
         return {'ongoing_user': ongoing_user.return_all_attributes(),
                 'local_filename': filename,
@@ -63,8 +67,6 @@ class VoiceVerification(Resource):
                 'file_from_server_path': file_from_server_path,
                 'verification_result': verification_result
                 }, 200
-
-        # os.remove(file_from_server_path['message'])
 
     @staticmethod
     def verify_voice(user_email: str, local_wavefile: str, local_voice_image: str):

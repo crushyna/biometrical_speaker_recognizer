@@ -27,7 +27,7 @@ class UserModel:
             response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password)).json()
         except JSONDecodeError:
             return {'message': 'Database error @retrieve_user_data_3 !',
-                    'status': 'error'}
+                    'status': 'error'}, 500
 
         if response.status_code == 404:
             return response.json()

@@ -25,8 +25,8 @@ class VoiceVerification(Resource):
         :return: json message
         """
         # create User model
-        user_data = UserModel.retrieve_user_data_3(merchant_id, user_email, text_id)
-        if 'status' or 'error' in user_data:
+        user_data, status_code = UserModel.retrieve_user_data_3(merchant_id, user_email, text_id)
+        if status_code in (500, 404):
             return user_data
 
         ongoing_user = UserModel(**user_data)

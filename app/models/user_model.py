@@ -47,7 +47,7 @@ class UserModel:
             else:
                 continue
 
-        return new_user_data_dict
+        return new_user_data_dict, 200
 
     @staticmethod
     def add_new_user(user_email: str, merchant_id: int, password: str):

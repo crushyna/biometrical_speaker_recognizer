@@ -6,7 +6,7 @@ from numpy.core.multiarray import ndarray
 
 class ImagePreprocessor:
 
-    hash_size = 48
+    hash_size = 32
 
     def __init__(self, input_image, stored_image):
         self.input_image = input_image

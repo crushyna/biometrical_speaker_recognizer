@@ -121,19 +121,6 @@ class VoiceVerification(Resource):
                         'whash': str(result_whash),
                         'status': 'error'}
 
-        '''
-        if result_dhash > 1000 or result_whash > 1000:
-            return False
-        else:
-            if result_dhash / result_whash > 0.85:
-                if result_dhash + result_whash <= 1500:
-                    return True
-                else:
-                    return False
-            else:
-                return False
-        '''
-
         # TODO: upload result if OK
         # if result (some operation) then:
         # upload result = upload_voice_array(user_id, sound_sample)

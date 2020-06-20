@@ -98,6 +98,8 @@ class VoiceVerification(Resource):
 
         if result_dhash > 1000 or result_whash > 1000:
             return {'message': 'Values over 1000!',
+                    'dhash': str(result_dhash),
+                    'whash': str(result_whash),
                     'status': 'error'}
         else:
             print(result_dhash)

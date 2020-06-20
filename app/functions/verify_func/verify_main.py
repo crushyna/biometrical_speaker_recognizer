@@ -26,9 +26,8 @@ class VoiceVerification(Resource):
         """
         # create User model
         user_data = UserModel.retrieve_user_data_3(merchant_id, user_email, text_id)
-        if not user_data:
-            return {'message': 'Database error! Cannot retrieve user data!',
-                    'status': 'error'}, 500
+        if 'status' or 'error' in user_data:
+            return user_data
 
         ongoing_user = UserModel(**user_data)
 

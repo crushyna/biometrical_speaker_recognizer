@@ -67,12 +67,17 @@ class GetTextPhrase(Resource):
         from json import JSONDecodeError
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         basic_auth = Config.BasicAuth()
+        response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
+
+        if response.status_code == 500:
+            return {'message': 'Database server error!',
+                    'status': 'error'}, 500
+
+        elif response.status_code == 404:
+            return response
+
         try:
-            response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password)).json()
-        except JSONDecodeError:
-            return {'message': 'Database error!',
-                    'status': 'error'}, 403
-        try:
+            response = response.json()
             number_of_text: int = len(response['data']['texts'])
             text_choice = random.choice(range(number_of_text))
             user_id = response['data']['userId']

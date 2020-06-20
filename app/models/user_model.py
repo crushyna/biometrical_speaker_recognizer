@@ -23,15 +23,16 @@ class UserModel:
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         basic_auth = Config.BasicAuth()
 
-        try:
-            response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password)).json()
-        except JSONDecodeError:
-            return {'message': 'Database error @retrieve_user_data_3 !',
+        response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
+
+        if response.status_code == 500:
+            return {'message': 'Database server error!',
                     'status': 'error'}, 500
 
-        if response.status_code == 404:
-            return response.json()
+        elif response.status_code == 404:
+            return response.json(), 404
 
+        response = response.json()
         user_id = response['data']['userId']
         for each_text_data in response['data']['texts']:
             if each_text_data['textId'] == text_id:
@@ -43,7 +44,8 @@ class UserModel:
                                       'text_phrase': each_text_data['phrase'],
                                       }
             else:
-                return False
+                return {'message': 'Error while creating new_user_data_dict!',
+                        'status': 'error'}
 
         return new_user_data_dict
 

@@ -55,7 +55,7 @@ class VoiceVerification(Resource):
                                                              file_from_server_path)
 
         # clear space
-        os.remove(file_from_server_path)
+        # os.remove(file_from_server_path)
 
         return {'verification_result': verification_result}, 200
 
@@ -96,23 +96,29 @@ class VoiceVerification(Resource):
         # close BytesIO buffers
         input_image_buffer.close()
 
-        if result_dhash > 1000 or result_whash > 1000:
-            return {'message': 'Values over 1000!',
+        if result_dhash > 3000 or result_whash > 3000:
+            return {'message': 'Values over 1500!',
                     'dhash': str(result_dhash),
                     'whash': str(result_whash),
                     'status': 'error'}
         else:
             print(result_dhash)
             print(result_whash)
-            if result_dhash / result_whash > 0.85:
-                if result_dhash + result_whash <= 1500:
+            if result_dhash / result_whash > 0.01:
+                if result_dhash + result_whash <= 6000:
                     return {'message': f'Sum: {result_dhash + result_whash}',
+                            'dhash': str(result_dhash),
+                            'whash': str(result_whash),
                             'status': 'success'}
                 else:
                     return {'message': f'Sum: {result_dhash + result_whash}',
+                            'dhash': str(result_dhash),
+                            'whash': str(result_whash),
                             'status': 'error'}
             else:
                 return {'message': f'Division: {result_dhash / result_whash}',
+                        'dhash': str(result_dhash),
+                        'whash': str(result_whash),
                         'status': 'error'}
 
         '''

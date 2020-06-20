@@ -71,7 +71,7 @@ class VoiceVerification(Resource):
 
         # process input sound
         input_sound = SoundPreprocessor(local_wavefile)
-        input_sound.convert_stereo_to_mono()
+        # input_sound.convert_stereo_to_mono()
         input_sound.fourier_transform_audio()
         input_sound.minmax_array_numpy()
 

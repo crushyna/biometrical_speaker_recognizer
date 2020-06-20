@@ -57,7 +57,9 @@ class VoiceVerification(Resource):
         # clear space
         os.remove(file_from_server_path)
 
-        # return results
+        return {'verification_result': verification_result}, 200
+
+        """        
         return {'ongoing_user': ongoing_user.return_all_attributes(),
                 'local_filename': filename,
                 'local_file_exists': local_file_exist,
@@ -66,6 +68,8 @@ class VoiceVerification(Resource):
                 'file_from_server_path': file_from_server_path,
                 'verification_result': verification_result
                 }, 200
+        
+        """
 
     @staticmethod
     def verify_voice(user_email: str, local_wavefile: str, local_voice_image: str):

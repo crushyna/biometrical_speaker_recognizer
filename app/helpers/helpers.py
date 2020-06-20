@@ -87,7 +87,13 @@ class GetTextPhrase(Resource):
             return {'message': 'Insufficient data for completing user model!',
                     'status': 'error'}, 500
 
-        return {'message': user_data_dict['text_phrase']}, 200
+        return {'message': {
+            'data':
+                {'textphrase': response['data']['texts'][text_choice]['phrase'],
+                 'text_id': response['data']['texts'][text_choice]['textId']
+                 },
+        },
+                   'status': 'success'}, 200
 
 
 class WaveFileUpload(Resource):
@@ -136,7 +142,7 @@ class DownloadFileFromDatabase:
 
         url = f"https://dbapi.pl/file/download/{filename}"
         basic_auth = Config.BasicAuth()
-        response = requests.get(url,auth=(basic_auth.login, basic_auth.password))
+        response = requests.get(url, auth=(basic_auth.login, basic_auth.password))
 
         if response.status_code == 200 or 201:
             with open(os.path.join(destination, filename), 'wb') as f:
@@ -181,5 +187,3 @@ class UploadFileToDatabase:
                            'message': 'Backend server error!',
                            'status': 'error'
                        }, 400
-
-

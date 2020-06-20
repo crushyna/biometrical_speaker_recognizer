@@ -90,7 +90,8 @@ class GetTextPhrase(Resource):
         return {'message': {
             'data':
                 {'textphrase': response['data']['texts'][text_choice]['phrase'],
-                 'text_id': response['data']['texts'][text_choice]['textId']
+                 'text_id': response['data']['texts'][text_choice]['textId'],
+                 'user_id': response['data']['userId']
                  },
         },
                    'status': 'success'}, 200

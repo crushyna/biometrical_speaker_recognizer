@@ -63,7 +63,7 @@ class SoundPreprocessor:
             v_arrays_list_avg = sum(list_of_arrays)
             v_arrays_list_avg = np.divide(v_arrays_list_avg, len(list_of_arrays))
             v_arrays_list_avg = np.real(v_arrays_list_avg)
-            v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 1))
+            v_arrays_list_avg = minmax_scale(v_arrays_list_avg, feature_range=(0, 10))
 
         except Exception as er:
             return er

@@ -64,7 +64,6 @@ class GetTextPhrase(Resource):
 
     def get(self, user_email: str, merchant_id: int):
         import random
-        from json import JSONDecodeError
         url = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         basic_auth = Config.BasicAuth()
         response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
@@ -74,7 +73,7 @@ class GetTextPhrase(Resource):
                     'status': 'error'}, 500
 
         elif response.status_code == 404:
-            return response
+            return response.json()
 
         try:
             response = response.json()

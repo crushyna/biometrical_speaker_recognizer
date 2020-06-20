@@ -34,6 +34,7 @@ class UserModel:
 
         response = response.json()
         user_id = response['data']['userId']
+        new_user_data_dict = {}
         for each_text_data in response['data']['texts']:
             if each_text_data['textId'] == text_id:
                 new_user_data_dict = {'user_id': user_id,
@@ -44,8 +45,7 @@ class UserModel:
                                       'text_phrase': each_text_data['phrase'],
                                       }
             else:
-                return {'message': 'Error while creating new_user_data_dict!',
-                        'status': 'error'}
+                continue
 
         return new_user_data_dict
 

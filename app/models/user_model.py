@@ -26,8 +26,12 @@ class UserModel:
         try:
             response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password)).json()
         except JSONDecodeError:
-            return {'message': 'User data not found!',
+            return {'message': 'Database error @retrieve_user_data_3 !',
                     'status': 'error'}
+
+        if response.status_code == 404:
+            return response.json()
+
         user_id = response['data']['userId']
         for each_text_data in response['data']['texts']:
             if each_text_data['textId'] == text_id:

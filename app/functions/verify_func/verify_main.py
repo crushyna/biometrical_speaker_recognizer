@@ -96,6 +96,10 @@ class VoiceVerification(Resource):
         # close BytesIO buffers
         input_image_buffer.close()
 
+        return {'dhash': str(result_dhash),
+                'whash': str(result_whash)}
+
+        """
         if result_dhash > 1000 or result_whash > 1000:
             return {'message': 'Values over 1000!',
                     'dhash': str(result_dhash),
@@ -120,6 +124,7 @@ class VoiceVerification(Resource):
                         'dhash': str(result_dhash),
                         'whash': str(result_whash),
                         'status': 'error'}
+        """
 
         # TODO: upload result if OK
         # if result (some operation) then:

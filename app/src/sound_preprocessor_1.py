@@ -18,6 +18,7 @@ class SoundPreprocessor:
     def normalize_audio(sound_file):
         wavefile = AudioSegment.from_wav(sound_file)
         normalized_wavefile = effects.normalize(wavefile)
+        normalized_wavefile = effects.compress_dynamic_range(normalized_wavefile)
         normalized_wavefile.export(sound_file, format='wav')
 
         return sound_file
@@ -47,7 +48,7 @@ class SoundPreprocessor:
         # TODO: volume normalisation?
         self.scipy_audio = rfft(self.scipy_audio)
         # self.scipy_audio = self.scipy_audio[250:22050]
-        self.scipy_audio = self.scipy_audio[250:22050]
+        self.scipy_audio = self.scipy_audio[100:22050]
         return self.scipy_audio
 
     def minmax_array_numpy(self):
@@ -78,52 +79,3 @@ class SoundPreprocessor:
             return er
 
         return v_arrays_list_avg
-
-    def __old__save_audio_image(self):
-        # save current plot:
-        from io import BytesIO
-        img_buffer_1 = BytesIO()
-        plt.figure(figsize=(5, 2), frameon=False)
-        # plt.axis('off')
-        plt.plot(self.scipy_audio)
-        plt.savefig(img_buffer_1, format='png', facecolor='white', transparent=False, bbox_inches='tight',
-                    pad_inches=0, dpi=300)
-
-        # print(f"img_buffer_1: {img_buffer_1}")
-        # print(f"img_buffer_1.getvalue(): {img_buffer_1.getvalue()}")
-        plt.close()
-
-        return isinstance(img_buffer_1.getvalue(), str), img_buffer_1
-
-    @staticmethod
-    def __old__generate_voice_image_from_bytes(input_data: bytes):
-        """
-        generate voice image from bytes input data
-        :param input_data: bytes
-        :return: IO.Bytes
-        """
-        # print("\nCreating voice image from bytes")
-        from io import BytesIO
-        img_buffer_voice_image = BytesIO()
-
-        plt.figure(figsize=(5, 2), frameon=False)
-        plt.axis('off')
-        plt.plot(input_data)
-
-        plt.savefig(img_buffer_voice_image, format='png', facecolor='white', transparent=False, bbox_inches='tight',
-                    pad_inches=0, dpi=300)
-        plt.close()
-
-        # print(f"img_buffer: {img_buffer_voice_image}")
-        # print(f"img_buffer.getvalue(): {img_buffer_voice_image.getvalue()}")
-
-        return isinstance(img_buffer_voice_image.getvalue(), str), img_buffer_voice_image
-
-    @staticmethod
-    def __old__create_voice_image_array(*args):
-        recordings_list = []
-        for each_voice in args:
-            SoundPreprocessor.convert_stereo_to_mono(each_voice)
-            SoundPreprocessor.fourier_transform_audio(each_voice)
-            SoundPreprocessor.minmax_array_numpy(each_voice)
-            recordings_list.append(each_voice)

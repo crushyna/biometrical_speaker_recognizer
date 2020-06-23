@@ -48,11 +48,11 @@ class ImagePreprocessor:
         from io import BytesIO
         image_buffer = BytesIO()
 
-        plt.figure(figsize=(4, 2), frameon=False)
+        plt.figure(figsize=(3, 1), frameon=False)
         plt.axis('off')
         plt.plot(array)
         plt.savefig(image_buffer, format='png', facecolor='white', transparent=False, bbox_inches='tight',
-                    pad_inches=0, dpi=300)
+                    pad_inches=0, dpi=200)
         plt.close()
 
         return isinstance(image_buffer.getvalue(), str), image_buffer

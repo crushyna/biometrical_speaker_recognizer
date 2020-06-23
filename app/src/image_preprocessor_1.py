@@ -5,7 +5,6 @@ from numpy.core.multiarray import ndarray
 
 
 class ImagePreprocessor:
-
     hash_size = 32
 
     def __init__(self, input_image, stored_image):
@@ -29,21 +28,15 @@ class ImagePreprocessor:
         hash1 = imagehash.dhash(Image.open(self.input_image), hash_size=ImagePreprocessor.hash_size)
         hash2 = imagehash.dhash(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)
 
-
-
-        # return hash1 - hash2
-        result = hash2 - hash1
-        result = result / len(hash2) ** 2
-        return result
+        return hash2 - hash1
+        # return result
 
     def compare_whash(self):
         hash1 = imagehash.whash(Image.open(self.input_image), hash_size=ImagePreprocessor.hash_size)
         hash2 = imagehash.whash(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)
 
-        # return hash1 - hash2
-        result = hash2 - hash1
-        result = result / len(hash2) ** 2
-        return result
+        return hash2 - hash1
+        # return result
 
     @staticmethod
     def generate_audio_image(array: ndarray):

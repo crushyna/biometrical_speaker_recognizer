@@ -97,14 +97,14 @@ class VoiceVerification(Resource):
         input_image_buffer.close()
 
         if result_dhash > 1000 or result_whash > 1000:
-            return {'message': 'Values over 1500!',
+            return {'message': 'Values over 1000!',
                     'dhash': str(result_dhash),
                     'whash': str(result_whash),
                     'status': 'error'}
         else:
             print(result_dhash)
             print(result_whash)
-            if result_dhash / result_whash > 0.60:
+            if result_dhash / result_whash > 0.65:
                 if result_dhash + result_whash <= 1500:
                     return {'message': f'Sum: {result_dhash + result_whash}',
                             'dhash': str(result_dhash),

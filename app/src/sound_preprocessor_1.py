@@ -3,6 +3,7 @@ import numpy as np
 from scipy.fft import rfft
 from scipy.io import wavfile as wav
 from sklearn.preprocessing import minmax_scale, maxabs_scale
+from pydub import AudioSegment, effects
 
 
 class SoundPreprocessor:
@@ -11,7 +12,15 @@ class SoundPreprocessor:
     """
 
     def __init__(self, sound_file):
-        self.scipy_sample_rate, self.scipy_audio = wav.read(sound_file)
+        self.scipy_sample_rate, self.scipy_audio = wav.read(SoundPreprocessor.normalize_audio(sound_file))
+
+    @staticmethod
+    def normalize_audio(sound_file):
+        wavefile = AudioSegment.from_wav(sound_file)
+        normalized_wavefile = effects.normalize(wavefile)
+        normalized_wavefile.export(sound_file, format='wav')
+
+        return sound_file
 
     def return_bit_depth(self):
         # quick look at bit depth

@@ -6,3 +6,4 @@ sklearn
 requests
 flask
 flask_restful
+pydub

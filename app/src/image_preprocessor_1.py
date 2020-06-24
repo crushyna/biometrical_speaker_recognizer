@@ -22,8 +22,6 @@ class ImagePreprocessor:
         print(type(self.input_image))
         print(f'Stored image: {self.stored_image}')
         print(type(self.stored_image))
-        # print(f'Length: {len(self.stored_image.getvalue())}')
-        print(f'Length: {len(self.stored_image)}')
 
         hash1 = imagehash.dhash(Image.open(self.input_image), hash_size=ImagePreprocessor.hash_size)
         hash2 = imagehash.dhash(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)

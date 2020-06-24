@@ -86,7 +86,6 @@ class GetTextPhrase(Resource):
                               'text_id': response['data']['texts'][text_choice]['textId'],
                               'text_phrase': response['data']['texts'][text_choice]['phrase'],
                               }
-        # except IndexError:
         except Exception:
             return {'message': 'Insufficient data for completing user model!',
                     'status': 'error'}, 500

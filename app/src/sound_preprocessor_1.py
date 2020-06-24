@@ -38,12 +38,6 @@ class SoundPreprocessor:
         self.scipy_audio = self.scipy_audio.sum(axis=1) / 2
         return self.scipy_audio
 
-    def __old__plot_audio(self):
-        # current audio plot:
-        plt.figure(figsize=(5, 2), frameon=False)
-        plt.axis('off')
-        plt.plot(self.scipy_audio)
-
     def fourier_transform_audio(self):
         # TODO: volume normalisation?
         self.scipy_audio = rfft(self.scipy_audio)
@@ -54,11 +48,6 @@ class SoundPreprocessor:
     def minmax_array_numpy(self):
         self.scipy_audio = np.real(self.scipy_audio)
         self.scipy_audio = minmax_scale(self.scipy_audio, feature_range=(0, 10))
-        return self.scipy_audio
-
-    def __old__maxabs_array_numpy(self):
-        # not used!
-        self.scipy_audio = maxabs_scale(self.scipy_audio)
         return self.scipy_audio
 
     @staticmethod

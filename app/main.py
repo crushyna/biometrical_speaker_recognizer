@@ -42,8 +42,8 @@ api.add_resource(VoiceVerification,
 
 ### STRICTLY FOR FRONT-END REGISTRATION ###
 api.add_resource(GetSamplesInfoByUserId, '/samples/info/byUserId/<int:merchant_id>/<int:user_id>')
-api.add_resource(GetTextsRandom, '/texts/random/<int:number_of_missing_texts>')
-api.add_resource(GetTextsInfoByUserId, '/texts/info/byUserId/<int:merchant_id>/<int:user_id>')
+# api.add_resource(GetTextsRandom, '/texts/random/<int:number_of_missing_texts>')
+# api.add_resource(GetTextsInfoByUserId, '/texts/info/byUserId/<int:merchant_id>/<int:user_id>')
 
 ## Just to force docker rebuild ##
 

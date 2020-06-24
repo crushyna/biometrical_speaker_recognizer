@@ -8,5 +8,4 @@ COPY ./app /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 ENTRYPOINT ["python"]
-# CMD ["-u", "main.py"]
 CMD ["main.py"]

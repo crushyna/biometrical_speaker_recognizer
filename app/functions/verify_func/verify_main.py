@@ -107,7 +107,7 @@ class VoiceVerification(Resource):
                     'whash': str(result_whash),
                     'status': 'error'}
         else:
-            if result_dhash < 250:
+            if result_dhash < 248:
                 if result_dhash + result_whash < 750:
                     return {'message': f'Sum: {result_dhash + result_whash}',
                             'dhash': str(result_dhash),

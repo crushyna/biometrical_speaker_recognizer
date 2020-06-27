@@ -72,17 +72,21 @@ class UserModel:
         url1 = f"https://dbapi.pl/texts/byEmail/{merchant_id}/{user_email}"
         basic_auth = Config.BasicAuth()
         response1 = requests.request("GET", url1, auth=(basic_auth.login, basic_auth.password))
-        if response1.status_code not in (200, 201):
+        if response1.status_code not in (200, 201, 404):
             return {'message': 'Database error while executing url: https://dbapi.pl/texts/byEmail/',
-                    'status': 'error'}
+                    'status': 'error'}, 502
+
+        elif response1.status_code == 404:
+            return {'message': 'User does not exists!',
+                    'status': 'error'}, 502
 
         user_id = response1.json()['data']['userId']
 
         url2 = f"https://dbapi.pl/user/byId/{merchant_id}/{user_id}"
         response2 = requests.request("GET", url2, auth=(basic_auth.login, basic_auth.password))
-        if response2.status_code not in (200, 201):
+        if response2.status_code not in (200, 201, 404):
             return {'message': 'Database error while executing url: https://dbapi.pl/user/byId/',
-                    'status': 'error'}
+                    'status': 'error'}, 502
 
         user_password = response2.json()['data']['password']
 

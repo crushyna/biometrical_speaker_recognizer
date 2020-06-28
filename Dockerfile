@@ -7,5 +7,5 @@ ENV NGINX_WORKER_PROCESSES auto
 COPY ./app /app
 WORKDIR /app
 RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
-CMD ["main.py"]
+# ENTRYPOINT ["python"]
+# CMD ["main.py"]

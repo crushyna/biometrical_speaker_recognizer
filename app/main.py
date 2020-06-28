@@ -46,4 +46,5 @@ api.add_resource(GetSamplesInfoByUserId, '/samples/info/byUserId/<int:merchant_i
 # api.add_resource(GetTextsInfoByUserId, '/texts/info/byUserId/<int:merchant_id>/<int:user_id>')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+    # app.run(host='0.0.0.0', port=80, debug=True)
+    app.run(host='0.0.0.0', port=80)

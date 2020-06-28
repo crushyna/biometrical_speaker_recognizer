@@ -1,6 +1,5 @@
 import unittest
-import warnings
-
+import zipfile
 from numpy.core.multiarray import ndarray
 from io import BytesIO
 from src.sound_preprocessor_1 import SoundPreprocessor
@@ -8,6 +7,9 @@ from src.image_preprocessor_1 import ImagePreprocessor
 
 
 class TestSoundPreprocessor(unittest.TestCase):
+    with zipfile.ZipFile('test_voices.zip', 'r') as zip_ref:
+        zip_ref.extractall('./audio_files')
+
     voicefile_1 = "./audio_files/glos1.wav"
     voicefile_2 = "./audio_files/glos2.wav"
 

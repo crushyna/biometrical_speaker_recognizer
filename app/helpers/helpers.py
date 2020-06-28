@@ -64,7 +64,7 @@ class CheckIfUserExists(Resource):
                     'status': 'error'}, 404
         else:
             return {'message': 'Database error! @function: CheckIfUserExists',
-                    'status': 'error'}, 500
+                    'status': 'error'}, 502
 
 
 class GetTextPhrase(Resource):
@@ -77,7 +77,7 @@ class GetTextPhrase(Resource):
 
         if response.status_code == 500:
             return {'message': 'Database server error!',
-                    'status': 'error'}, 500
+                    'status': 'error'}, 502
 
         elif response.status_code == 404:
             return response.json()

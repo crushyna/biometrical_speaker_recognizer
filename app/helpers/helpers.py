@@ -109,9 +109,8 @@ class GetTextPhrase(Resource):
 
 class WaveFileUpload(Resource):
     """
-    endpoint for uploading new wavefile from front-end
+    endpoint for uploading new wavefile from front-end to back-end (this) server
     """
-
     @staticmethod
     def post(filename: str):
         """
@@ -135,7 +134,7 @@ class WaveFileUpload(Resource):
                        'status': 'success'
                    }, 200
         return {
-                   'message': 'Something when wrong',
+                   'message': 'Something when wrong or file does not exist!',
                    'status': 'error'
                }, 400
 
@@ -192,9 +191,9 @@ class UploadFileToDatabase:
                 return {
                            'message': 'Database server error!',
                            'status': 'error'
-                       }, 400
+                       }, 502
             elif str(response.status_code).startswith('4'):
                 return {
                            'message': 'Backend server error!',
                            'status': 'error'
-                       }, 400
+                       }, 500

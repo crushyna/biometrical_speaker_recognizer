@@ -21,7 +21,7 @@ class VoiceImageGenerator(Resource):
             return {
                        'message': 'Connection error! Cannot retrieve list of numpy arrays from database!',
                        'status': 'error'
-                   }, 500
+                   }, 502
 
         # get name of image file to upload
         image_filename = VoiceImageModel.get_remote_destination(merchant_id, user_id, text_id)
@@ -30,7 +30,7 @@ class VoiceImageGenerator(Resource):
             return {
                        'message': 'Connection error! Cannot retrieve image destination from database!',
                        'status': 'error'
-                   }, 500
+                   }, 502
 
         # download all voice arrays per user per text, and create separate list with numpy values
         local_numpy_files_list = []
@@ -41,7 +41,7 @@ class VoiceImageGenerator(Resource):
                                                           destination=WorkingFolders.arrays_folder)
             if not next_numpyfile:
                 return {'message': f'Cannot retrieve {each_numpy_file} from database!',
-                        'status': 'error'}, 400
+                        'status': 'error'}, 502
 
             local_numpy_files_list.append(next_numpyfile)
             local_arrays_list.append(load(next_numpyfile))

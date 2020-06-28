@@ -10,11 +10,10 @@ class GetSamplesInfoByUserId(Resource):
         from json import JSONDecodeError
         url = f"https://dbapi.pl/samples/info/byUserId/{merchant_id}/{user_id}"
         basic_auth = Config.BasicAuth()
-        try:
-            response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
-        except JSONDecodeError:
+        response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
+        if response.status_code == 500:
             return {'message': 'Database error!',
-                    'status': 'error'}, 403
+                    'status': 'error'}, 502
 
         return response.json(), response.status_code
 

@@ -26,7 +26,10 @@ class WorkingFolders:
 
 
 class ConnectionTest(Resource):
-
+    """
+    simple connection test resource
+    returns simple JSON message
+    """
     def get(self):
         return {'message': "GET function called. Working correctly."}, 200
 
@@ -38,7 +41,11 @@ class ConnectionTest(Resource):
 
 
 class CheckIfUserExists(Resource):
-
+    """
+    checks if user exists in database.
+    Returns 200 if exists, 404 if not.
+    Keep in mind, that status code 404 actually might be the one you need (for example: when adding new user).
+    """
     def get(self, merchant_id: int, user_email: str):
         from json import JSONDecodeError
         url = f"https://dbapi.pl/user/check/exist/{merchant_id}/{user_email}"

@@ -36,5 +36,5 @@ class AddUser(Resource):
             return {'message': 'User already exists!',
                     'status': 'success'}, 409
         else:
-            return {'message': 'Database or connection error!',
-                    'status': 'error'}, 400
+            return {'message': 'Database or connection error at "https://dbapi.pl/user/add"!',
+                    'status': 'error'}, 502

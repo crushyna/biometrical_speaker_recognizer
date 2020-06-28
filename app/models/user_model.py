@@ -78,7 +78,7 @@ class UserModel:
 
         elif response1.status_code == 404:
             return {'message': 'User does not exists!',
-                    'status': 'error'}, 502
+                    'status': 'error'}, 404
 
         user_id = response1.json()['data']['userId']
 
@@ -92,7 +92,7 @@ class UserModel:
 
         if user_password == password:
             return {'message': 'authorized',
-                    'status': 'success'}
+                    'status': 'success'}, 200
         else:
             return {'message': 'unauthorized',
-                    'status': 'success'}
+                    'status': 'success'}, 401

@@ -27,13 +27,13 @@ class LoginUser(Resource):
         :return: message, status and status code
         """
         data = LoginUser.parser.parse_args()
-        response = UserModel.retrieve_logging_user_data(**data)
+        response, response_code = UserModel.retrieve_logging_user_data(**data)
 
         if response['message'] == 'authorized':
-            return response, 200
+            return response, response_code
 
         elif response['message'] == 'unauthorized':
-            return response, 401
+            return response, response_code
 
         else:
-            return response, 400
+            return response, response_code

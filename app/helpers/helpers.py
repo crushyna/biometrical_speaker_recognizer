@@ -75,7 +75,7 @@ class GetTextPhrase(Resource):
         basic_auth = Config.BasicAuth()
         response = requests.request("GET", url, auth=(basic_auth.login, basic_auth.password))
 
-        if response.status_code == 500:
+        if response.status_code in (500, 502):
             return {'message': 'Database server error!',
                     'status': 'error'}, 502
 

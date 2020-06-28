@@ -26,8 +26,9 @@ class VoiceVerification(Resource):
         """
         # create User model
         user_data, status_code = UserModel.retrieve_user_data_3(merchant_id, user_email, text_id)
-        if status_code in (500, 404):
-            return user_data
+        # if status_code in (500, 404):
+        if status_code != 200:
+            return user_data, status_code
 
         ongoing_user = UserModel(**user_data)
 

@@ -1,5 +1,6 @@
 # Dockerfile - this is a comment. Delete me if you want.
 FROM tiangolo/uwsgi-nginx-flask:python3.8
+COPY nginx_custom.conf /etc/nginx/conf.d/nginx_custom.conf
 ENV UWSGI_INI /app/uwsgi.ini
 ENV UWSGI_CHEAPER 2
 ENV UWSGI_PROCESSES 8

@@ -17,8 +17,9 @@ class SoundPreprocessor:
     @staticmethod
     def normalize_audio(sound_file):
         wavefile = AudioSegment.from_wav(sound_file)
-        normalized_wavefile = effects.normalize(wavefile)
-        normalized_wavefile = effects.compress_dynamic_range(normalized_wavefile)
+        # normalized_wavefile = effects.normalize(wavefile, headroom=0.2)
+        # normalized_wavefile = effects.compress_dynamic_range(normalized_wavefile)
+        normalized_wavefile = effects.compress_dynamic_range(wavefile)
         normalized_wavefile.export(sound_file, format='wav')
 
         return sound_file

@@ -133,7 +133,7 @@ class WaveFileUpload(Resource):
             return {
                        'message': 'File uploaded',
                        'status': 'success'
-                   }, 200
+                   }, 201
         print(f"File: {filename} not uploaded!")
         return {
                    'message': 'Something when wrong or file does not exist!',

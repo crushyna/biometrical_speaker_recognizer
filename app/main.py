@@ -5,10 +5,13 @@ from functions.frontend_functions.login_user import LoginUser
 from functions.verify_func.verify_main import VoiceVerification
 from functions.upload_array_function.upload_array_main import VoiceArrayUploader
 from functions.generate_image_function.generate_image_function import VoiceImageGenerator
-from helpers.helpers import ConnectionTest, GetTextPhrase, WaveFileUpload, CheckIfUserExists
+from helpers.helpers import ConnectionTest, GetTextPhrase, WaveFileUpload, CheckIfUserExists, WorkingFolders
 from helpers.front_registration import GetTextsRandom, GetTextsInfoByUserId, GetSamplesInfoByUserId
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = WorkingFolders.upload_folder
+app.config['ARRAYS_FOLDER'] = WorkingFolders.arrays_folder
+app.config['IMAGES_FOLDER'] = WorkingFolders.images_folder
 api = Api(app)
 
 # REST test endpoint

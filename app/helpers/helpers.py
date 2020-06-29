@@ -129,10 +129,12 @@ class WaveFileUpload(Resource):
 
         if wave_file:
             wave_file.save(os.path.join(WorkingFolders.upload_folder, filename))
+            print(f"File: {filename} uploaded!")
             return {
                        'message': 'File uploaded',
                        'status': 'success'
                    }, 200
+        print(f"File: {filename} not uploaded!")
         return {
                    'message': 'Something when wrong or file does not exist!',
                    'status': 'error'

@@ -25,20 +25,24 @@ class VoiceVerification(Resource):
         :return: json message
         """
         # create User model
+        print("Starting voice verification function...")
         user_data, status_code = UserModel.retrieve_user_data_3(merchant_id, user_email, text_id)
         # if status_code in (500, 404):
         if status_code != 200:
             return user_data, status_code
 
         ongoing_user = UserModel(**user_data)
+        print("Ongoing user model created!")
 
         # check, if wavefile uploaded from front-end exists
+        print("Searching for wavefile...")
         local_file_exist = os.path.isfile(os.path.join(WorkingFolders.upload_folder, filename))
         if not local_file_exist:
             return {'message': f'File: {filename} has not been found on back-end server!',
                     'status': 'error'}, 400
 
         # download voice image per user, per text
+        print("Downloading voice image...")
         file_from_server_path = DownloadFileFromDatabase.get(ongoing_user.image_file, WorkingFolders.images_folder)
         if not file_from_server_path:
             return {'message': f'Error when downloading file from server: {ongoing_user.image_file}',
@@ -51,6 +55,7 @@ class VoiceVerification(Resource):
                     'status': 'error'}, 400
 
         # run verification function
+        print("Veryfing voice...")
         verification_result = VoiceVerification.verify_voice(user_email,
                                                              os.path.join(WorkingFolders.upload_folder, filename),
                                                              file_from_server_path)

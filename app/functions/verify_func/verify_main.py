@@ -118,7 +118,7 @@ class VoiceVerification(Resource):
                     'whash': str(result_whash),
                     'status': 'error'}
         elif result_whash / result_dhash < 1.5:
-            return {'message': 'DHASH bigger then WHASH!!',
+            return {'message': 'Proportion lower than 1.5!!',
                     'dhash': str(result_dhash),
                     'whash': str(result_whash),
                     'status': 'error'}

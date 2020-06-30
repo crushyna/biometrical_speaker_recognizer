@@ -112,15 +112,30 @@ class VoiceVerification(Resource):
                     'dhash': str(result_dhash),
                     'whash': str(result_whash),
                     'status': 'error'}
+        elif result_dhash > result_whash:
+            return {'message': 'DHASH bigger then WHASH!!',
+                    'dhash': str(result_dhash),
+                    'whash': str(result_whash),
+                    'status': 'error'}
+        elif result_whash / result_dhash < 1.5:
+            return {'message': 'DHASH bigger then WHASH!!',
+                    'dhash': str(result_dhash),
+                    'whash': str(result_whash),
+                    'status': 'error'}
         else:
-            if result_dhash < 230:
-                if result_dhash + result_whash < 700:
-                    return {'message': f'Sum: {result_dhash + result_whash}',
+            if result_dhash < 250:
+                if result_dhash <= 220:
+                    return {'message': f'Minimal DHASH OK: {result_dhash}',
+                            'dhash': str(result_dhash),
+                            'whash': str(result_whash),
+                            'status': 'success'}
+                elif result_dhash + result_whash < 650:
+                    return {'message': f'Sum OK: {result_dhash + result_whash}',
                             'dhash': str(result_dhash),
                             'whash': str(result_whash),
                             'status': 'success'}
                 else:
-                    return {'message': f'Sum: {result_dhash + result_whash}',
+                    return {'message': f'Sum too big: {result_dhash + result_whash}',
                             'dhash': str(result_dhash),
                             'whash': str(result_whash),
                             'status': 'error'}

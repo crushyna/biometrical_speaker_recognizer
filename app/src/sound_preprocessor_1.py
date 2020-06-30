@@ -19,7 +19,7 @@ class SoundPreprocessor:
         wavefile = AudioSegment.from_wav(sound_file)
         # normalized_wavefile = effects.normalize(wavefile, headroom=0.2)
         # normalized_wavefile = effects.compress_dynamic_range(normalized_wavefile)
-        normalized_wavefile = effects.compress_dynamic_range(wavefile)
+        normalized_wavefile = effects.compress_dynamic_range(wavefile, threshold=-10.0, ratio=2.0, attack=2.5, release=25.0)
         normalized_wavefile.export(sound_file, format='wav')
 
         return sound_file

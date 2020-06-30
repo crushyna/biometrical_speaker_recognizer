@@ -32,8 +32,8 @@ class ImagePreprocessor:
         # return result
 
     def compare_whash(self):
-        hash1 = imagehash.phash(Image.open(self.input_image), hash_size=ImagePreprocessor.hash_size)
-        hash2 = imagehash.phash(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)
+        hash1 = imagehash.whash(Image.open(self.input_image), hash_size=ImagePreprocessor.hash_size)
+        hash2 = imagehash.whash(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)
 
         return hash2 - hash1
         # return result

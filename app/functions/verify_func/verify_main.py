@@ -100,39 +100,39 @@ class VoiceVerification(Resource):
             return {'message': 'Values over 600!',
                     'dhash': str(result_dhash),
                     'whash': str(result_whash),
-                    'status': 'error'}
+                    'status': 'error'}, 403
         elif result_dhash > result_whash:
             return {'message': 'DHASH bigger then WHASH!!',
                     'dhash': str(result_dhash),
                     'whash': str(result_whash),
-                    'status': 'error'}
+                    'status': 'error'}, 403
         elif result_whash / result_dhash < 1.5:
             return {'message': 'Proportion lower than 1.5!!',
                     'dhash': str(result_dhash),
                     'whash': str(result_whash),
-                    'status': 'error'}
+                    'status': 'error'}, 403
         else:
             if result_dhash < 250:
                 if result_dhash <= 220:
                     return {'message': f'Minimal DHASH OK: {result_dhash}',
                             'dhash': str(result_dhash),
                             'whash': str(result_whash),
-                            'status': 'success'}
+                            'status': 'success'}, 200
                 elif result_dhash + result_whash < 650:
                     return {'message': f'Sum OK: {result_dhash + result_whash}',
                             'dhash': str(result_dhash),
                             'whash': str(result_whash),
-                            'status': 'success'}
+                            'status': 'success'}, 200
                 else:
                     return {'message': f'Sum too big: {result_dhash + result_whash}',
                             'dhash': str(result_dhash),
                             'whash': str(result_whash),
-                            'status': 'error'}
+                            'status': 'error'}, 403
             else:
                 return {'message': f'DHASH too big: {result_dhash}',
                         'dhash': str(result_dhash),
                         'whash': str(result_whash),
-                        'status': 'error'}
+                        'status': 'error'}, 403
 
         # TODO: upload result if OK
         # if result (some operation) then:

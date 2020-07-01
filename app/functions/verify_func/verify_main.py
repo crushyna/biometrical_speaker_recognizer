@@ -56,14 +56,14 @@ class VoiceVerification(Resource):
 
         # run verification function
         print("Veryfing voice...")
-        verification_result = VoiceVerification.verify_voice(user_email,
+        verification_result, verification_status_code = VoiceVerification.verify_voice(user_email,
                                                              os.path.join(WorkingFolders.upload_folder, filename),
                                                              file_from_server_path)
 
         # clear space
         os.remove(file_from_server_path)
 
-        return {'verification_result': verification_result}, 200
+        return {'verification_result': verification_result}, verification_status_code
 
 
     @staticmethod

@@ -1,6 +1,11 @@
 from io import BytesIO
 import os
+import requests
+from flask.json import dumps
 from flask_restful import Resource
+import Config
+from functions.generate_image_function.generate_image_function import VoiceImageGenerator
+from functions.upload_array_function.upload_array_main import VoiceArrayUploader
 from src.image_preprocessor_1 import ImagePreprocessor
 from src.sound_preprocessor_1 import SoundPreprocessor
 from models.user_model import UserModel
@@ -18,6 +23,7 @@ class VoiceVerification(Resource):
         Then, check if filename provided by front-end DOES exists on back-end (this) server.
         Then, download voice image file from database to back-end server.
         Finally, execute verify_voice() function and return it's result.
+        If verification ends with success: generate new image and upload to database!
         :param merchant_id: int
         :param user_email: str
         :param text_id: int
@@ -63,6 +69,34 @@ class VoiceVerification(Resource):
         # clear space
         os.remove(file_from_server_path)
 
+        # TODO: upload result if OK
+        if verification_status_code == 200:
+            url = "https://dbapi.pl/sample/add"
+            basic_auth = Config.BasicAuth()
+            payload = {
+                    "merchantId": merchant_id,
+                    "userId": ongoing_user.user_id,
+                    "textId": text_id
+                    }
+            headers = {
+                'Content-Type': 'application/json',
+            }
+            response = requests.request("POST", url, headers=headers, data=dumps(payload), auth=(basic_auth.login, basic_auth.password))
+            destination_filename = response.json()['data']['sampleFile']
+
+            # upload new array
+            print("Uploading new array...")
+            array_upload_result = VoiceArrayUploader.post(merchant_id, ongoing_user.user_id, text_id, os.path.join(WorkingFolders.upload_folder, filename), destination_filename)
+            print(f"Upload result: {array_upload_result}")
+
+            # generate image
+            print("Generating new image...")
+            generate_image_result = VoiceImageGenerator.post(merchant_id, ongoing_user.user_id, text_id)
+            print(f"New image generation result: {generate_image_result}")
+
+
+        # upload result = upload_voice_array(user_id, sound_sample)
+
         return {'verification_result': verification_result}, verification_status_code
 
 
@@ -90,11 +124,6 @@ class VoiceVerification(Resource):
 
         # close BytesIO buffers
         input_image_buffer.close()
-
-        """
-        return {'dhash': str(result_dhash),
-                'whash': str(result_whash)}
-        """
 
         if result_dhash > 600 or result_whash > 600:
             return {'message': 'Values over 600!',
@@ -133,7 +162,3 @@ class VoiceVerification(Resource):
                         'dhash': str(result_dhash),
                         'whash': str(result_whash),
                         'status': 'error'}, 403
-
-        # TODO: upload result if OK
-        # if result (some operation) then:
-        # upload result = upload_voice_array(user_id, sound_sample)

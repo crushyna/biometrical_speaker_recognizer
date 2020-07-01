@@ -11,7 +11,7 @@ class VoiceImageGenerator(Resource):
 
     def post(self, merchant_id: int, user_id: int, text_id: int):
         '''
-        comment to add here
+        get list of .npy files from database, create new image and upload it to database
         '''
 
         # get list of .npy files per user / text

@@ -184,10 +184,6 @@ class UploadFileToDatabase:
         if response.status_code in (200, 201):
             return response.json()
         else:
-            # return {
-            #            'message': 'Something when wrong or file does NOT exist on remote server!',
-            #            'status': 'error'
-            #        }, 400
 
             if str(response.status_code).startswith('5'):
                 return {

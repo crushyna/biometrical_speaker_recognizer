@@ -6,7 +6,7 @@ from functions.verify_func.verify_main import VoiceVerification
 from functions.upload_array_function.upload_array_main import VoiceArrayUploader
 from functions.generate_image_function.generate_image_function import VoiceImageGenerator
 from helpers.helpers import ConnectionTest, GetTextPhrase, WaveFileUpload, CheckIfUserExists, WorkingFolders
-from helpers.front_registration import GetTextsRandom, GetTextsInfoByUserId, GetSamplesInfoByUserId
+from helpers.front_registration import GetSamplesInfoByUserId
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = WorkingFolders.upload_folder
@@ -45,8 +45,6 @@ api.add_resource(VoiceVerification,
 
 ### STRICTLY FOR FRONT-END REGISTRATION ###
 api.add_resource(GetSamplesInfoByUserId, '/samples/info/byUserId/<int:merchant_id>/<int:user_id>')
-# api.add_resource(GetTextsRandom, '/texts/random/<int:number_of_missing_texts>')
-# api.add_resource(GetTextsInfoByUserId, '/texts/info/byUserId/<int:merchant_id>/<int:user_id>')
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=80, debug=True)

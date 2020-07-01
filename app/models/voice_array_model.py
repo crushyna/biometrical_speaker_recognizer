@@ -12,7 +12,7 @@ class VoiceArrayModel:
 
     @staticmethod
     def get_remote_destination(merchant_id: int, user_id: int,
-                               text_id: int):  # "merchantId: 100000, "userId": 100001, "textId": 100001
+                               text_id: int):
 
         url = "https://dbapi.pl/sample/add"
         basic_auth = Config.BasicAuth()

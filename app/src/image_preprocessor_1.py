@@ -25,8 +25,6 @@ class ImagePreprocessor:
 
         hash1 = imagehash.dhash(Image.open(self.input_image), hash_size=ImagePreprocessor.hash_size)
         hash2 = imagehash.dhash(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)
-        # hash1 = imagehash.dhash_vertical(Image.open(self.input_image), hash_size=ImagePreprocessor.hash_size)
-        # hash2 = imagehash.dhash_vertical(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)
 
         return hash2 - hash1
         # return result
@@ -36,7 +34,6 @@ class ImagePreprocessor:
         hash2 = imagehash.whash(Image.open(self.stored_image), hash_size=ImagePreprocessor.hash_size)
 
         return hash2 - hash1
-        # return result
 
     @staticmethod
     def generate_audio_image(array: ndarray):

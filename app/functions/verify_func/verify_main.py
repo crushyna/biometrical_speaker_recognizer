@@ -69,7 +69,7 @@ class VoiceVerification(Resource):
         # clear space
         os.remove(file_from_server_path)
 
-        # TODO: upload result if OK
+        # TODO: it does require classmethod implementation!
         if verification_status_code == 200:
             url = "https://dbapi.pl/sample/add"
             basic_auth = Config.BasicAuth()

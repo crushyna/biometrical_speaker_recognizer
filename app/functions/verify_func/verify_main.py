@@ -83,16 +83,23 @@ class VoiceVerification(Resource):
             }
             response = requests.request("POST", url, headers=headers, data=dumps(payload), auth=(basic_auth.login, basic_auth.password))
             destination_filename = response.json()['data']['sampleFile']
+            print(f"Destination filename: {destination_filename}")
 
             # upload new array
             print("Uploading new array...")
-            array_upload_result = VoiceArrayUploader.post(merchant_id, ongoing_user.user_id, text_id, os.path.join(WorkingFolders.upload_folder, filename), destination_filename)
+            array_upload_result = VoiceArrayUploader.post(merchant_id=merchant_id, user_id=ongoing_user.user_id,
+                                                          text_id=text_id,
+                                                          local_filename=os.path.join(WorkingFolders.upload_folder, filename),
+                                                          remote_filename=destination_filename)
             print(f"Upload result: {array_upload_result}")
 
             # generate image
             print("Generating new image...")
             generate_image_result = VoiceImageGenerator.post(merchant_id, ongoing_user.user_id, text_id)
             print(f"New image generation result: {generate_image_result}")
+
+            # clear space
+            os.remove(os.path.join(WorkingFolders.upload_folder, filename))
 
 
         # upload result = upload_voice_array(user_id, sound_sample)

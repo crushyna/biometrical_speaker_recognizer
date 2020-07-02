@@ -68,8 +68,10 @@ class VoiceVerification(Resource):
 
         # clear space
         os.remove(file_from_server_path)
+        os.remove(os.path.join(WorkingFolders.upload_folder, filename))
 
         # TODO: upload result if OK
+        """
         if verification_status_code == 200:
             url = "https://dbapi.pl/sample/add"
             basic_auth = Config.BasicAuth()
@@ -103,6 +105,7 @@ class VoiceVerification(Resource):
 
 
         # upload result = upload_voice_array(user_id, sound_sample)
+        """
 
         return {'verification_result': verification_result}, verification_status_code
 
